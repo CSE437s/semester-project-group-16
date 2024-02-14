@@ -1,28 +1,21 @@
 {
   "name": "carpool_app",
-  "version": "0.0.1",
-  "private": true,
+  "version": "1.0.0",
+  "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "web": "react-scripts start",
-    "build-web": "react-scripts build"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
   "dependencies": {
-    "react-dom": "^18.2.0",
-    "react-native": "0.73.4",
-    "react-native-web": "^0.19.10",
-    "react-scripts": "^5.0.1"
+    "expo": "~50.0.6",
+    "expo-status-bar": "~1.11.1",
+    "react": "18.2.0",
+    "react-native": "0.73.4"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "devDependencies": {
+    "@babel/core": "^7.20.0"
+  },
+  "private": true
 }
