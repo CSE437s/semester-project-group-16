@@ -1,19 +1,26 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+console.log("something loaded")
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    // Here you would usually implement your login logic,
-    // for example, by sending a request to your backend server.
-    // For now, we'll just log the credentials to the console.
     console.log('Login credentials', { username, password });
-
-    // After login, you might want to navigate to another screen
-    // navigation.navigate('YourNextScreen');
   };
+
+  const handleUsernameChanged = (newUsername) => {
+    setUsername(newUsername);
+  }
+
+  const handlePasswordChanged = (newPassword) => {
+    setPassword(newPassword);
+  }
+  const navigateToRegister = () => {
+    console.log("Button was pressed!");
+    navigation.navigate('Register');
+  }
 
   return (
     <View style={styles.container}>
@@ -38,7 +45,7 @@ const LoginScreen = ({ navigation }) => {
 
       <Button
         title="Go to Register"
-        onPress={() => navigation.navigate('Register')}
+        onPress={navigateToRegister}
         color="#1c1c1e" // Adjust the color to match your design
       />
     </View>
