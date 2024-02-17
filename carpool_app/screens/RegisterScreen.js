@@ -8,18 +8,12 @@ const RegisterScreen = ({ navigation }) => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleRegister = () => {
-    // Here you would implement your registration logic,
-    // such as validating the input and sending a request to your backend.
-    // For demonstration, we'll log the details to the console.
     console.log('Registration details', {
       username,
       email,
       password,
       confirmPassword,
     });
-
-    // After registration, you might want to navigate to the login screen or elsewhere
-    // navigation.navigate('Login');
   };
 
   return (

@@ -1,63 +1,87 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-console.log("something loaded")
+import { ActivityIndicator, KeyboardAvoidingView, View, Text, TextInput, TouchableOpacity, Button, StyleSheet, Platform } from 'react-native';
+import MyTouchableComponent from '../components/TestComponent';
+import {FIREBASE_AUTH} from'../components/FirebaseConfig';
+import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
 
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const auth = FIREBASE_AUTH;
 
-  const handleLogin = () => {
-    console.log('Login credentials', { username, password });
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const response = await signInWithEmailAndPassword(auth, username, password);
+      console.log("Login successful:", response);
+      navigateToHome();
+    } catch (error) {
+      if (error.code === "auth/user-not-found") {
+        console.log("User not found");
+      } else if (error.code === "auth/wrong-password") {
+        console.log("Incorrect password");
+      } else {
+        console.log("Other login error:", error.code, error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  const handleSignup = async () => {
+    setLoading(true);
+    try {
+      const response = await createUserWithEmailAndPassword(auth, username, password);
+      console.log("Signup successful:", response);
+      navigateToHome();
+    } catch (error) {
+      console.error("Signup error:", error.code, error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleUsernameChanged = (newUsername) => {
-    setUsername(newUsername);
-  }
-
-  const handlePasswordChanged = (newPassword) => {
-    setPassword(newPassword);
-  }
-  const navigateToRegister = () => {
-    console.log("Button was pressed!");
-    navigation.navigate('Register');
+  const navigateToHome = () => {
+    navigation.navigate('Home');
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
 
-      <TextInput
-        style={styles.input}
-        placeholder="Username"
-        value={username}
-        onChangeText={setUsername}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={username}
+          onChangeText={setUsername}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
+        {loading ? <ActivityIndicator size="large" /> 
+        : <> 
+        <Button title="Login" onPress={handleLogin} />
+        <Button title="Sign Up" onPress={handleSignup} />
+        </> 
+        }
 
-      <Button title="Login" onPress={handleLogin} />
-
-      <Button
-        title="Go to Register"
-        onPress={navigateToRegister}
-        color="#1c1c1e" // Adjust the color to match your design
-      />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20,
+    gap: 5,
   },
   title: {
     fontSize: 24,
