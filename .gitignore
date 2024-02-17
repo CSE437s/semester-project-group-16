@@ -1,5 +1,7 @@
 # Dependencies
-/node_modules/
+node_modules/
+carpool_app/node_modules/
+carpool_backend/node_modules/
 /.pnp
 .pnp.js
 

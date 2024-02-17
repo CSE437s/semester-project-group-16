@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, View, Text, TextInput, TouchableOpacity, Button, StyleSheet, Platform } from 'react-native';
-import MyTouchableComponent from '../components/TestComponent';
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
 import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
 

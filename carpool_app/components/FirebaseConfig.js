@@ -1,13 +1,16 @@
-// Import the functions you need from the SDKs you need
+//
+// This file is how we connect to my Firebase Authentication project.
+
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import dotenv from "dotenv";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-
+dotenv.config();
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyDwrCaep3muj18Xy6GUOFLs49VxNJGvztk",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "ridealong-413818.firebaseapp.com",
   projectId: "ridealong-413818",
   storageBucket: "ridealong-413818.appspot.com",
