@@ -3,6 +3,8 @@ import { ActivityIndicator, KeyboardAvoidingView, View, Text, TextInput, Touchab
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
 import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
 
+//TODO validate user input. 
+
 const LoginScreen = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

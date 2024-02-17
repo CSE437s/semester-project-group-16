@@ -1,12 +1,13 @@
 //
 // This file is how we connect to my Firebase Authentication project.
+// TODO: Note that we need to retrieve apiKey from the backend. We can't store it on the frontend
 
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-dotenv.config();
+// dotenv.config();
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
