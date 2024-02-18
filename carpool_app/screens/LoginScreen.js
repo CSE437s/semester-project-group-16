@@ -5,7 +5,7 @@ import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'fireba
 
 //TODO validate user input. 
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ setIsAuthenticated }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -44,7 +44,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const navigateToHome = () => {
-    navigation.navigate('Home');
+    setIsAuthenticated(true);
   }
 
   return (
@@ -81,6 +81,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
     padding: 20,
     gap: 5,
   },
