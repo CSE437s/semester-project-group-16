@@ -1,5 +1,5 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useContext} from 'react';
 // import { NavigationContainer } from '@react-navigation/native';
 // import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './screens/LoginScreen';
@@ -10,7 +10,7 @@ export default function App() {
 
   return (
     <>
-    {isAuthenticated ? <NavigationBar /> : <LoginScreen setIsAuthenticated={setIsAuthenticated} />}
+    {isAuthenticated ? <NavigationBar setIsAuthenticated={setIsAuthenticated}/> : <LoginScreen setIsAuthenticated={setIsAuthenticated} />}
     </>
   );
 }

@@ -1,10 +1,17 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button } from 'react-native';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ route }) => {
+  const { setIsAuthenticated } = route.params;
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+  }
+
   return (
     <View>
       <Text>This is the profile screen!</Text>
+      <Button title="Log out" onPress={handleLogout} /> 
     </View>
   );
 };

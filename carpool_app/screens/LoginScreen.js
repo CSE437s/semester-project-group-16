@@ -15,8 +15,8 @@ const LoginScreen = ({ setIsAuthenticated }) => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, username, password);
-      console.log("Login successful:", response);
       navigateToHome();
+
     } catch (error) {
       if (error.code === "auth/user-not-found") {
         console.log("User not found");
@@ -28,14 +28,15 @@ const LoginScreen = ({ setIsAuthenticated }) => {
     } finally {
       setLoading(false);
     }
+
   };
   
   const handleSignup = async () => {
     setLoading(true);
     try {
       const response = await createUserWithEmailAndPassword(auth, username, password);
-      console.log("Signup successful:", response);
       navigateToHome();
+      
     } catch (error) {
       console.error("Signup error:", error.code, error.message);
     } finally {
