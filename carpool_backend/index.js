@@ -1,30 +1,44 @@
 const express = require('express');
+//Database connecton
+//db.query('SQL'), db.execute('SQL') for read, insert 
+const db = require('./database');
 
 const app = express();
 
 const PORT = 3000;
 
-// Middleware to parse JSON bodies
+//Midleware
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+//Tests connection to db with query to 'test' table
+//Expected res: [{"name":"Alice"},{"name":"Bob"}]
+app.get('/', async (req, res) => {
+  try {
+    const [rows, fields] = await db.query("SELECT * FROM test");
+    res.send(rows);
+  } catch (error) {
+    console.error(error);
+  }
 });
 
-app.post('/login', (req, res) => {
-  const body = req.body;
-  const username = body.username;
-  const password = body.password;
-  res.json({ receivedMessage: message });
+//Setting up api endpoints
+app.get('/posts/', (req, res) => {
+  res.json({user: "antonryoung02@gmail.com", title:"First Post"});
 });
 
-app.post('/signup', (req, res) => {
-    const body = req.body;
-    const username = body.username;
-    const password = body.password;
-    const email = body.email;
-    res.json({ receivedMessage: message });
-  });
+//Change this to /users/:userId to get info about specific user
+app.get('/users', (req, res) => {
+  //const userId = req.params.userId;
+  res.json({user: "antonryoung02@gmail.com", name:"Anton", year:"Senior"});
+});
+
+//Maybe like a /rides/:userId/:timestamp?
+//Res kind of like this
+app.get('/rides', (req, res) => {
+  //const rideId = req.params.userId;
+  //const timestamp = req.params.timestamp;
+  res.json({origin:{latitude:38.6488, longitude:-90.3108, name:"WashU"}, destination:{latitude:38.6488, longitude:-90.3108, name:"WashU"}, arrival:"3pm"});
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

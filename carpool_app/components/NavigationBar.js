@@ -8,8 +8,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 const Tab = createBottomTabNavigator(); 
 
 function NavigationBar({setIsAuthenticated}) {
-    console.log("navigation bar");
-    console.log(typeof setIsAuthenticated);
+
     return (
         <NavigationContainer>
             <Tab.Navigator>
