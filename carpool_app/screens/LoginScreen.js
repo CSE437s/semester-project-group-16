@@ -1,55 +1,75 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, KeyboardAvoidingView, View, Text, TextInput, TouchableOpacity, Button, StyleSheet, Platform } from 'react-native';
+import { ActivityIndicator, Alert, KeyboardAvoidingView, View, Text, TextInput, TouchableOpacity, Button, StyleSheet, Platform, Image} from 'react-native';
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
 import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
+import CustomAlert from '../components/CustomAlert';
 
-//TODO validate user input. 
-
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
   const auth = FIREBASE_AUTH;
 
-  const handleLogin = async () => {
+  const showAlert = (message) => {
+    console.log("Show alert called!");
+    setAlertMessage(message);
+    setAlertVisible(true);
+  };
+
+  const validateSignupInput = () => {
+    const eduEmailRegex = /^[^@\s]+@[^@\s]+\.(edu)$/i;
+    if (!eduEmailRegex.test(username)) {
+      throw new Error("Username must be a .edu email address.");
+    }
+    if (password.length < 6) {
+      throw new Error("Password must be at least 6 characters.");
+    }
+  };
+
+  const handleLogin = async() => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, username, password);
-      console.log("Login successful:", response);
-      navigateToHome();
     } catch (error) {
-      if (error.code === "auth/user-not-found") {
-        console.log("User not found");
-      } else if (error.code === "auth/wrong-password") {
-        console.log("Incorrect password");
-      } else {
-        console.log("Other login error:", error.code, error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  const handleSignup = async () => {
-    setLoading(true);
-    try {
-      const response = await createUserWithEmailAndPassword(auth, username, password);
-      console.log("Signup successful:", response);
-      navigateToHome();
-    } catch (error) {
-      console.error("Signup error:", error.code, error.message);
+      //console.error("Login error:", error.code, error.message);
+      showAlert(`Login Error: ${error.message}`);
+      console.log("Error should be shown?");
     } finally {
       setLoading(false);
     }
   };
 
-  const navigateToHome = () => {
-    navigation.navigate('Home');
-  }
+  const handleSignup = async() => {
+    setLoading(true);
+    try {
+      validateSignupInput();
+      const response = await createUserWithEmailAndPassword(auth, username, password);
+    } catch (error) {
+      //console.error("Signup error:", error.code, error.message);
+      showAlert(`Signup Error: ${error.message}`);
+      console.log("Error should be shown?");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Login</Text>
+      <Text style={styles.title}>Ride Along</Text>
+      <View>
+        <Image
+          source={require('../assets/RALogo.png')}
+          style={{ width: 200, height: 200 }}
+        />
+      </View>
+      <CustomAlert
+        visible={alertVisible}
+        message={alertMessage}
+        onClose={() => setAlertVisible(false)}
+      />
 
         <TextInput
           style={styles.input}
@@ -67,8 +87,12 @@ const LoginScreen = ({ navigation }) => {
         />
         {loading ? <ActivityIndicator size="large" /> 
         : <> 
-        <Button title="Login" onPress={handleLogin} />
-        <Button title="Sign Up" onPress={handleSignup} />
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </TouchableOpacity>
         </> 
         }
 
@@ -81,18 +105,29 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
     padding: 20,
     gap: 5,
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 40,
+  },
+  button: {
+    padding: 10,
+    backgroundColor: '#022940',
+    borderRadius: 5,
+    width: 100,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
   },
   input: {
-    width: '100%',
+    width: '50%',
     padding: 10,
     marginBottom: 10,
     borderWidth: 1,
+    textAlign: 'center',
     borderColor: '#cccccc',
     borderRadius: 5,
   },

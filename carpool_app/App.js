@@ -1,18 +1,22 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {useState, useEffect, useContext} from 'react';
 import LoginScreen from './screens/LoginScreen';
-import HomeScreen from './screens/HomeScreen';
-
-const Stack = createNativeStackNavigator();
+import NavigationBar from './components/NavigationBar';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function App() {
+  const [user, setUser] = useState(null);
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+    setUser(currentUser); // Sets user to null if not logged in
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <>
+    {user ? <NavigationBar /> : <LoginScreen/>}
+    </>
   );
 }

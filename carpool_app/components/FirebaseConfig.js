@@ -1,17 +1,11 @@
-//
-// This file is how we connect to my Firebase Authentication project.
-// TODO: Note that we need to retrieve apiKey from the backend. We can't store it on the frontend
+// This file is how we connect to my Firebase Authentication project. 
+// I believe `firebaseConfig` is intended to be public.
 
-import { initializeApp } from "firebase/app";
+import firebase, { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-// import dotenv from "dotenv";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-// dotenv.config();
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
 const firebaseConfig = {
-  apiKey: process.env.FIREBASE_API_KEY,
+  apiKey: "AIzaSyD1wkqjWJtmPd46bWwyw28Oc0k-kVpfWcE",
   authDomain: "ridealong-413818.firebaseapp.com",
   projectId: "ridealong-413818",
   storageBucket: "ridealong-413818.appspot.com",
@@ -20,6 +14,7 @@ const firebaseConfig = {
   measurementId: "G-ENDFKDLT1B"
 };
 
-// Initialize Firebase
+
 export const FIREBASE_APP = initializeApp(firebaseConfig);
+
 export const FIREBASE_AUTH = getAuth(FIREBASE_APP);
