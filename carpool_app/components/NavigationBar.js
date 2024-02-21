@@ -7,14 +7,14 @@ import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator(); 
 
-function NavigationBar({setIsAuthenticated}) {
+function NavigationBar() {
 
     return (
         <NavigationContainer>
             <Tab.Navigator>
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Posts" component={PostScreen} />
-                <Tab.Screen name="Profile" component={ProfileScreen} initialParams={{setIsAuthenticated}} />
+                <Tab.Screen name="Profile" component={ProfileScreen} />
             </Tab.Navigator>
         </NavigationContainer>
     )
