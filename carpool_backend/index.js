@@ -37,7 +37,7 @@ app.get('/users', authenticate, (req, res) => {
 });
 
 //Maybe like a /rides/:userId/:timestamp?
-//Res kind of like this
+//Returns ALL user's scheduled rides/drives
 app.get('/rides/:userId', authenticate, (req, res) => {
   //const rideId = req.params.userId;
   //const timestamp = req.params.timestamp;

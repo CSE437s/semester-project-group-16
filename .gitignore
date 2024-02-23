@@ -6,7 +6,7 @@ carpool_backend/node_modules/
 carpool_backend/ridealong-413818-firebase-adminsdk-vkgej-36453ffc1a.json
 /.pnp
 .pnp.js
-
+GoogleService-Info.plist
 # Runtime data
 /pods/
 *.log
