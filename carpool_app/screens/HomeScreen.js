@@ -3,12 +3,19 @@ import {
   View,
   Text,
   StyleSheet,
-  Platform,
-  PermissionsAndroid
+ 
 } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+//import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
+
+// Initialize PermissionsAndroid to null for non-Android platforms
+//let PermissionsAndroid = null;
+
+// Conditionally require PermissionsAndroid only on Android
+//if (Platform.OS === 'android') {
+ //  PermissionsAndroid = require('react-native').PermissionsAndroid;
+// }
 
 // Your original makeProtectedAPICall function
 const makeProtectedAPICall = async () => {
@@ -46,57 +53,63 @@ const HomeScreen = () => {
   const [currentRegion, setCurrentRegion] = useState(null);
 
   useEffect(() => {
-    if (Platform.OS === 'android') {
-      requestLocationPermission().then(() => {
-        getCurrentLocation();
-      });
-    } else {
-      // No need for permissions on iOS
-      getCurrentLocation();
-    }
-
+    // if (Platform.OS === 'android') {
+    //   requestLocationPermission().then(() => {
+    //     getCurrentLocation();
+    //   });
+    // } else {
+    //   // No need for permissions on iOS
+    //   getCurrentLocation();
+    // }
+    getCurrentLocation();
     // Fetch data after getting location to ensure user is logged in
     makeProtectedAPICall();
   }, []);
 
-  async function requestLocationPermission() {
-    try {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Location Permission',
-          message: 'This app needs access to your location.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        }
-      );
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('You can use the location');
-      } else {
-        console.log('Location permission denied');
-      }
-    } catch (err) {
-      console.warn(err);
-    }
-  }
+  // async function requestLocationPermission() {
+  //   try {
+  //     const granted = await PermissionsAndroid.request(
+  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+  //       {
+  //         title: 'Location Permission',
+  //         message: 'This app needs access to your location.',
+  //         buttonNeutral: 'Ask Me Later',
+  //         buttonNegative: 'Cancel',
+  //         buttonPositive: 'OK',
+  //       }
+  //     );
+  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+  //       console.log('You can use the location');
+  //     } else {
+  //       console.log('Location permission denied');
+  //     }
+  //   } catch (err) {
+  //     console.warn(err);
+  //   }
+  // }
 
   const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        setCurrentRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.0922, // Zoom level for latitude
-          longitudeDelta: 0.0421, // Zoom level for longitude
-        });
-      },
-      (error) => {
-        console.log(error.code, error.message);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log(`GOT LAT AND LONG ${latitude} ${longitude}`);
+          setCurrentRegion({
+            latitude,
+            longitude,
+            latitudeDelta: 0.0922, // Zoom level for latitude
+            longitudeDelta: 0.0421, // Zoom level for longitude
+          });
+        },
+        (error) => {
+          console.log(error.code, error.message);
+          
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
   };
 
   return (
