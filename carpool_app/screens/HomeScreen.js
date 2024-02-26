@@ -13,46 +13,6 @@ import 'leaflet/dist/leaflet.css';
 import Geolocation from 'react-native-geolocation-service';
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
 
-
-// Initialize PermissionsAndroid to null for non-Android platforms
-//let PermissionsAndroid = null;
-
-// Conditionally require PermissionsAndroid only on Android
-//if (Platform.OS === 'android') {
- //  PermissionsAndroid = require('react-native').PermissionsAndroid;
-// }
-
-// Your original makeProtectedAPICall function
-const getUserRides = async () => {
-  try {
-    const user = FIREBASE_AUTH.currentUser;
-    if (!user) {
-      console.log('User is not logged in');
-      return;
-    }
-
-    const idToken = await user.getIdToken(true);
-    const apiUrl = `http://localhost:3000/rides/${user.uid}`;
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${idToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch from protected endpoint');
-    }
-    const responseData = await response.json();
-    console.log(`Got response data! ${JSON.stringify(responseData)}`)
-    return responseData;
-
-  } catch (error) {
-    console.error('Error making protected API call:', error);
-  }
-};
-
 const HomeScreen = () => {
   const [currentRegion, setCurrentRegion] = useState(null);
   //PLACEHOLDER POLYLINE!!
@@ -109,22 +69,6 @@ const HomeScreen = () => {
     console.log("Manage carpools is pressed!");
   }
 
-  const timestampToDate = (timestamp) => {
-    if (!timestamp) {
-      return ""
-    }
-    const date = new Date(timestamp * 1000);
-    const formattedDate = date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
-    return formattedDate;
-  }
-
   return (
     <>
       {userRides && userRides.length > 0 ? (
@@ -147,6 +91,53 @@ const HomeScreen = () => {
     </>
   );
 };
+
+// Your original makeProtectedAPICall function
+const getUserRides = async () => {
+  try {
+    const user = FIREBASE_AUTH.currentUser;
+    if (!user) {
+      console.log('User is not logged in');
+      return;
+    }
+
+    const idToken = await user.getIdToken(true);
+    const apiUrl = `http://localhost:3000/rides/${user.uid}`;
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${idToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch from protected endpoint');
+    }
+    const responseData = await response.json();
+    console.log(`Got response data! ${JSON.stringify(responseData)}`)
+    return responseData;
+
+  } catch (error) {
+    console.error('Error making protected API call:', error);
+  }
+};
+
+const timestampToDate = (timestamp) => {
+  if (!timestamp) {
+    return ""
+  }
+  const date = new Date(timestamp * 1000);
+  const formattedDate = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+  return formattedDate;
+}
 
 const styles = StyleSheet.create({
   container: {
