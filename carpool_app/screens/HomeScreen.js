@@ -3,13 +3,16 @@ import {
   View,
   Text,
   StyleSheet,
- 
+  ActivityIndicator,
+  TouchableOpacity,
 } from 'react-native';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
+import MapComponent from '../components/MapComponent';
 import 'leaflet/dist/leaflet.css';
 //import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
+
 
 // Initialize PermissionsAndroid to null for non-Android platforms
 //let PermissionsAndroid = null;
@@ -20,7 +23,7 @@ import { FIREBASE_AUTH } from '../components/FirebaseConfig';
 // }
 
 // Your original makeProtectedAPICall function
-const makeProtectedAPICall = async () => {
+const getUserRides = async () => {
   try {
     const user = FIREBASE_AUTH.currentUser;
     if (!user) {
@@ -30,7 +33,6 @@ const makeProtectedAPICall = async () => {
 
     const idToken = await user.getIdToken(true);
     const apiUrl = `http://localhost:3000/rides/${user.uid}`;
-
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
@@ -42,10 +44,10 @@ const makeProtectedAPICall = async () => {
     if (!response.ok) {
       throw new Error('Failed to fetch from protected endpoint');
     }
-
     const responseData = await response.json();
-    console.log(responseData);
+    console.log(`Got response data! ${JSON.stringify(responseData)}`)
     return responseData;
+
   } catch (error) {
     console.error('Error making protected API call:', error);
   }
@@ -53,43 +55,35 @@ const makeProtectedAPICall = async () => {
 
 const HomeScreen = () => {
   const [currentRegion, setCurrentRegion] = useState(null);
+  //PLACEHOLDER POLYLINE!!
+  const [userRides, setUserRides] = useState([])
+  const [polyline, setPolyline] = useState("el}jFr}hfPg@dKoB|WxD^nPpATLtIt@\\GrJv@nCJpALd@x@FTCzASrEa@lMaAG`AF`@mMTeGPsFd@uJVcH\\aCXcAb@_Af@y@h@u@Rm@HmAdCkj@xAw[T[f@UdH|@v@mQ`@kI_AaASKkDYyAQwAr[g@p@kGq@uPyBuLeA{@Si@OyAQmGi@wBUeCrh@uBGsADyATiInBuAL}AAcFe@q@De@Pi@^c@f@rB{c@eAGw@Bi@JaCjAiAZaABk`@kDg_@}CeDc@_ASyEg@sCWxHr@r@J~@RlEh@db@jDjW|B~KaTLYXs@Ny@Fk@JWPkDVmGCW`@qIp@IHG^FhAJNHzPvAPNxLjAVKdBPfAwTB_A");
+  const [mapLoaded, setMapLoaded] = useState(false);
+
 
   useEffect(() => {
-    console.log("here") 
-    getCurrentLocation();
-    console.log("after currentLocation")
-    // Fetch data after getting location to ensure user is logged in
-    makeProtectedAPICall();
+    const fetchData = async () => {
+      try {
+        getCurrentLocation(); 
+        const rides = await getUserRides();
+        if (rides) {
+          setUserRides(rides);
+          console.log(`getUserRides was successful: ${rides}`); // This will log the actual rides data
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    fetchData();
   }, []);
-
-  // async function requestLocationPermission() {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  //       {
-  //         title: 'Location Permission',
-  //         message: 'This app needs access to your location.',
-  //         buttonNeutral: 'Ask Me Later',
-  //         buttonNegative: 'Cancel',
-  //         buttonPositive: 'OK',
-  //       }
-  //     );
-  //     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-  //       console.log('You can use the location');
-  //     } else {
-  //       console.log('Location permission denied');
-  //     }
-  //   } catch (err) {
-  //     console.warn(err);
-  //   }
-  // }
 
   const getCurrentLocation = () => {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          console.log(`GOT LAT AND LONG ${latitude} ${longitude}`);
+          console.log(`LAT AND LONG ${latitude} ${longitude}`);
           setCurrentRegion({
             latitude,
             longitude,
@@ -109,24 +103,64 @@ const HomeScreen = () => {
     }
   };
 
+  const onDatePress = () => {
+    console.log("Date is pressed!");
+  }
+  const onManageCarpoolsPress = () => {
+    console.log("Manage carpools is pressed!");
+  }
+
+  const timestampToDate = (timestamp) => {
+    if (!timestamp) {
+      return ""
+    }
+    const date = new Date(timestamp * 1000);
+    const formattedDate = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
+    return formattedDate;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>This is the logged in screen!</Text>
-      {currentRegion && <MapContainer center={[currentRegion.latitude, currentRegion.longitude]} zoom={13} style={{ height: '100vh', width: '100wh' }}>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={[currentRegion.latitude, currentRegion.longitude]} />
-      </MapContainer>}
-    </View>
+    <>
+      {userRides && userRides.length > 0 ? (
+        <View style={styles.container}>
+          <View style={styles.tripInfo}>
+            <Text>Upcoming Trip</Text>
+            <TouchableOpacity onPress={onDatePress}>
+              <Text>{timestampToDate(userRides[0].timestamp)}</Text>
+            </TouchableOpacity>
+          </View>
+          <MapComponent currentRegion={currentRegion} ride={userRides[0]} />
+          
+          <TouchableOpacity onPress={onManageCarpoolsPress}>
+            <Text>Manage Carpools</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <ActivityIndicator />
+      )}
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems:'center',
+    padding: 10,
+
   },
-  map: {
-    flex: 1,
-  },
+  tripInfo: {
+   flexDirection: 'row', 
+   justifyContent: 'space-around',
+   width: '60%'
+  }
 });
 
 export default HomeScreen;
