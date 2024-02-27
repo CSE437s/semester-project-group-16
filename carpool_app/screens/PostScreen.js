@@ -1,33 +1,67 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, Modal } from 'react-native';
 import Post from '../components/Post';
+import PostCreation from '../components/PostCreation';
 import {useState, useEffect} from 'react';
 import { StyleSheet} from 'react-native';
 import axios from 'axios';
+import { BASE_URL} from '@env';
 
-const BASE_LOCAL_URL = 'http://localhost:3000'; // Adjust with actual URL on live
-const BASE_LIVE_URL = 'http://ec2-54-204-161-173.compute-1.amazonaws.com:3000/';
 
 const PostScreen = () => {
 
+  const [showPostCreation, setShowPostCreation] = useState(false);
+
   const fetchData = async () => {
     try {
-        const response = await axios.get(`${BASE_LOCAL_URL}/postsTest`); // adjust with actual url on live
-        console.log(response.data); // Log the data received from the backend
+        const response = await axios.get(`${BASE_URL}/postsTest`); // adjust with actual url on live
+        console.log(response.data); 
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 };
 
-return (
-    <View>
-        <Button title="Fetch Data" onPress={fetchData} />
+  const openPostCreation = () => {
+    setShowPostCreation(true);
+  };
+
+  const closePostCreation = () => {
+    setShowPostCreation(false);
+  };
+
+  return (
+    <View style={styles.container}>
+
+      <Button title="Fetch Data" onPress={fetchData} />
+
+      <View>
+        <Button title="Create Post" onPress={openPostCreation} />
+        <Modal visible={showPostCreation} animationType="slide">
+          <PostCreation onClose={closePostCreation} />
+        </Modal>
+
+      </View>
+
     </View>
-);
+  );
+  
 }
 
 
-//   const [posts, setPosts] = useState([])
+const styles = StyleSheet.create({
+  container: {
+    display:'flex',
+    justifyContent: 'center',
+  },
+  postContainer: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center', 
+      justifyContent: 'center',
+  }
+});
+
+export default PostScreen;
 
 //   useEffect(() => {
 //     setPosts(Array.from({length:15 })); //Todo fetch from db instead!
@@ -44,18 +78,3 @@ return (
 //     </View>
 //   );
 // };
-
-const styles = StyleSheet.create({
-  container: {
-    display:'flex',
-    justifyContent: 'center',
-  },
-  postContainer: {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center', 
-      justifyContent: 'center',
-  }
-});
-
-export default PostScreen;

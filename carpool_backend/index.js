@@ -50,6 +50,12 @@ app.get('/postsTest', async (req, res) => {
   }
 });
 
+// test end point for submitting post. 
+app.post('/submitPost', (req, res) => {
+  const postData = req.body;
+  console.log('Received data:', postData);
+  res.json({ message: 'Data received successfully' });
+});
 
 
 //Change this to /users/:userId to get info about specific user
