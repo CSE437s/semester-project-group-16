@@ -62,7 +62,7 @@ const PostCreation = ({ onClose }) => {
       <View style={styles.topContainer}>
         <Button title="Exit" onPress={onClose} />
       </View>
-      <Text>Starting Destination:</Text>
+      <Text style={styles.headerText}>Starting Destination:</Text>
       <TextInput
         style={styles.input}
         value={startStreetAddress}
@@ -87,7 +87,7 @@ const PostCreation = ({ onClose }) => {
         onChangeText={text => setStartZipCode(text)}
         placeholder="Zip Code"
       />
-      <Text>Target Destination:</Text>
+      <Text style={styles.headerText}>Target Destination:</Text>
       <TextInput
         style={styles.input}
         value={targetStreetAddress}
@@ -112,24 +112,25 @@ const PostCreation = ({ onClose }) => {
         onChangeText={text => setTargetZipCode(text)}
         placeholder="Zip Code"
       />
-      <Text>Date:</Text>
+      <Text style={styles.headerText}>Date:</Text>
       <TextInput
         style={styles.input}
         placeholder="YYYY-MM-DD"
         value={date}
         onChangeText={text => setDate(text)}
       />
-      <Text>Hour:</Text>
+      <Text style={styles.headerText}>Hour:</Text>
       <TextInput
         style={styles.input}
         placeholder="HH:MM:SS"
         value={hour}
         onChangeText={text => setHour(text)}
       />
-      <Text>Category:</Text>
+      <Text style={styles.headerText}>Category:</Text>
       <Picker
         selectedValue={category}
         onValueChange={(itemValue) => setCategory(itemValue)}
+        style={styles.pickerStyle}
       >
         <Picker.Item label="Campus" value="Campus" />
         <Picker.Item label="Groceries" value="Groceries" />
@@ -141,6 +142,9 @@ const PostCreation = ({ onClose }) => {
 };
 
 const styles = StyleSheet.create({
+  body: {
+    font: '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -160,6 +164,15 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     width: '100%',
   },
+  headerText: {
+    fontWeight: 'bold',
+    fontSize: 20, 
+    color: '#333', 
+    marginBottom: 5
+  },
+  pickerStyle: {
+  marginBottom: 10
+  }
 });
 
 export default PostCreation;
