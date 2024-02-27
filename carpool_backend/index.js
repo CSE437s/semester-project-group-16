@@ -155,8 +155,21 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
       console.log(trip.route_id);
       let trip_route = await getRoutesWithRouteId(trip.route_id); // Assuming getTripsWithUserId includes route details
 
-      const origin = {latitude: trip_route[0].origin_latitude, longitude: trip_route[0].origin_longitude};
-      const destination = {latitude: trip_route[0].destination_latitude, longitude: trip_route[0].destination_longitude};
+      const origin = {
+        latitude: trip_route[0].origin_latitude,
+        longitude: trip_route[0].origin_longitude,
+    };
+    const destination = {
+        latitude: trip_route[0].destination_latitude,
+        longitude: trip_route[0].destination_longitude,
+    };
+
+    const addresses = {
+        origin_address: trip_route[0].origin_address,
+        destination_address: trip_route[0].destination_address
+    }
+
+
       const timestamp = trip.timestamp;
       
       let trip_stops = await getStopsWithRouteId(trip.route_id);
@@ -164,7 +177,7 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
       
       const stops = trip_stops;
       
-      allUserTrips.push({route: route, stops: stops, timestamp: timestamp});
+      allUserTrips.push({route: route, stops: stops, timestamp: timestamp, addresses: addresses});
     };
     console.log(`Number of trips returned: ${allUserTrips.length}`);
     res.status(200).json(allUserTrips);

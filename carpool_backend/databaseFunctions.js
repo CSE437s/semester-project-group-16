@@ -1,18 +1,19 @@
 const {getCoordinatesOfAddress} = require("./utils");
 const pool = require('./database');
 
-async function createRoute(originAddress, destinationAddress, userId){
+async function createRoute(originAddress, destinationAddress, userId) {
     try {
-        const origin_coordinates = await getCoordinatesOfAddress(originAddress);
-        const destination_coordinates = await getCoordinatesOfAddress(destinationAddress);
-        const query = "INSERT INTO ROUTE (origin_latitude, origin_longitude, destination_latitude, destination_longitude) VALUES (?,?,?,?)"
-        const [result] = await pool.execute(query, [origin_coordinates.latitude, origin_coordinates.longitude, destination_coordinates.latitude, destination_coordinates.longitude]);
-        return result; //Access route_id with result.insertId
-    } catch(error) {
+        const originCoordinates = await getCoordinatesOfAddress(originAddress);
+        const destinationCoordinates = await getCoordinatesOfAddress(destinationAddress);
+        const query = "INSERT INTO ROUTE (origin_latitude, origin_longitude, destination_latitude, destination_longitude, origin_address, destination_address) VALUES (?,?,?,?,?,?)";
+        const [result] = await pool.execute(query, [originCoordinates.latitude, originCoordinates.longitude, destinationCoordinates.latitude, destinationCoordinates.longitude, originAddress, destinationAddress]);
+        return result; // Access route_id with result.insertId
+    } catch (error) {
         console.error(error);
         throw error;
     }
 }
+
 
 async function createStop(stopAddress, userId, routeId=null) {
     try {
@@ -72,6 +73,7 @@ async function getRoutesWithRouteId(routeId) {
         throw error;
     }
 }
+
 async function getStopsWithUserId(userId, findAll) {
     try {
         let query = "";
