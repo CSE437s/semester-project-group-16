@@ -79,9 +79,9 @@ async function getStopsWithUserId(userId, findAll) {
         let query = "";
         let params = [userId];
         if (findAll == "true") {
-            query = `SELECT * FROM TRIP WHERE user_id != ?`;
+            query = `SELECT * FROM STOP WHERE user_id != ?`;
         } else {
-            query = `SELECT * FROM TRIP WHERE user_id = ?`;
+            query = `SELECT * FROM STOP WHERE user_id = ?`;
         }
         const [stops] = await pool.execute(query, params);
         console.log('Stops:', stops);

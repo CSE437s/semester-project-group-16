@@ -88,9 +88,9 @@ const HomeScreen = () => {
       {userRides && userRides.length > 0 ? (
         <View style={styles.container}>
           <View style={styles.tripInfo}>
-            <Text>Upcoming Trip</Text>
+            <Text style={styles.tripInfoText}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
-              <Text>{timestampToDate(userRides[0].timestamp)}</Text>
+              <Text style={styles.tripInfoText}>{timestampToDate(userRides[0].timestamp)}</Text>
             </TouchableOpacity>
           </View>
           <MapComponent currentRegion={currentRegion} ride={userRides[0]} />
@@ -113,16 +113,15 @@ const HomeScreen = () => {
               <View style={styles.modalView}>
                 <Text style={styles.modalText}>Manage Carpools</Text>
                 <Calendar
-                  // ... add your other calendar properties
                   markedDates={markedDates}
                 />
                 <TouchableOpacity
-                  style={{ ...styles.openButton, backgroundColor: '#2196F3' }}
+                  style={styles.buttonStyle}
                   onPress={() => {
                     setModalVisible(!modalVisible);
                   }}
                 >
-                  <Text style={styles.textStyle}>Hide Calendar</Text>
+                  <Text style={styles.buttonTextStyle}>Hide Calendar</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -147,14 +146,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between', // Distribute space evenly
+    justifyContent: 'space-around', // Distribute space evenly
     padding: 20,
     backgroundColor: '#F5F5F5', // Soft background color
   },
   tripInfo: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '80%', // Increase width for better spacing
+    width: '70%', // Increase width for better spacing
     padding: 10,
     backgroundColor: '#FFFFFF', // Light background to highlight this section
     borderRadius: 10, // Rounded corners
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   openButton: {
-    backgroundColor: '#007BFF', // More appealing button color
+    backgroundColor: '#022940', // More appealing button color
     borderRadius: 20,
     padding: 10,
     elevation: 2,
@@ -206,7 +205,7 @@ const styles = StyleSheet.create({
     fontSize: 18, // Increase font size for readability
   },
   buttonStyle: {
-    backgroundColor: '#2196F3', // Primary button color
+    backgroundColor: '#022940', // Primary button color
     padding: 10,
     borderRadius: 20,
     shadowColor: '#000',
@@ -224,6 +223,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  tripInfoText: {
+    fontSize: 40,
+  }
 });
 
 export default HomeScreen;
