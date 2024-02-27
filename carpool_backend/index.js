@@ -139,14 +139,12 @@ app.post('/trips', authenticate, async(req, res) => {
 
 //SHOULD BE trips/:userId
 //Gets all trips of userId (driving AND riding) and returns them
-app.get('/rides/:userId', authenticate, async(req, res) => {
+app.get('/rides/:userId?', authenticate, async(req, res) => {
   try {
     const userId = req.params.userId;
     let driving_trips = await getDrivingTripsWithUserId(userId);
     let riding_trips = await getRidingTripsWithUserId(userId);
     let trips = [...driving_trips, ...riding_trips];
-
-    console.log(`CUMULATIVE TRIPS: ${trips}`)
 
     trips.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     let allUserTrips = [];
@@ -155,7 +153,6 @@ app.get('/rides/:userId', authenticate, async(req, res) => {
       console.log(trip.route_id);
       let trip_route = await getRoutesWithRouteId(trip.route_id); // Assuming getTripsWithUserId includes route details
 
-      console.log(`In index, trip_route is ${JSON.stringify(trip_route)}`)
       const origin = {latitude: trip_route[0].origin_latitude, longitude: trip_route[0].origin_longitude};
       const destination = {latitude: trip_route[0].destination_latitude, longitude: trip_route[0].destination_longitude};
       const timestamp = trip.timestamp;
@@ -166,10 +163,8 @@ app.get('/rides/:userId', authenticate, async(req, res) => {
       const stops = trip_stops;
       
       allUserTrips.push({route: route, stops: stops, timestamp: timestamp});
-      console.log("ALLUSERTRIPS PUSHED!")
     };
-    console.log(`AllUserTrips length: ${allUserTrips.length}`)
-    console.log(allUserTrips);
+    console.log(`Number of trips returned: ${allUserTrips.length}`);
     res.status(200).json(allUserTrips);
   } catch (error) {
     console.error('Error fetching user rides:', error);

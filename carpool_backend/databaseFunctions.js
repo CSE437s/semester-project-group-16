@@ -74,10 +74,12 @@ async function getRoutesWithRouteId(routeId) {
 }
 async function getStopsWithUserId(userId) {
     try {
-        const query = `
-            SELECT * FROM STOP
-            WHERE user_id = ?
-        `;
+        let query = "";
+        if (!userId) {
+            query = `SELECT * FROM STOP` 
+        } else {
+            query = `SELECT * FROM STOP WHERE user_id = ?` 
+        }
         const [stops] = await pool.execute(query, [userId]);
         console.log('Stops:', stops);
         return stops;
@@ -99,10 +101,13 @@ async function getTripsWithRouteId(routeId) {
 
 async function getDrivingTripsWithUserId(userId) {
     try {
-        const [trips] = await pool.execute(`
-            SELECT * FROM TRIP
-            WHERE user_id = ?
-        `, [userId]);
+        let query = "";
+        if (!userId) {
+            query = `SELECT * FROM TRIP` 
+        } else {
+            query = `SELECT * FROM TRIP WHERE user_id = ?` 
+        }
+        const [trips] = await pool.execute(query, [userId]);
         console.log('Trips with User ID:', trips);
         return trips;
     } catch (error) {
