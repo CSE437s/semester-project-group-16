@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Modal, Picker, TouchableOpacity } from 'react-native';
 import { BASE_URL } from '@env';
 import axios from 'axios'; 
+import { checkUserExists } from '../Utils';
 
 const PostCreation = ({ onClose }) => {
   const [startStreetAddress, setStartStreetAddress] = useState('');
@@ -18,6 +19,9 @@ const PostCreation = ({ onClose }) => {
 
   const handleSubmit = async () => {
     try {
+      const user = checkUserExists();
+      const userId = await user.getIdToken(true);
+      
       const startAddress = `${startStreetAddress}, ${startCity}, ${startState} ${startZipCode}`;
       const targetAddress = `${targetStreetAddress}, ${targetCity}, ${targetState} ${targetZipCode}`;
       const dateTime = `${date} ${hour}`;
@@ -27,6 +31,7 @@ const PostCreation = ({ onClose }) => {
         targetAddress,
         dateTime,
         category,
+        userId
       };
   
       console.log('Post Data:', postData);
