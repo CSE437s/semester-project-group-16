@@ -1,5 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
+import {checkUserExists} from '../Utils';
+import StopCreation from './StopCreation';
+import { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Modal, Picker, TouchableOpacity } from 'react-native';
+
 
 const StyledPost = styled.div`
   display: flex;
@@ -69,9 +74,15 @@ const Post = ({ trip }) => {
     const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     return `${dateString} : ${timeString}`;
   };
-  
-  const handleApplyStop = () => {
-    console.log('applying');
+
+  const [showStopCreation, setShowStopCreation] = useState(false);
+
+  const handleApply = () => {
+    setShowStopCreation(true); // Show the form when Apply button is pressed
+  };
+
+  const handleClose = () => {
+    setShowStopCreation(false); // Close the form
   };
 
   return (
@@ -98,10 +109,29 @@ const Post = ({ trip }) => {
           {trip.completed ? 'Completed' : 'Active'}
         </div>
       </RouteInfo>
-      <ApplyButton onClick={handleApplyStop}>Join</ApplyButton>
+      <View>
+        <Button/>
+        <Modal visible={showStopCreation} animationType="slide">
+          <StopCreation onClose={handleClose} />
+        </Modal>
+      </View>
     </StyledPost>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    fontSize: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#007bff',
+    color: '#ffffff',
+    borderRadius: 5,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+  },
+});
+
 
 export default Post;
 

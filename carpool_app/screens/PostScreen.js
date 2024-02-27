@@ -19,17 +19,17 @@ const PostScreen = () => {
   const fetchTrips = async () => {
     try {
       const userTrips = await getUserRides('true'); 
-      //console.log('User Trips:', userTrips); 
+      console.log('User Trips:', userTrips); 
       setTrips(userTrips);
   
-      userTrips.forEach(trip => {
-        console.log('Origin Address:', trip.addresses.origin_address);
-        console.log('Destination Address:', trip.addresses.destination_address);
-        console.log('Email:', trip.email.email);
-        console.log('Date:', trip.timestamp);
-        console.log('Category:', trip.category)
-
-      });
+      // userTrips.forEach(trip => {
+      //   console.log('Origin Address:', trip.addresses.origin_address);
+      //   console.log('Destination Address:', trip.addresses.destination_address);
+      //   console.log('Email:', trip.email.email);
+      //   console.log('Date:', trip.timestamp);
+      //   console.log('Category:', trip.category);
+      //   console.log('routeID', trip.route_id);
+      // });
     } catch (error) {
       console.error('Error fetching user rides:', error);
     }

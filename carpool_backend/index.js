@@ -149,10 +149,14 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
     let riding_trips = await getRidingTripsWithUserId(userId, findAll);
     let trips = [...driving_trips, ...riding_trips];
 
+    console.log('driving trips:' + driving_trips.length);
+    console.log('riding trips:' + riding_trips.length);
+
     trips.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     let allUserTrips = [];
 
     for (let trip of trips) {
+      console.log(trips.length);
       console.log(trip.route_id);
       let trip_route = await getRoutesWithRouteId(trip.route_id); // Assuming getTripsWithUserId includes route details
 
@@ -182,7 +186,7 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
       
       const stops = trip_stops;
 
-      allUserTrips.push({route: route, stops: stops, timestamp: timestamp, email: created_user_email[0], category:category, addresses: addresses});
+      allUserTrips.push({route: route, stops: stops, timestamp: timestamp, email: created_user_email[0], category:category, addresses: addresses, route_id: trip.route_id});
     };
     console.log(`Number of trips returned: ${allUserTrips.length}`);
     res.status(200).json(allUserTrips);
