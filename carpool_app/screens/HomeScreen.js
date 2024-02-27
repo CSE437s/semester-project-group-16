@@ -50,8 +50,8 @@ const HomeScreen = () => {
           setCurrentRegion({
             latitude,
             longitude,
-            latitudeDelta: 0.0922, // Zoom level for latitude
-            longitudeDelta: 0.0421, // Zoom level for longitude
+            latitudeDelta: 1, // Zoom level for latitude
+            longitudeDelta: 1, // Zoom level for longitude
           });
         },
         (error) => {
@@ -95,8 +95,11 @@ const HomeScreen = () => {
           </View>
           <MapComponent currentRegion={currentRegion} ride={userRides[0]} />
 
-          <TouchableOpacity onPress={onManageCarpoolsPress}>
-            <Text>Manage Carpools</Text>
+          <TouchableOpacity
+            onPress={onManageCarpoolsPress}
+            style={styles.buttonStyle}
+          >
+            <Text style={styles.buttonTextStyle}>Manage Carpools</Text>
           </TouchableOpacity>
           <Modal
             animationType="slide"
@@ -144,12 +147,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    padding: 10,
+    justifyContent: 'space-between', // Distribute space evenly
+    padding: 20,
+    backgroundColor: '#F5F5F5', // Soft background color
   },
   tripInfo: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    width: '60%',
+    width: '80%', // Increase width for better spacing
+    padding: 10,
+    backgroundColor: '#FFFFFF', // Light background to highlight this section
+    borderRadius: 10, // Rounded corners
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   centeredView: {
     flex: 1,
@@ -173,7 +189,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   openButton: {
-    backgroundColor: '#F194FF',
+    backgroundColor: '#007BFF', // More appealing button color
     borderRadius: 20,
     padding: 10,
     elevation: 2,
@@ -185,6 +201,27 @@ const styles = StyleSheet.create({
   },
   modalText: {
     marginBottom: 15,
+    textAlign: 'center',
+    fontWeight: 'bold', // Make modal text bold
+    fontSize: 18, // Increase font size for readability
+  },
+  buttonStyle: {
+    backgroundColor: '#2196F3', // Primary button color
+    padding: 10,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    marginTop: 20, // Add some margin at the top
+  },
+  buttonTextStyle: {
+    color: 'white',
+    fontWeight: 'bold',
     textAlign: 'center',
   },
 });
