@@ -75,7 +75,7 @@ async function getRoutesWithRouteId(routeId) {
 async function getStopsWithUserId(userId) {
     try {
         let query = "";
-        if (!userId) {
+        if (userId == null) {
             query = `SELECT * FROM STOP` 
         } else {
             query = `SELECT * FROM STOP WHERE user_id = ?` 
@@ -90,6 +90,7 @@ async function getStopsWithUserId(userId) {
 }
 
 async function getTripsWithRouteId(routeId) {
+    
     const query = `
         SELECT * FROM TRIP
         WHERE route_id = ?
@@ -102,7 +103,7 @@ async function getTripsWithRouteId(routeId) {
 async function getDrivingTripsWithUserId(userId) {
     try {
         let query = "";
-        if (!userId) {
+        if (userId == null) {
             query = `SELECT * FROM TRIP` 
         } else {
             query = `SELECT * FROM TRIP WHERE user_id = ?` 

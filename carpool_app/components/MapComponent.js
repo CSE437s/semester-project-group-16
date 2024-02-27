@@ -62,7 +62,7 @@ const MapComponent = ({ currentRegion, ride }) => {
 const styles = StyleSheet.create({
   map: {
     width: '90%',
-    height: 800,
+    height: 460,
     borderColor: 'black',
     borderRadius: 5,
     borderWidth: 5,

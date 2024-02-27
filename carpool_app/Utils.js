@@ -7,13 +7,17 @@ export const getUserRides = async () => {
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}`;
+    //const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/`;
+    //console.log(`USER ID IN GET USER RIDES: ${user.uid}`);
+    const userId = user.uid;
 
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         Authorization: `${idToken}`,
-      },
+        userid: userId,
+      }
     });
 
     if (!response.ok) {
@@ -43,6 +47,7 @@ export const createNewUser = async () => {
       headers: {
         'Content-Type': 'application/json',
         Authorization: `${idToken}`,
+        userid: userId,
       },
       body: JSON.stringify(data),
     });
@@ -83,7 +88,8 @@ const createNewTrip = async (
       headers: {
         'Content-Type': 'application/json',
         Authorization: `${idToken}`,
-        // Include any authentication headers if necessary
+        userId: user.uid, 
+
       },
       body: JSON.stringify({
         userId: userId,
@@ -110,32 +116,3 @@ const createNewTrip = async (
   }
 };
 
-const createNewStop = async (stopAddress, userId, routeId) => {
-  try {
-    const response = await fetch('http://<your-server-ip>:<port>/stops', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Include any authentication headers if necessary
-      },
-      body: JSON.stringify({
-        stopAddress: stopAddress,
-        userId: userId,
-        routeId: routeId, // Note: This can be null/undefined and should be handled by your backend accordingly
-      }),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      console.log('Stop created successfully:', result);
-      return result;
-    } else {
-      console.error('Failed to create stop:', result.error);
-      throw new Error(result.error);
-    }
-  } catch (error) {
-    console.error('Error creating new stop:', error);
-    throw error;
-  }
-};

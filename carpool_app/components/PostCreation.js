@@ -42,6 +42,7 @@ const PostCreation = ({ onClose }) => {
         headers: {
           'Content-Type': 'application/json',
           Authorization: idToken, // Assuming idToken is a variable holding your token
+          userid:user.uid,
         },
       });
   

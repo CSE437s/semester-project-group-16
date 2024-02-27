@@ -142,6 +142,9 @@ app.post('/trips', authenticate, async(req, res) => {
 app.get('/rides/:userId?', authenticate, async(req, res) => {
   try {
     const userId = req.params.userId;
+    if (!userId) {
+      userId = null;
+    }
     let driving_trips = await getDrivingTripsWithUserId(userId);
     let riding_trips = await getRidingTripsWithUserId(userId);
     let trips = [...driving_trips, ...riding_trips];
