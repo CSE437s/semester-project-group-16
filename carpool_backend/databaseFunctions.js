@@ -1,12 +1,12 @@
 const {getCoordinatesOfAddress} = require("./utils");
 const pool = require('./database');
 
-export async function createRoute(originAddress, destinationAddress){
+async function createRoute(originAddress, destinationAddress, userId){
     try {
         const origin_coordinates = await getCoordinatesOfAddress(originAddress);
         const destination_coordinates = await getCoordinatesOfAddress(destinationAddress);
         const query = "INSERT INTO ROUTE (origin_latitude, origin_longitude, destination_latitude, destination_longitude) VALUES (?,?,?,?)"
-        const [result] = await pool.execute(sql, [origin_coordinates.latitude, origin_coordinates.longitude, destination_coordinates.latitude, destination_coordinates.longitude, userId]);
+        const [result] = await pool.execute(query, [origin_coordinates.latitude, origin_coordinates.longitude, destination_coordinates.latitude, destination_coordinates.longitude]);
         return result; //Access route_id with result.insertId
     } catch(error) {
         console.error(error);
@@ -14,7 +14,7 @@ export async function createRoute(originAddress, destinationAddress){
     }
 }
 
-export async function createStop(stopAddress, userId, routeId=null) {
+async function createStop(stopAddress, userId, routeId=null) {
     try {
         const stop_coordinates = await getCoordinatesOfAddress(stopAddress);
         const query = `
@@ -30,7 +30,7 @@ export async function createStop(stopAddress, userId, routeId=null) {
     }
 }
 
-export async function createTrip(routeId, userId, category, completed, timestamp) {
+async function createTrip(routeId, userId, category, completed, timestamp) {
     try {
         const query = `INSERT INTO TRIP (route_id, user_id, category, completed, timestamp) VALUES (?, ?, ?, ?, ?)`;
         const [result] = await pool.execute(query, [routeId, userId, category, completed, timestamp]);
@@ -43,7 +43,7 @@ export async function createTrip(routeId, userId, category, completed, timestamp
     }
 }
 
-export async function getStopsWithRouteId(routeId) {
+async function getStopsWithRouteId(routeId) {
     try {
         const query = `
             SELECT * FROM STOP
@@ -57,8 +57,22 @@ export async function getStopsWithRouteId(routeId) {
         throw error;
     }
 }
-
-export async function getStopsWithUserId(userId) {
+async function getRoutesWithRouteId(routeId) {
+    try {
+        const query = `
+            SELECT * FROM ROUTE
+            WHERE route_id = ?
+        `;
+        // Destructuring to get the first element (rows) from the result.
+        const [routes] = await pool.execute(query, [routeId]);
+        console.log(`routes: ${JSON.stringify(routes)}`);
+        return routes;
+    } catch (error) {
+        console.error('Error fetching Routes with routeId:', error);
+        throw error;
+    }
+}
+async function getStopsWithUserId(userId) {
     try {
         const query = `
             SELECT * FROM STOP
@@ -83,13 +97,12 @@ async function getTripsWithRouteId(routeId) {
 }
 
 
-export async function getDrivingTripsWithUserId(userId) {
+async function getDrivingTripsWithUserId(userId) {
     try {
-        const query = `
+        const [trips] = await pool.execute(`
             SELECT * FROM TRIP
             WHERE user_id = ?
-        `;
-        const [trips] = await pool.execute(query, [userId]);
+        `, [userId]);
         console.log('Trips with User ID:', trips);
         return trips;
     } catch (error) {
@@ -98,7 +111,7 @@ export async function getDrivingTripsWithUserId(userId) {
     }
 }
 
-export async function getRidingTripsWithUserId(userId) {
+async function getRidingTripsWithUserId(userId) {
     try {
         const stops = await getStopsWithUserId(userId);
         let trips = [];
@@ -117,3 +130,15 @@ export async function getRidingTripsWithUserId(userId) {
         throw error;
     }
 }
+
+module.exports = {
+    createRoute,
+    createStop,
+    createTrip,
+    getStopsWithRouteId,
+    getStopsWithUserId,
+    getTripsWithRouteId,
+    getDrivingTripsWithUserId,
+    getRidingTripsWithUserId,
+    getRoutesWithRouteId,
+  };

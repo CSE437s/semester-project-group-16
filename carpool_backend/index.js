@@ -5,7 +5,18 @@ const pool = require('./database');
 const cors = require('cors');
 const {authenticate} = require("./middleware");
 const { FIREBASE_ADMIN } = require("./firebase");
-const { createRoute, createStop, createTrip, getDrivingTripsWithRouteId, getRidingTripsWithUserId, getStopsWithRouteId, getStopsWithUserId, getTripsWithUserId, getTripsWithRouteId } = require("./databaseFunctions");
+const {
+  createRoute,
+  createStop,
+  createTrip,
+  getStopsWithRouteId,
+  getStopsWithUserId,
+  getTripsWithRouteId,
+  getDrivingTripsWithUserId,
+  getRidingTripsWithUserId,
+  getRoutesWithRouteId
+} = require("./databaseFunctions");
+const {getRoutes, getCoordinatesOfAddress} = require('./utils');
 const app = express();
 
 const PORT = 3000;
@@ -107,10 +118,17 @@ app.post('/trips', authenticate, async(req, res) => {
   const category = req.body.category;
   const completed = req.body.completed;
   const timestamp = req.body.timestamp;
+  console.log("Initialized params");
 
   try {
     const route = await createRoute(originAddress, destinationAddress, user_id);
     const route_id = route.insertId;
+    console.log(route_id);
+    console.log('route_id:', route_id);
+    console.log('user_id:', user_id);
+    console.log('category:', category);
+    console.log('completed:', completed);
+    console.log('timestamp:', timestamp);
     const result = await createTrip(route_id, user_id, category, completed, timestamp);
     return res.status(200).json({message: "New Trip successfully inserted"}); 
   } catch (error) {
@@ -121,20 +139,25 @@ app.post('/trips', authenticate, async(req, res) => {
 
 //SHOULD BE trips/:userId
 //Gets all trips of userId (driving AND riding) and returns them
-app.get('/rides/:userId', authenticate, async (req, res) => {
+app.get('/rides/:userId', authenticate, async(req, res) => {
   try {
     const userId = req.params.userId;
     let driving_trips = await getDrivingTripsWithUserId(userId);
     let riding_trips = await getRidingTripsWithUserId(userId);
     let trips = [...driving_trips, ...riding_trips];
 
+    console.log(`CUMULATIVE TRIPS: ${trips}`)
+
     trips.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     let allUserTrips = [];
 
-    trips.forEach(trip => {
-      let trip_route = trip.route_id; // Assuming getTripsWithUserId includes route details
-      const origin = {latitude: trip_route.origin_latitude, longitude: trip_route.origin_longitude};
-      const destination = {latitude: trip_route.destination_latitude, longitude: trip_route.destination_longitude};
+    for (let trip of trips) {
+      console.log(trip.route_id);
+      let trip_route = await getRoutesWithRouteId(trip.route_id); // Assuming getTripsWithUserId includes route details
+
+      console.log(`In index, trip_route is ${JSON.stringify(trip_route)}`)
+      const origin = {latitude: trip_route[0].origin_latitude, longitude: trip_route[0].origin_longitude};
+      const destination = {latitude: trip_route[0].destination_latitude, longitude: trip_route[0].destination_longitude};
       const timestamp = trip.timestamp;
       
       let trip_stops = await getStopsWithRouteId(trip.route_id);
@@ -143,7 +166,10 @@ app.get('/rides/:userId', authenticate, async (req, res) => {
       const stops = trip_stops;
       
       allUserTrips.push({route: route, stops: stops, timestamp: timestamp});
-    });
+      console.log("ALLUSERTRIPS PUSHED!")
+    };
+    console.log(`AllUserTrips length: ${allUserTrips.length}`)
+    console.log(allUserTrips);
     res.status(200).json(allUserTrips);
   } catch (error) {
     console.error('Error fetching user rides:', error);

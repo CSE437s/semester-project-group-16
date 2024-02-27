@@ -1,7 +1,9 @@
 const dotenv = require('dotenv');
 dotenv.config();
+const fetch = require('node-fetch');
 
-export async function getCoordinatesOfAddress(address) {
+
+async function getCoordinatesOfAddress(address) {
     const key = process.env.GEOCODING_API_KEY;
     const queryString = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${key}`;
     try {
@@ -19,8 +21,10 @@ export async function getCoordinatesOfAddress(address) {
 
 //Expecting origin.latitude, origin.longitude, ... stops.latitude, stops.longitude
 async function getRoutes(origin, destination, stops) {
+    console.log(`origin: ${JSON.stringify(origin)}`);
     const url = 'https://routes.googleapis.com/directions/v2:computeRoutes';
     const body = generateRouteWaypoints(origin, destination, stops);
+    console.log(`getRoutes body: ${JSON.stringify(body)}`);
     //const body = generateRouteWaypoints(origin, destination, stops);
     const key = process.env.ROUTES_API_KEY;
     try {
@@ -35,6 +39,7 @@ async function getRoutes(origin, destination, stops) {
         body: JSON.stringify(body)
       });
       const data = await response.json();
+      console.log(`GETROUTES returns: ${JSON.stringify(data)}`);
       return data;
     } catch (error) {
       console.error('getRoutes call failed: ', error);
@@ -85,4 +90,4 @@ async function getRoutes(origin, destination, stops) {
       return routeWaypoints;
     }
   
-  module.exports = {getRoutes}
+  module.exports = {getRoutes, getCoordinatesOfAddress}

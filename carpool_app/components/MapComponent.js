@@ -19,7 +19,7 @@ const decodePolyline = (encodedPolyline) => {
 
 const MapComponent = ({ currentRegion, ride }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
-  let encodedPolyline = ride.route.polyline.encodedPolyline;
+  let encodedPolyline = ride.route.routes[0].polyline.encodedPolyline;
   if (!currentRegion || typeof currentRegion.latitude === 'undefined' || typeof currentRegion.longitude === 'undefined') {
     console.log(`currentRegion is undefined or missing attributes: ${currentRegion}`);
     return null;

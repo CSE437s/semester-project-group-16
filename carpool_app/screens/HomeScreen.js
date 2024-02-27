@@ -22,7 +22,7 @@ const HomeScreen = () => {
         const rides = await getUserRides();
         if (rides) {
           setUserRides(rides);
-          console.log(`getUserRides was successful: ${rides}`); // This will log the actual rides data
+          console.log(`getUserRides was successful: ${JSON.stringify(rides)}`); // This will log the actual rides data
         }
       } catch (error) {
         console.error(error);
@@ -44,7 +44,7 @@ const HomeScreen = () => {
             latitudeDelta: 0.0922, // Zoom level for latitude
             longitudeDelta: 0.0421, // Zoom level for longitude
           });
-          console.log(currentRegion);
+
         },
         (error) => {
           console.log(error.code, error.message);
