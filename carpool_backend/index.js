@@ -1,7 +1,7 @@
 const express = require('express');
 //Database connecton
 //db.query('<SQL>'), db.execute('<SQL>') for read, insert 
-const db = require('./database');
+const pool = require('./database');
 const cors = require('cors');
 const {authenticate} = require("./middleware");
 const { FIREBASE_ADMIN } = require("./firebase");
@@ -12,6 +12,15 @@ const PORT = 3000;
 //Midleware
 app.use(express.json());
 app.use(cors());
+
+// Check database connection on server startup
+pool.query('SELECT 1')
+  .then(() => {
+    console.log('Connected to the database!');
+  })
+  .catch((err) => {
+    console.error('Failed to connect to the database:', err);
+  });
 
 //Tests connection to db with query to 'test' table
 //Expected res: [{"name":"Alice"},{"name":"Bob"}]
@@ -30,6 +39,19 @@ app.get('/posts/', authenticate, (req, res) => {
   res.json({user: "antonryoung02@gmail.com", title:"First Post"});
 });
 
+// posts test
+app.get('/postsTest', async (req, res) => {
+  try {
+    const [results, fields] = await pool.query('SELECT * FROM posts');
+    res.json(results);
+  } catch (error) {
+    console.error('Error fetching data from the database:', error);
+    res.status(500).json({ error: 'An error occurred while fetching data from the database', message: error.message });
+  }
+});
+
+
+
 //Change this to /users/:userId to get info about specific user
 app.get('/users', authenticate, (req, res) => {
   //const userId = req.params.userId;
@@ -41,7 +63,12 @@ app.get('/users', authenticate, (req, res) => {
 app.get('/rides/:userId', authenticate, (req, res) => {
   //const rideId = req.params.userId;
   //const timestamp = req.params.timestamp;
-  res.json({origin:{latitude:38.6488, longitude:-90.3108, name:"WashU"}, destination:{latitude:38.6488, longitude:-90.3108, name:"WashU"}, arrival:"3pm"});
+
+  //HARDCODED FOR NOW
+  const route = {"distanceMeters":13105,"duration":"1709s","polyline":{"encodedPolyline":"el}jFr}hfPg@dKoB|WxD^nPpATLtIt@\\GrJv@nCJpALd@x@FTCzASrEa@lMaAG`AF`@mMTeGPsFd@uJVcH\\aCXcAb@_Af@y@h@u@Rm@HmAdCkj@xAw[T[f@UdH|@v@mQ`@kI_AaASKkDYyAQwAr[g@p@kGq@uPyBuLeA{@Si@OyAQmGi@wBUeCrh@uBGsADyATiInBuAL}AAcFe@q@De@Pi@^c@f@rB{c@eAGw@Bi@JaCjAiAZaABk`@kDg_@}CeDc@_ASyEg@sCWxHr@r@J~@RlEh@db@jDjW|B~KaTLYXs@Ny@Fk@JWPkDVmGCW`@qIp@IHG^FhAJNHzPvAPNxLjAVKdBPfAwTB_A"},"optimizedIntermediateWaypointIndex":[2,1,3,0]};
+  const stops = {origin:{latitude:38.6583662, longitude:-90.3267726, name:"anton@wustl.edu"}, destination:{latitude:38.6557666, longitude:-90.30495909999999, name:"Blueberry Hill"}};
+  const timestamp = "1709020800";
+  res.json([{route: route, stops: stops, timestamp: timestamp}]);
 });
 
 app.listen(PORT, () => {
