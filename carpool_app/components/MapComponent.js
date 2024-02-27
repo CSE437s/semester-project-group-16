@@ -47,12 +47,13 @@ const MapComponent = ({ currentRegion, ride }) => {
             mapInstance.on('load', () => setMapLoaded(true));
           }}
         >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+ />
           <Marker
             position={[currentRegion.latitude, currentRegion.longitude]}
             icon={customMarkerIcon}
           />
-          <Polyline positions={polylinePoints} color="red" />
+          <Polyline positions={polylinePoints} color="#022940" />
         </MapContainer>
       </View>
     </>
@@ -63,9 +64,10 @@ const styles = StyleSheet.create({
   map: {
     width: '90%',
     height: 460,
-    borderColor: 'black',
+    borderColor: '#606060', // A medium gray for the border
     borderRadius: 5,
     borderWidth: 5,
+    boxShadow: '0px 0px 8px 2px rgba(0,0,0,0.2)', // Adds a shadow for depth
   },
 });
 
