@@ -121,6 +121,18 @@ async function getDrivingTripsWithUserId(userId, findAll) {
     }
 }
 
+async function getEmailFromUserId(userId) {
+    try {
+        query = `SELECT email FROM USER where user_id != ?`; 
+        let params = [userId];
+        const [email] = await pool.execute(query, params);
+        return email;
+    } catch (error) {
+        console.error("Error getting email from user id");
+        throw(error);
+    }
+}
+
 async function getRidingTripsWithUserId(userId, findAll) {
     try {
         const stops = await getStopsWithUserId(userId, findAll);
@@ -151,4 +163,5 @@ module.exports = {
     getDrivingTripsWithUserId,
     getRidingTripsWithUserId,
     getRoutesWithRouteId,
+    getEmailFromUserId,
   };
