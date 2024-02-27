@@ -2,12 +2,12 @@
 import { FIREBASE_AUTH } from './components/FirebaseConfig';
 import { REACT_APP_LOCAL_SERVER, REACT_APP_REMOTE_SERVER } from '@env';
 
-export const getUserRides = async () => {
+export const getUserRides = async (getAll) => {
   try {
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     //const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}`;
-    const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/false`;
+    const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/${getAll}`;
     //console.log(`USER ID IN GET USER RIDES: ${user.uid}`);
     const userId = user.uid;
 

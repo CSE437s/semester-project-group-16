@@ -28,7 +28,7 @@ const HomeScreen = () => {
     const fetchData = async () => {
       try {
         getCurrentLocation();
-        const rides = await getUserRides();
+        const rides = await getUserRides('false');
         if (rides) {
           setUserRides(rides);
           console.log(`getUserRides was successful: ${JSON.stringify(rides)}`); // This will log the actual rides data

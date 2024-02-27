@@ -22,13 +22,14 @@ const PostScreen = () => {
 
   const fetchTrips = async () => {
     try {
-      const userTrips = await getUserRides(); 
+      const userTrips = await getUserRides('true'); 
       console.log('User Trips:', userTrips); 
   
       // Iterate over each trip and print the origin and destination addresses
       userTrips.forEach(trip => {
         console.log('Origin Address:', trip.addresses.origin_address);
         console.log('Destination Address:', trip.addresses.destination_address);
+        console.log('Email:', trip.email);
       });
     } catch (error) {
       console.error('Error fetching user rides:', error);

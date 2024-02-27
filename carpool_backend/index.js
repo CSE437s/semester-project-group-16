@@ -173,14 +173,14 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
 
       const timestamp = trip.timestamp;
       const created_user = trip.user_id;
-      const created_user_email = getEmailFromUserId(created_user);
+      const created_user_email = await getEmailFromUserId(created_user);
       const category = trip.category;
       
       let trip_stops = await getStopsWithRouteId(trip.route_id);
       let route = await getRoutes(origin, destination, trip_stops);
       
       const stops = trip_stops;
-      
+
       allUserTrips.push({route: route, stops: stops, timestamp: timestamp, email:created_user_email, category:category, addresses: addresses});
     };
     console.log(`Number of trips returned: ${allUserTrips.length}`);

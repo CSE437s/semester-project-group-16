@@ -123,7 +123,7 @@ async function getDrivingTripsWithUserId(userId, findAll) {
 
 async function getEmailFromUserId(userId) {
     try {
-        query = `SELECT email FROM USER where user_id != ?`; 
+        query = `SELECT email FROM USER where user_id = ?`; 
         let params = [userId];
         const [email] = await pool.execute(query, params);
         return email;
