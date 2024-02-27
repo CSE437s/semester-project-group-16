@@ -20,6 +20,7 @@ const PostCreation = ({ onClose }) => {
   const handleSubmit = async () => {
     try {
       const user = checkUserExists();
+      console.log("URL: " + REACT_APP_REMOTE_SERVER);
       
       const startAddress = `${startStreetAddress}, ${startCity}, ${startState} ${startZipCode}`;
       const targetAddress = `${targetStreetAddress}, ${targetCity}, ${targetState} ${targetZipCode}`;

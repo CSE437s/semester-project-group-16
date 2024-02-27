@@ -5,7 +5,8 @@ import PostCreation from '../components/PostCreation';
 import {useState, useEffect} from 'react';
 import { StyleSheet} from 'react-native';
 import axios from 'axios';
-import { BASE_URL} from '@env';
+//import { BASE_URL} from '@env';
+import { REACT_APP_REMOTE_SERVER } from '@env';
 
 
 const PostScreen = () => {
@@ -14,7 +15,7 @@ const PostScreen = () => {
 
   const fetchData = async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/postsTest`); // adjust with actual url on live
+        const response = await axios.get(`${REACT_APP_REMOTE_SERVER}/postsTest`); // adjust with actual url on live
         console.log(response.data); 
     } catch (error) {
         console.error('Error fetching data:', error);
