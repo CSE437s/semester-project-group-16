@@ -16,13 +16,15 @@ async function createRoute(originAddress, destinationAddress, userId) {
 
 
 async function createStop(stopAddress, userId, routeId=null) {
+
+
     try {
         const stop_coordinates = await getCoordinatesOfAddress(stopAddress);
         const query = `
             INSERT INTO STOP (latitude, longitude, route_id, user_id)
             VALUES (?, ?, ?, ?)
         `;
-        const [result] = await pool.execute(query, [latitude, longitude, routeId, userId]);
+        const [result] = await pool.execute(query, [stop_coordinates.latitude, stop_coordinates.longitude, routeId, userId]);
         console.log('Insert Result:', result);
         return result;
     } catch (error) {

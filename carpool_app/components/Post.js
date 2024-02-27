@@ -79,11 +79,19 @@ const Post = ({ trip }) => {
 
   const handleApply = () => {
     setShowStopCreation(true); // Show the form when Apply button is pressed
+    const userObj = checkUserExists();
+    const userId = userObj.uid;
+
+    //console.log(trip.route_id);
+    //console.log(userId);
+    
   };
 
   const handleClose = () => {
     setShowStopCreation(false); // Close the form
   };
+
+
 
   return (
     <StyledPost>
@@ -110,9 +118,9 @@ const Post = ({ trip }) => {
         </div>
       </RouteInfo>
       <View>
-        <Button/>
+        <ApplyButton onClick={handleApply}>Apply</ApplyButton>
         <Modal visible={showStopCreation} animationType="slide">
-          <StopCreation onClose={handleClose} />
+        <StopCreation onClose={handleClose} tripRouteId={trip.route_id} />
         </Modal>
       </View>
     </StyledPost>

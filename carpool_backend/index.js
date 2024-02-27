@@ -100,6 +100,8 @@ app.post('/stops', authenticate, async(req, res) => {
   const userId = req.body.userId;
   const routeId = req.body.routeId;
 
+  //console.log(req.body);
+
   if (!stopAddress || !userId) {
     return res.status(400).json({ error: "Missing required fields" });
   }
