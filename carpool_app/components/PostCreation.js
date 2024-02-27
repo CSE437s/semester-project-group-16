@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Modal, Picker, TouchableOpacity } from 'react-native';
-import { BASE_URL } from '@env';
+import { REACT_APP_REMOTE_SERVER } from '@env';
 import axios from 'axios'; 
 import { checkUserExists } from '../Utils';
+import {checkUserExists} from './Utils';
 
 const PostCreation = ({ onClose }) => {
   const [startStreetAddress, setStartStreetAddress] = useState('');
@@ -25,21 +26,27 @@ const PostCreation = ({ onClose }) => {
       const startAddress = `${startStreetAddress}, ${startCity}, ${startState} ${startZipCode}`;
       const targetAddress = `${targetStreetAddress}, ${targetCity}, ${targetState} ${targetZipCode}`;
       const dateTime = `${date} ${hour}`;
+      const idToken = await user.getIdToken(true);
   
       const postData = {
-        startAddress,
-        targetAddress,
-        dateTime,
-        category,
-        userId
+        user_id:user.uid,
+        originAddress:startAddress,
+        destinationAddress:targetAddress,
+        timestamp:dateTime,
+        category:category,
       };
   
       console.log('Post Data:', postData);
   
-      const response = await axios.post(`${BASE_URL}/submitPost`, postData);
+      const response = await axios.post(`${REACT_APP_REMOTE_SERVER}/trips`, postData,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${idToken}`, // Including the authorization token in the request headers
+    }
+    );
   
       if (response.status === 200) {
-        console.log('Post submitted successfully!');
+        console.log('Post created successfully!');
         onClose();
       } else {
         console.error('Failed to submit post:', response.data);
