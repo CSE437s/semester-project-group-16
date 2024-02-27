@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, TouchableOpacity} from 'react-native';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import MapComponent from '../components/MapComponent';
 import 'leaflet/dist/leaflet.css';
+import {getUserRides} from '../Utils';
 //import MapView, { Marker } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
@@ -90,37 +85,6 @@ const HomeScreen = () => {
       )}
     </>
   );
-};
-
-// Your original makeProtectedAPICall function
-const getUserRides = async () => {
-  try {
-    const user = FIREBASE_AUTH.currentUser;
-    if (!user) {
-      console.log('User is not logged in');
-      return;
-    }
-
-    const idToken = await user.getIdToken(true);
-    const apiUrl = `http://localhost:3000/rides/${user.uid}`;
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `${idToken}`,
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch from protected endpoint');
-    }
-    const responseData = await response.json();
-    console.log(`Got response data! ${JSON.stringify(responseData)}`)
-    return responseData;
-
-  } catch (error) {
-    console.error('Error making protected API call:', error);
-  }
 };
 
 const timestampToDate = (timestamp) => {
