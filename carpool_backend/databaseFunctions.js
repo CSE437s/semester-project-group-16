@@ -72,15 +72,16 @@ async function getRoutesWithRouteId(routeId) {
         throw error;
     }
 }
-async function getStopsWithUserId(userId) {
+async function getStopsWithUserId(userId, findAll) {
     try {
         let query = "";
-        if (userId == null) {
-            query = `SELECT * FROM STOP` 
+        let params = [userId];
+        if (findAll == "true") {
+            query = `SELECT * FROM TRIP WHERE user_id != ?`;
         } else {
-            query = `SELECT * FROM STOP WHERE user_id = ?` 
+            query = `SELECT * FROM TRIP WHERE user_id = ?`;
         }
-        const [stops] = await pool.execute(query, [userId]);
+        const [stops] = await pool.execute(query, params);
         console.log('Stops:', stops);
         return stops;
     } catch (error) {
@@ -100,15 +101,16 @@ async function getTripsWithRouteId(routeId) {
 }
 
 
-async function getDrivingTripsWithUserId(userId) {
+async function getDrivingTripsWithUserId(userId, findAll) {
     try {
         let query = "";
-        if (userId == null) {
-            query = `SELECT * FROM TRIP` 
+        let params = [userId];
+        if (findAll == "true") {
+            query = `SELECT * FROM TRIP where user_id != ?`;
         } else {
-            query = `SELECT * FROM TRIP WHERE user_id = ?` 
+            query = `SELECT * FROM TRIP WHERE user_id = ?`;
         }
-        const [trips] = await pool.execute(query, [userId]);
+        const [trips] = await pool.execute(query, params);
         console.log('Trips with User ID:', trips);
         return trips;
     } catch (error) {
@@ -117,9 +119,9 @@ async function getDrivingTripsWithUserId(userId) {
     }
 }
 
-async function getRidingTripsWithUserId(userId) {
+async function getRidingTripsWithUserId(userId, findAll) {
     try {
-        const stops = await getStopsWithUserId(userId);
+        const stops = await getStopsWithUserId(userId, findAll);
         let trips = [];
 
         for (let stop of stops) {

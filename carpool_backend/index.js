@@ -139,14 +139,13 @@ app.post('/trips', authenticate, async(req, res) => {
 
 //SHOULD BE trips/:userId
 //Gets all trips of userId (driving AND riding) and returns them
-app.get('/rides/:userId?', authenticate, async(req, res) => {
+app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
   try {
     const userId = req.params.userId;
-    if (!userId) {
-      userId = null;
-    }
-    let driving_trips = await getDrivingTripsWithUserId(userId);
-    let riding_trips = await getRidingTripsWithUserId(userId);
+    const findAll = req.params.findAll;
+
+    let driving_trips = await getDrivingTripsWithUserId(userId, findAll);
+    let riding_trips = await getRidingTripsWithUserId(userId, findAll);
     let trips = [...driving_trips, ...riding_trips];
 
     trips.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));

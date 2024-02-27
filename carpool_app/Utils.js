@@ -6,8 +6,8 @@ export const getUserRides = async () => {
   try {
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
-    const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}`;
-    //const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/`;
+    //const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}`;
+    const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/false`;
     //console.log(`USER ID IN GET USER RIDES: ${user.uid}`);
     const userId = user.uid;
 
