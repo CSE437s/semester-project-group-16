@@ -1,5 +1,5 @@
 // This file is how we connect to my Firebase Authentication project.
-// I believe `firebaseConfig` is intended to be public.
+// I believe firebaseConfig is intended to be public.
 import {
   REACT_APP_FIREBASE_API_KEY,
   REACT_APP_AUTH_DOMAIN,

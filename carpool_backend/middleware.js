@@ -5,8 +5,8 @@ const {FIREBASE_ADMIN} = require('./firebase');
 
 const authenticate = (req, res, next) => {
     const token = req.headers.authorization;
-    const userId = req.params.userId || req.body.userId || req.query.userId;
-
+    const userId = req.headers.userid;
+    console.log(userId)
     if (!token) {
         return res.status(401).json({error: "Unauthorized"});
     }

@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, KeyboardAvoidingView, View, Text, TextInput, 
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
 import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
 import CustomAlert from '../components/CustomAlert';
+import {createNewUser} from '../Utils';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -14,7 +15,6 @@ const LoginScreen = () => {
   const auth = FIREBASE_AUTH;
 
   const showAlert = (message) => {
-    console.log("Show alert called!");
     setAlertMessage(message);
     setAlertVisible(true);
   };
@@ -29,6 +29,7 @@ const LoginScreen = () => {
     }
   };
 
+
   const handleLogin = async() => {
     setLoading(true);
     try {
@@ -36,7 +37,6 @@ const LoginScreen = () => {
     } catch (error) {
       //console.error("Login error:", error.code, error.message);
       showAlert(`Login Error: ${error.message}`);
-      console.log("Error should be shown?");
     } finally {
       setLoading(false);
     }
@@ -47,6 +47,9 @@ const LoginScreen = () => {
     try {
       validateSignupInput();
       const response = await createUserWithEmailAndPassword(auth, username, password);
+      //Create user call here.
+      await createNewUser();
+      console.log("new user should be created");
     } catch (error) {
       //console.error("Signup error:", error.code, error.message);
       showAlert(`Signup Error: ${error.message}`);
