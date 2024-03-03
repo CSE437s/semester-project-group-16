@@ -16,8 +16,6 @@ async function createRoute(originAddress, destinationAddress, userId) {
 
 
 async function createStop(stopAddress, userId, routeId=null) {
-
-
     try {
         const stop_coordinates = await getCoordinatesOfAddress(stopAddress);
         const query = `

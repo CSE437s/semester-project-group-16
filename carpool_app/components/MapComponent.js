@@ -28,7 +28,7 @@ const MapComponent = ({ currentRegion, ride }) => {
     console.log(
       `currentRegion is undefined or missing attributes: ${currentRegion}`
     );
-    return null;
+
   }
   if (typeof encodedPolyline === 'undefined') {
     console.log('PolyLine is undefined, check your data?');
@@ -40,7 +40,7 @@ const MapComponent = ({ currentRegion, ride }) => {
     <>
       <View style={styles.map}>
         <MapContainer
-          center={[currentRegion.latitude, currentRegion.longitude]}
+          center={[38.648987, -90.312553]}
           zoom={13}
           style={{ height: '100vh', width: '100%' }}
           whenCreated={(mapInstance) => {
@@ -49,10 +49,10 @@ const MapComponent = ({ currentRegion, ride }) => {
         >
           <TileLayer url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
  />
-          <Marker
+          {currentRegion && <Marker
             position={[currentRegion.latitude, currentRegion.longitude]}
-            icon={customMarkerIcon}
-          />
+            icon={customMarkerIcon} 
+          /> }
           <Polyline positions={polylinePoints} color="#022940" />
         </MapContainer>
       </View>
