@@ -5,6 +5,7 @@ import NavigationBar from './components/NavigationBar';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function App() {
+  console.log("Root of App")
   const [user, setUser] = useState(null);
   useEffect(() => {
     const auth = getAuth();

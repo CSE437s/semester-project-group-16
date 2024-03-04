@@ -1,27 +1,72 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, Button, Modal, ScrollView } from 'react-native';
 import Post from '../components/Post';
+import PostCreation from '../components/PostCreation';
 import {useState, useEffect} from 'react';
 import { StyleSheet} from 'react-native';
+import { getUserRides } from '../Utils';
+
+
+import axios from 'axios';
+//import { BASE_URL} from '@env';
+import { REACT_APP_REMOTE_SERVER } from '@env';
+
 
 const PostScreen = () => {
-  const [posts, setPosts] = useState([])
+  const [trips, setTrips] = useState([]);
+  const [showPostCreation, setShowPostCreation] = useState(false);
+
+  const fetchTrips = async () => {
+    try {
+      const userTrips = await getUserRides('true'); 
+      console.log('User Trips:', userTrips); 
+      setTrips(userTrips);
+  
+      // userTrips.forEach(trip => {
+      //   console.log('Origin Address:', trip.addresses.origin_address);
+      //   console.log('Destination Address:', trip.addresses.destination_address);
+      //   console.log('Email:', trip.email.email);
+      //   console.log('Date:', trip.timestamp);
+      //   console.log('Category:', trip.category);
+      //   console.log('routeID', trip.route_id);
+      // });
+    } catch (error) {
+      console.error('Error fetching user rides:', error);
+    }
+  };
+  
+
+  const openPostCreation = () => {
+    setShowPostCreation(true);
+  };
+
+  const closePostCreation = () => {
+    setShowPostCreation(false);
+  };
 
   useEffect(() => {
-    setPosts(Array.from({length:15 })); //Todo fetch from db instead!
+    fetchTrips();
   }, []);
 
   return (
-    <View>
-      <Text>This is the posts screen!</Text>
+    <View style={styles.container}>
       <View>
-        {posts.map((_, index) => (
-          <Post key={index} />
-        ))}
+        <Button title="Create Post" onPress={openPostCreation} />
+        <Modal visible={showPostCreation} animationType="slide">
+          <PostCreation onClose={closePostCreation} />
+        </Modal>
       </View>
+  
+      <ScrollView style={{ marginTop: 10 }}>
+        {trips.map((trip, index) => (
+          <Post key={index} trip={trip} />
+        ))}
+      </ScrollView>
     </View>
   );
-};
+  
+}
+
 
 const styles = StyleSheet.create({
   container: {
