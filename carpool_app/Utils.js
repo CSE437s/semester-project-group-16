@@ -32,12 +32,13 @@ export const getUserRides = async (getAll) => {
 };
 
 export const createNewUser = async () => {
-  console.log('Create new user called');
   try {
+    console.log("Inside this function")
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     //const apiUrl = `http://localhost:3000/users`;
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/users`;
+    console.log(`Sending credentials to url: ${REACT_APP_REMOTE_SERVER}/users`);
     const userId = user.uid;
     const email = user.email;
     const data = { userId: userId, email: email };
@@ -64,6 +65,15 @@ export const createNewUser = async () => {
 };
 
 export const checkUserExists = () => {
+  const user = FIREBASE_AUTH.currentUser;
+  console.log(`user: ${user}`);
+  if (!user) {
+    throw new Error('User is not logged in');
+  }
+  return user;
+};
+
+export const checkUserIsVerified = () => {
   const user = FIREBASE_AUTH.currentUser;
   if (!user || !user.emailVerified) {
     throw new Error('User is not logged in');

@@ -6,66 +6,6 @@ import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Modal, Picker, TouchableOpacity } from 'react-native';
 
 
-const StyledPost = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  align-items: stretch;
-  padding: 20px;
-  background-color: #FFFFFF;
-  border-radius: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-  font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  .category {
-    color: grey; // Example styling for category
-  }
-
-  .timestamp {
-    color: grey; // Example styling for timestamp
-  }
-
-  .email {
-    color: grey; // Example styling for email
-  }
-
-  .completed {
-    color: grey; // Example styling for completed status
-  }
-`;
-
-
-const TripInfo = styled.div`
-  flex: 1;
-  font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-`;
-
-const RouteInfo = styled.div`
-  flex: 1;
-  margin-left: 20px;
-  font: 14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-`;
-
-const Label = styled.span`
-  font-weight: bold;
-  font:  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-`;
-
-const ApplyButton = styled.button`
-  font-size: 16px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  &:hover {
-    background-color: #0056b3;
-    color: #ffffff;
-  }
-`;
-
 const Post = ({ trip }) => {
 
   const formatTimestamp = (timestamp) => {
@@ -94,50 +34,46 @@ const Post = ({ trip }) => {
 
 
   return (
-    <StyledPost>
-      <TripInfo>
-        <div>
-          <Label>From:</Label> {trip.addresses.origin_address}
-        </div>
-        <div>
-          <Label>To:</Label> {trip.addresses.destination_address}
-        </div>
-        <div className="category">
-          {trip.category}
-        </div>
-      </TripInfo>
-      <RouteInfo>
-        <div className="email">
-          {trip.email.email}
-        </div>
-        <div className="timestamp">
-          {formatTimestamp(trip.timestamp)}
-        </div>
-        <div className="completed">
-          {trip.completed ? 'Completed' : 'Active'}
-        </div>
-      </RouteInfo>
-      <View>
-        <ApplyButton onClick={handleApply}>Apply</ApplyButton>
-        <Modal visible={showStopCreation} animationType="slide">
-        <StopCreation onClose={handleClose} tripRouteId={trip.route_id} tripId={trip.trip_id}/>
-        </Modal>
+    <View style={styles.styledPost}>
+      <View style={styles.tripInfo}>
+        <Text><Text style={styles.label}>From:</Text> {trip.addresses.origin_address}</Text>
+        <Text><Text style={styles.label}>To:</Text> {trip.addresses.destination_address}</Text>
+        <Text style={styles.category}>{trip.category}</Text>
       </View>
-    </StyledPost>
+      <View style={styles.routeInfo}>
+        <Text style={styles.email}>{trip.email.email}</Text>
+        <Text style={styles.timestamp}>{formatTimestamp(trip.timestamp)}</Text>
+        <Text style={styles.completed}>{trip.completed ? 'Completed' : 'Active'}</Text>
+      </View>
+      <Button title="Apply" onPress={handleApply} color="#007bff" />
+      <Modal visible={showStopCreation} animationType="slide">
+        <StopCreation onClose={handleClose} tripRouteId={trip.route_id} tripId={trip.trip_id}/>
+      </Modal>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
-    fontSize: 16,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#007bff',
-    color: '#ffffff',
-    borderRadius: 5,
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
+  styledPost: {
+    display: 'flex', // Flex is default
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 10,
+    marginBottom: 20,
   },
+  tripInfo: {
+    flex: 1,
+  },
+  routeInfo: {
+    flex: 1,
+    marginLeft: 20,
+  },
+  label: {
+    fontWeight: 'bold',
+  },
+  // Add other styles here
 });
 
 

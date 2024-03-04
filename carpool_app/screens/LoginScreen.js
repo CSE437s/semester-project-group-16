@@ -47,21 +47,19 @@ const LoginScreen = () => {
     try {
       validateSignupInput();
       
-      // This line creates a new user and returns a response object
       const response = await createUserWithEmailAndPassword(auth, username, password);
       console.log("User created successfully, sending verification email...");
       
-      // You should pass response.user to sendEmailVerification
       await sendEmailVerification(response.user);
       console.log("Verification email sent. Please check your inbox.");
   
-      await createNewUser(); // Ensure this function doesn't have issues as well
+      await createNewUser();
       console.log("New user should be created");
   
       showAlert("Please verify your email. Check your inbox for the verification link.");
     } catch (error) {
       showAlert(`Signup Error: ${error.message}`);
-      console.error("Signup Error:", error); // Log the detailed error
+      console.error("Signup Error:", error); 
     } finally {
       setLoading(false);
     }

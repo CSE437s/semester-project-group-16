@@ -3,16 +3,14 @@ import {Modal,View,Text,StyleSheet,ActivityIndicator,TouchableOpacity} from 'rea
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Calendar } from 'react-native-calendars';
-import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import MapComponent from '../components/MapComponent';
-import 'leaflet/dist/leaflet.css';
 import { getUserRides } from '../Utils';
 //import MapView, { Marker } from 'react-native-maps';
-import Geolocation from 'react-native-geolocation-service';
+//import Geolocation from 'react-native-geolocation-service';
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
 
 const HomeScreen = () => {
-  const [currentRegion, setCurrentRegion] = useState(null);
+  const [currentRegion, setCurrentRegion] = useState({latitude: 38.6488, longitude:-90.3108});
   //PLACEHOLDER POLYLINE!!
   const [userRides, setUserRides] = useState([]);
   const [mapLoaded, setMapLoaded] = useState(false);
@@ -90,7 +88,7 @@ const HomeScreen = () => {
               <Text style={styles.tripInfoText}>{timestampToDate(userRides[0].timestamp)}</Text>
             </TouchableOpacity>
           </View>
-          <MapComponent currentRegion={currentRegion} ride={userRides[0]} />
+           <MapComponent currentRegion={currentRegion} ride={userRides[0]} />
 
           <TouchableOpacity
             onPress={onManageCarpoolsPress}
@@ -199,7 +197,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
     fontWeight: 'bold', // Make modal text bold
-    fontSize: 18, // Increase font size for readability
+    fontSize: 20, // Increase font size for readability
   },
   buttonStyle: {
     backgroundColor: '#022940', // Primary button color
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   tripInfoText: {
-    fontSize: 40,
+    fontSize: 16,
   }
 });
 

@@ -66,8 +66,10 @@ app.post('/submitPost', (req, res) => {
 
 //Change this to /users/:userId to get info about specific user
 app.post('/users', authenticate, async(req, res) => {
+  console.log("INSIDE /USERS");
   const user_id = req.body.userId;
   const email = req.body.email;
+  console.log(`Inserting into users user_id ${user_id} and email ${email}`);
   try {
     const query = "INSERT INTO USER (user_id, email) VALUES (?, ?)";
     const [result] = await pool.execute(query, [user_id, email]);

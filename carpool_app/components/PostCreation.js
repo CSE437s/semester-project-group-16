@@ -1,39 +1,36 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Modal, Picker, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity, ScrollView} from 'react-native';
+//import {Picker } from 'react-native-picker';
+import { Picker } from '@react-native-picker/picker';
+
 import { REACT_APP_REMOTE_SERVER } from '@env';
 import axios from 'axios'; 
 import { checkUserExists } from '../Utils';
 
 const PostCreation = ({ onClose }) => {
-  const [startStreetAddress, setStartStreetAddress] = useState('');
-  const [startCity, setStartCity] = useState('');
-  const [startState, setStartState] = useState('');
-  const [startZipCode, setStartZipCode] = useState('');
-  const [targetStreetAddress, setTargetStreetAddress] = useState('');
-  const [targetCity, setTargetCity] = useState('');
-  const [targetState, setTargetState] = useState('');
-  const [targetZipCode, setTargetZipCode] = useState('');
+  // Simplified state hooks for addresses
+  const [startAddress, setStartAddress] = useState('');
+  const [targetAddress, setTargetAddress] = useState('');
   const [hour, setHour] = useState('');
   const [date, setDate] = useState('');
-  const [category, setCategory] = useState('Campus'); 
+  const [category, setCategory] = useState('Campus');
 
   const handleSubmit = async () => {
     try {
       const user = checkUserExists();
       console.log("URL: " + REACT_APP_REMOTE_SERVER);
       
-      const startAddress = `${startStreetAddress}, ${startCity}, ${startState} ${startZipCode}`;
-      const targetAddress = `${targetStreetAddress}, ${targetCity}, ${targetState} ${targetZipCode}`;
+      // Use the simplified address fields directly
       const dateTime = `${date} ${hour}`;
       const idToken = await user.getIdToken(true);
   
       const postData = {
-        userId:user.uid,
-        originAddress:startAddress,
-        destinationAddress:targetAddress,
-        timestamp:dateTime,
-        category:category,
-        completed:false,
+        userId: user.uid,
+        originAddress: startAddress,
+        destinationAddress: targetAddress,
+        timestamp: dateTime,
+        category: category,
+        completed: false,
       };
   
       console.log('Post Data:', postData);
@@ -41,8 +38,8 @@ const PostCreation = ({ onClose }) => {
       const response = await axios.post(`${REACT_APP_REMOTE_SERVER}/trips`, postData, {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: idToken, // Assuming idToken is a variable holding your token
-          userid:user.uid,
+          Authorization: idToken,
+          userid: user.uid,
         },
       });
   
@@ -57,123 +54,65 @@ const PostCreation = ({ onClose }) => {
     }
   };
   
+  // Example styles for your components
+  const styles = StyleSheet.create({
+    container: {},
+    scrollViewContainer: {},
+    topContainer: {},
+    headerText: {},
+    input: {},
+    pickerStyle: {},
+  });
+
   return (
     <View style={styles.container}>
-      <View style={styles.topContainer}>
-        <Button title="Exit" onPress={onClose} />
-      </View>
-      <Text style={styles.headerText}>Starting Destination:</Text>
-      <TextInput
-        style={styles.input}
-        value={startStreetAddress}
-        onChangeText={text => setStartStreetAddress(text)}
-        placeholder="Street Address"
-      />
-      <TextInput
-        style={styles.input}
-        value={startCity}
-        onChangeText={text => setStartCity(text)}
-        placeholder="City"
-      />
-      <TextInput
-        style={styles.input}
-        value={startState}
-        onChangeText={text => setStartState(text)}
-        placeholder="State"
-      />
-      <TextInput
-        style={styles.input}
-        value={startZipCode}
-        onChangeText={text => setStartZipCode(text)}
-        placeholder="Zip Code"
-      />
-      <Text style={styles.headerText}>Target Destination:</Text>
-      <TextInput
-        style={styles.input}
-        value={targetStreetAddress}
-        onChangeText={text => setTargetStreetAddress(text)}
-        placeholder="Street Address"
-      />
-      <TextInput
-        style={styles.input}
-        value={targetCity}
-        onChangeText={text => setTargetCity(text)}
-        placeholder="City"
-      />
-      <TextInput
-        style={styles.input}
-        value={targetState}
-        onChangeText={text => setTargetState(text)}
-        placeholder="State"
-      />
-      <TextInput
-        style={styles.input}
-        value={targetZipCode}
-        onChangeText={text => setTargetZipCode(text)}
-        placeholder="Zip Code"
-      />
-      <Text style={styles.headerText}>Date:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="YYYY-MM-DD"
-        value={date}
-        onChangeText={text => setDate(text)}
-      />
-      <Text style={styles.headerText}>Hour:</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="HH:MM:SS"
-        value={hour}
-        onChangeText={text => setHour(text)}
-      />
-      <Text style={styles.headerText}>Category:</Text>
-      <Picker
-        selectedValue={category}
-        onValueChange={(itemValue) => setCategory(itemValue)}
-        style={styles.pickerStyle}
-      >
-        <Picker.Item label="Campus" value="Campus" />
-        <Picker.Item label="Groceries" value="Groceries" />
-        <Picker.Item label="Misc" value="Misc" />
-      </Picker>
-      <Button title="Submit" onPress={handleSubmit} />
+      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+        <View style={styles.topContainer}>
+          <Button title="Exit" onPress={onClose} />
+        </View>
+        <Text style={styles.headerText}>Starting Address:</Text>
+        <TextInput
+          style={styles.input}
+          value={startAddress}
+          onChangeText={text => setStartAddress(text)}
+          placeholder="Full address"
+        />
+        <Text style={styles.headerText}>Target Address:</Text>
+        <TextInput
+          style={styles.input}
+          value={targetAddress}
+          onChangeText={text => setTargetAddress(text)}
+          placeholder="Full address"
+        />
+        {/* Other inputs remain unchanged */}
+        <Text style={styles.headerText}>Date:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="YYYY-MM-DD"
+          value={date}
+          onChangeText={text => setDate(text)}
+        />
+        <Text style={styles.headerText}>Hour:</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="HH:MM:SS"
+          value={hour}
+          onChangeText={text => setHour(text)}
+        />
+        <Text style={styles.headerText}>Category:</Text>
+        <Picker
+          selectedValue={category}
+          onValueChange={(itemValue) => setCategory(itemValue)}
+          style={styles.pickerStyle}
+        >
+          <Picker.Item label="Campus" value="Campus" />
+          <Picker.Item label="Groceries" value="Groceries" />
+          <Picker.Item label="Misc" value="Misc" />
+        </Picker>
+        <Button title="Submit" onPress={handleSubmit} />
+      </ScrollView>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
-  body: {
-    font: '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  topContainer: {
-    position: 'absolute',
-    top: 20, 
-    right: 20, 
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-    width: '100%',
-  },
-  headerText: {
-    fontWeight: 'bold',
-    fontSize: 20, 
-    color: '#333', 
-    marginBottom: 5
-  },
-  pickerStyle: {
-  marginBottom: 10
-  }
-});
-
 export default PostCreation;
-

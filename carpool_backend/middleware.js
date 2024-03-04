@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 const {FIREBASE_ADMIN} = require('./firebase');
 
 const authenticate = (req, res, next) => {
+    console.log("INSIDE AUTHENTICATE");
     const token = req.headers.authorization;
     const userId = req.headers.userid;
     console.log(userId)
