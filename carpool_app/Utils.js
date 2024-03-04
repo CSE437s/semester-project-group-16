@@ -62,9 +62,10 @@ export const createNewUser = async () => {
     console.error('Error making API call:', error);
   }
 };
+
 export const checkUserExists = () => {
   const user = FIREBASE_AUTH.currentUser;
-  if (!user) {
+  if (!user || !user.emailVerified) {
     throw new Error('User is not logged in');
   }
   return user;

@@ -17,7 +17,7 @@ export default function App() {
 
   return (
     <>
-    {user ? <NavigationBar /> : <LoginScreen/>}
+    {(user && user.emailVerified) ? <NavigationBar /> : <LoginScreen/>}
     </>
   );
 }

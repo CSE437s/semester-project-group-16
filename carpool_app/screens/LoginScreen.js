@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, KeyboardAvoidingView, View, Text, TextInput, TouchableOpacity, Button, StyleSheet, Platform, Image} from 'react-native';
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
-import {signInWithEmailAndPassword, createUserWithEmailAndPassword} from 'firebase/auth';
+import {signInWithEmailAndPassword, createUserWithEmailAndPassword,sendEmailVerification} from 'firebase/auth';
 import CustomAlert from '../components/CustomAlert';
 import {createNewUser} from '../Utils';
 
@@ -22,7 +22,7 @@ const LoginScreen = () => {
   const validateSignupInput = () => {
     const eduEmailRegex = /^[^@\s]+@[^@\s]+\.(edu)$/i;
     if (!eduEmailRegex.test(username)) {
-      throw new Error("Username must be a .edu email address.");
+      //throw new Error("Username must be a .edu email address.");
     }
     if (password.length < 6) {
       throw new Error("Password must be at least 6 characters.");
@@ -42,18 +42,26 @@ const LoginScreen = () => {
     }
   };
 
-  const handleSignup = async() => {
+  const handleSignup = async () => {
     setLoading(true);
     try {
       validateSignupInput();
+      
+      // This line creates a new user and returns a response object
       const response = await createUserWithEmailAndPassword(auth, username, password);
-      //Create user call here.
-      await createNewUser();
-      console.log("new user should be created");
+      console.log("User created successfully, sending verification email...");
+      
+      // You should pass response.user to sendEmailVerification
+      await sendEmailVerification(response.user);
+      console.log("Verification email sent. Please check your inbox.");
+  
+      await createNewUser(); // Ensure this function doesn't have issues as well
+      console.log("New user should be created");
+  
+      showAlert("Please verify your email. Check your inbox for the verification link.");
     } catch (error) {
-      //console.error("Signup error:", error.code, error.message);
       showAlert(`Signup Error: ${error.message}`);
-      console.log("Error should be shown?");
+      console.error("Signup Error:", error); // Log the detailed error
     } finally {
       setLoading(false);
     }
