@@ -6,13 +6,13 @@ import AddressSearchBar from './AddressSearchBar'
 import { REACT_APP_REMOTE_SERVER } from '@env';
 import axios from 'axios'; 
 import { checkUserExists } from '../Utils';
+import ChooseDate from './ChooseDate';
 
 const PostCreation = ({ onClose }) => {
   // Simplified state hooks for addresses
   const [startAddress, setStartAddress] = useState('');
   const [targetAddress, setTargetAddress] = useState('');
-  const [hour, setHour] = useState('');
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
   const [category, setCategory] = useState('Campus');
   const [isPickerVisible, setIsPickerVisible] = useState(false);
 
@@ -23,22 +23,18 @@ const PostCreation = ({ onClose }) => {
   const handleSubmit = async () => {
     try {
       const user = checkUserExists();
-      console.log("URL: " + REACT_APP_REMOTE_SERVER);
       
-      // Use the simplified address fields directly
-      const dateTime = `${date} ${hour}`;
+      const timestamp = date.toISOString().slice(0, 19).replace('T', ' '); //Correct format for db entry
       const idToken = await user.getIdToken(true);
   
       const postData = {
         userId: user.uid,
         originAddress: startAddress,
         destinationAddress: targetAddress,
-        timestamp: dateTime,
+        timestamp: timestamp,
         category: category,
         completed: false,
       };
-  
-      console.log('Post Data:', postData);
   
       const response = await axios.post(`${REACT_APP_REMOTE_SERVER}/trips`, postData, {
         headers: {
@@ -67,24 +63,13 @@ const PostCreation = ({ onClose }) => {
         <Text style={styles.headerText}>Starting Address:</Text>
         <AddressSearchBar handleTextChange={setStartAddress}/>
 
-        <Text style={styles.headerText}>Target Address:</Text>
+        <Text style={styles.headerText}>Destination Address:</Text>
         <AddressSearchBar handleTextChange={setTargetAddress}/>
-        {/* Other inputs remain unchanged */}
-        <Text style={styles.headerText}>Date:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="YYYY-MM-DD"
-          value={date}
-          onChangeText={text => setDate(text)}
-        />
-        <Text style={styles.headerText}>Time:</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="HH:MM:SS"
-          value={hour}
-          onChangeText={text => setHour(text)}
-        />
-        <Text style={styles.headerText}>Category:</Text>
+
+        <Text style={styles.headerText}>When are you getting there?</Text>
+        <ChooseDate setSelectedDate={setDate} />
+
+        <Text style={styles.headerText}>Ride category:</Text>
         <TouchableOpacity onPress={togglePickerVisibility}>
           <Text style={styles.selectedValueText}>{category}</Text>
         </TouchableOpacity>

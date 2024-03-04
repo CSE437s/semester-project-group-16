@@ -4,6 +4,7 @@ import {checkUserExists} from '../Utils';
 import StopCreation from './StopCreation';
 import { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Modal, Picker, TouchableOpacity } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 
 const Post = ({ trip }) => {
