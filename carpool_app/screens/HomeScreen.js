@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'space-around', // Distribute space evenly
-    padding: 20,
+    paddingTop: 60,
     backgroundColor: '#F5F5F5', // Soft background color
   },
   tripInfo: {
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   openButton: {
-    backgroundColor: '#022940', // More appealing button color
+    backgroundColor: '#022940', 
     borderRadius: 20,
     padding: 10,
     elevation: 2,
@@ -196,11 +196,11 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: 'center',
-    fontWeight: 'bold', // Make modal text bold
-    fontSize: 20, // Increase font size for readability
+    fontWeight: 'bold', 
+    fontSize: 20, 
   },
   buttonStyle: {
-    backgroundColor: '#022940', // Primary button color
+    backgroundColor: '#022940', 
     padding: 10,
     borderRadius: 20,
     shadowColor: '#000',

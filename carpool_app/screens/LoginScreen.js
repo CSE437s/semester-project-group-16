@@ -30,12 +30,17 @@ const LoginScreen = () => {
   };
 
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, username, password);
+      if (response.user && !response.user.emailVerified) {
+        showAlert("Please verify your email before logging in.");
+      } else {
+        await response.user.reload();
+        console.log("Login successful, user email is verified.");
+      }
     } catch (error) {
-      //console.error("Login error:", error.code, error.message);
       showAlert(`Login Error: ${error.message}`);
     } finally {
       setLoading(false);
@@ -115,7 +120,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: '100%',
-    padding: 20,
+    paddingTop: 160,
     gap: 5,
   },
   title: {
