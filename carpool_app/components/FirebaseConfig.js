@@ -14,6 +14,8 @@ import firebase, { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
 
+console.log(`APIKEY: ${REACT_APP_FIREBASE_API_KEY}`);
+
 const firebaseConfig = {
   apiKey: REACT_APP_FIREBASE_API_KEY,
   authDomain: REACT_APP_AUTH_DOMAIN,

@@ -120,7 +120,7 @@ const Post = ({ trip }) => {
       <View>
         <ApplyButton onClick={handleApply}>Apply</ApplyButton>
         <Modal visible={showStopCreation} animationType="slide">
-        <StopCreation onClose={handleClose} tripRouteId={trip.route_id} />
+        <StopCreation onClose={handleClose} tripRouteId={trip.route_id} tripId={trip.trip_id}/>
         </Modal>
       </View>
     </StyledPost>

@@ -21,11 +21,10 @@ async function getCoordinatesOfAddress(address) {
 
 //Expecting origin.latitude, origin.longitude, ... stops.latitude, stops.longitude
 async function getRoutes(origin, destination, stops) {
-    console.log(`origin: ${JSON.stringify(origin)}`);
+
+    console.log("google routes API is being called");
     const url = 'https://routes.googleapis.com/directions/v2:computeRoutes';
     const body = generateRouteWaypoints(origin, destination, stops);
-    console.log(`getRoutes body: ${JSON.stringify(body)}`);
-    //const body = generateRouteWaypoints(origin, destination, stops);
     const key = process.env.ROUTES_API_KEY;
     try {
       const response = await fetch(url, {

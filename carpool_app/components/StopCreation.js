@@ -4,7 +4,7 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { REACT_APP_REMOTE_SERVER } from '@env';
 import axios from 'axios'; 
 
-  const StopCreation = ({ onClose, tripRouteId }) => {
+  const StopCreation = ({ onClose, tripRouteId, tripId }) => {
     const [streetAddress, setStreetAddress] = useState('');
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
@@ -25,6 +25,7 @@ import axios from 'axios';
         const response = await axios.post(`${REACT_APP_REMOTE_SERVER}/stops`, {
           userId: userId,
           routeId: tripRouteId,
+          tripId: tripId,
           stopAddress: address,
         }, {
         headers: {

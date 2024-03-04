@@ -19,7 +19,7 @@ const decodePolyline = (encodedPolyline) => {
 
 const MapComponent = ({ currentRegion, ride }) => {
   const [mapLoaded, setMapLoaded] = useState(false);
-  let encodedPolyline = ride.route.routes[0].polyline.encodedPolyline;
+  let encodedPolyline = ride.route_polyline;
   if (
     !currentRegion ||
     typeof currentRegion.latitude === 'undefined' ||

@@ -1,12 +1,18 @@
-const {getCoordinatesOfAddress} = require("./utils");
+const {getCoordinatesOfAddress, getRoutes} = require("./utils");
 const pool = require('./database');
 
-async function createRoute(originAddress, destinationAddress, userId) {
+async function createRoute(originAddress, destinationAddress, routePolyline, routeTime, userId) {
     try {
         const originCoordinates = await getCoordinatesOfAddress(originAddress);
         const destinationCoordinates = await getCoordinatesOfAddress(destinationAddress);
-        const query = "INSERT INTO ROUTE (origin_latitude, origin_longitude, destination_latitude, destination_longitude, origin_address, destination_address) VALUES (?,?,?,?,?,?)";
-        const [result] = await pool.execute(query, [originCoordinates.latitude, originCoordinates.longitude, destinationCoordinates.latitude, destinationCoordinates.longitude, originAddress, destinationAddress]);
+        const googleRouteResponse = await getRoutes(originCoordinates, destinationCoordinates, [])
+        //THIS CONTAINS ROUTE INFO
+        const routeTime = googleRouteResponse.routes[0].duration;
+        const routePolyline = googleRouteResponse.routes[0].polyline.encodedPolyline;
+
+        const query = "INSERT INTO ROUTE (origin_latitude, origin_longitude, destination_latitude, destination_longitude, origin_address, destination_address, route_time, route_polyline) VALUES (?,?,?,?,?,?,?,?)";
+        const [result] = await pool.execute(query, [originCoordinates.latitude, originCoordinates.longitude, destinationCoordinates.latitude, destinationCoordinates.longitude, originAddress, destinationAddress, routeTime, routePolyline]);
+        //console.log(`Insertion was success! Route Polyline: ${routePolyline}`);
         return result; // Access route_id with result.insertId
     } catch (error) {
         console.error(error);
@@ -15,16 +21,40 @@ async function createRoute(originAddress, destinationAddress, userId) {
 }
 
 
-async function createStop(stopAddress, userId, routeId=null) {
-
-
+async function createStop(stopAddress, userId, tripId, routeId=null) {
     try {
         const stop_coordinates = await getCoordinatesOfAddress(stopAddress);
         const query = `
-            INSERT INTO STOP (latitude, longitude, route_id, user_id)
+            INSERT INTO STOP (latitude, longitude, trip_id, user_id)
             VALUES (?, ?, ?, ?)
         `;
-        const [result] = await pool.execute(query, [stop_coordinates.latitude, stop_coordinates.longitude, routeId, userId]);
+        const [result] = await pool.execute(query, [stop_coordinates.latitude, stop_coordinates.longitude, tripId, userId]);
+        //After we create the stop, fetch the entire route from the db and recompute route.
+        if (routeId) {
+            let routeQuery = `SELECT * FROM ROUTE WHERE route_id = ?`;
+            const [routeResult] = await pool.execute(routeQuery, [routeId]);
+            console.log('Route:', routeResult);
+
+            let stopsQuery = `SELECT * FROM STOP WHERE trip_id = ? ORDER BY stop_id ASC`;
+            const [stopsResult] = await pool.execute(stopsQuery, [tripId]);
+            console.log('Stops for Route:', stopsResult);
+
+            let route = routeResult[0];
+            let route_origin = {latitude: route.origin_latitude, longitude: route.origin_longitude};
+            let route_destination = {latitude: route.destination_latitude, longitude: route.destination_longitude};
+
+            let stops = stopsResult.map(stop => ({
+                latitude: stop.latitude,
+                longitude: stop.longitude
+            }));
+
+            const googleRouteResponse = await getRoutes(route_origin, route_destination, stops);
+            const newRoutePolyline = googleRouteResponse.routes[0].polyline.encodedPolyline;
+
+            let updateRouteQuery = `UPDATE ROUTE SET route_polyline = ? WHERE route_id = ?`;
+            const [updateResult] = await pool.execute(updateRouteQuery, [newRoutePolyline, routeId]);
+            console.log('Route updated with new polyline:', updateResult);
+        }
         console.log('Insert Result:', result);
         return result;
     } catch (error) {
@@ -38,7 +68,6 @@ async function createTrip(routeId, userId, category, completed, timestamp) {
         const query = `INSERT INTO TRIP (route_id, user_id, category, completed, timestamp) VALUES (?, ?, ?, ?, ?)`;
         const [result] = await pool.execute(query, [routeId, userId, category, completed, timestamp]);
 
-        console.log('Insert Result:', result);
         return result;
     } catch (error) {
         console.error('Error inserting Trip:', error);
@@ -46,17 +75,16 @@ async function createTrip(routeId, userId, category, completed, timestamp) {
     }
 }
 
-async function getStopsWithRouteId(routeId) {
+async function getStopsWithTripId(tripId) {
     try {
         const query = `
             SELECT * FROM STOP
-            WHERE route_id = ?
+            WHERE trip_id = ?
         `;
-        const [stops] = await pool.execute(query, [routeId]);
-        console.log('Stops:', stops);
+        const [stops] = await pool.execute(query, [tripId]);
         return stops;
     } catch (error) {
-        console.error('Error fetching Stops with routeId:', error);
+        console.error('Error fetching Stops with tripId:', error);
         throw error;
     }
 }
@@ -68,28 +96,9 @@ async function getRoutesWithRouteId(routeId) {
         `;
         // Destructuring to get the first element (rows) from the result.
         const [routes] = await pool.execute(query, [routeId]);
-        console.log(`routes: ${JSON.stringify(routes)}`);
         return routes;
     } catch (error) {
         console.error('Error fetching Routes with routeId:', error);
-        throw error;
-    }
-}
-
-async function getStopsWithUserId(userId, findAll) {
-    try {
-        let query = "";
-        let params = [userId];
-        if (findAll == "true") {
-            query = `SELECT * FROM STOP WHERE user_id != ?`;
-        } else {
-            query = `SELECT * FROM STOP WHERE user_id = ?`;
-        }
-        const [stops] = await pool.execute(query, params);
-        console.log('Stops:', stops);
-        return stops;
-    } catch (error) {
-        console.error('Error fetching Stops with userId:', error);
         throw error;
     }
 }
@@ -136,17 +145,19 @@ async function getEmailFromUserId(userId) {
 }
 
 async function getRidingTripsWithUserId(userId, findAll) {
+    if (findAll == false) {
+        return [];
+    }
     try {
-        const stops = await getStopsWithUserId(userId, findAll);
-        let trips = [];
-
-        for (let stop of stops) {
-            if (stop.route_id !== null) {
-                const matchingTrips = await getTripsWithRouteId(stop.route_id);
-                trips = [...trips, ...matchingTrips];
-            }
-        }
-
+        // This query assumes that `STOP.route_id` links to `ROUTE.route_id`
+        // and `ROUTE.trip_id` links to `TRIP.trip_id`.
+        let query = `
+            SELECT DISTINCT TRIP.*
+            FROM TRIP
+            INNER JOIN STOP ON TRIP.trip_id = STOP.trip_id
+            WHERE STOP.user_id = ?
+        `;
+        const [trips] = await pool.execute(query, [userId]);
         console.log('Trips:', trips);
         return trips;
     } catch (error) {
@@ -159,8 +170,7 @@ module.exports = {
     createRoute,
     createStop,
     createTrip,
-    getStopsWithRouteId,
-    getStopsWithUserId,
+    getStopsWithTripId,
     getTripsWithRouteId,
     getDrivingTripsWithUserId,
     getRidingTripsWithUserId,

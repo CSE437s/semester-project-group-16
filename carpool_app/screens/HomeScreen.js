@@ -1,12 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  StyleSheet,
-  ActivityIndicator,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useEffect, useState , useCallback} from 'react';
+import {Modal,View,Text,StyleSheet,ActivityIndicator,TouchableOpacity} from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+
 import { Calendar } from 'react-native-calendars';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import MapComponent from '../components/MapComponent';
@@ -24,22 +19,24 @@ const HomeScreen = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        getCurrentLocation();
-        const rides = await getUserRides('false');
-        if (rides) {
-          setUserRides(rides);
-          console.log(`getUserRides was successful: ${JSON.stringify(rides)}`); // This will log the actual rides data
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        try {
+          getCurrentLocation();
+          const rides = await getUserRides('false');
+          if (rides) {
+            setUserRides(rides);
+            console.log(`getUserRides was successful: ${JSON.stringify(rides)}`);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      };
+      fetchData();
 
-    fetchData();
-  }, []);
+    }, []) 
+  );
 
   const getCurrentLocation = () => {
     if ('geolocation' in navigator) {

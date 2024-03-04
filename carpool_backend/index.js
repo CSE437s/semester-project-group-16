@@ -9,8 +9,7 @@ const {
   createRoute,
   createStop,
   createTrip,
-  getStopsWithRouteId,
-  getStopsWithUserId,
+  getStopsWithTripId,
   getTripsWithRouteId,
   getDrivingTripsWithUserId,
   getRidingTripsWithUserId,
@@ -99,6 +98,7 @@ app.post('/stops', authenticate, async(req, res) => {
   const stopAddress = req.body.stopAddress;
   const userId = req.body.userId;
   const routeId = req.body.routeId;
+  const tripId = req.body.tripId;
 
   //console.log(req.body);
 
@@ -106,7 +106,7 @@ app.post('/stops', authenticate, async(req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
   try {
-      const result = await createStop(stopAddress, userId, routeId);
+      const result = await createStop(stopAddress, userId, tripId, routeId);
       res.status(200).json({ message: "Stop created successfully", stopId: result.insertId });
   } catch (error) {
       console.error('Error creating Stop:', error);
@@ -126,12 +126,6 @@ app.post('/trips', authenticate, async(req, res) => {
   try {
     const route = await createRoute(originAddress, destinationAddress, user_id);
     const route_id = route.insertId;
-    console.log(route_id);
-    console.log('route_id:', route_id);
-    console.log('user_id:', user_id);
-    console.log('category:', category);
-    console.log('completed:', completed);
-    console.log('timestamp:', timestamp);
     const result = await createTrip(route_id, user_id, category, completed, timestamp);
     return res.status(200).json({message: "New Trip successfully inserted"}); 
   } catch (error) {
@@ -149,10 +143,13 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
 
     let driving_trips = await getDrivingTripsWithUserId(userId, findAll);
     let riding_trips = await getRidingTripsWithUserId(userId, findAll);
-    let trips = [...driving_trips, ...riding_trips];
-
-    console.log('driving trips:' + driving_trips.length);
-    console.log('riding trips:' + riding_trips.length);
+    let combinedTrips = [...driving_trips, ...riding_trips];
+    //Filter out duplicates just in case.
+    let trips = combinedTrips.filter((trip, index, self) =>
+    index === self.findIndex((t) => (
+        t.trip_id === trip.trip_id
+    ))
+);
 
     trips.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     let allUserTrips = [];
@@ -175,20 +172,14 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
         origin_address: trip_route[0].origin_address,
         destination_address: trip_route[0].destination_address
     }
-
-
       const timestamp = trip.timestamp;
       const created_user = trip.user_id;
       const created_user_email = await getEmailFromUserId(created_user);
       const category = trip.category;
-
       
-      let trip_stops = await getStopsWithRouteId(trip.route_id);
-      let route = await getRoutes(origin, destination, trip_stops);
-      
-      const stops = trip_stops;
+      let trip_stops = await getStopsWithTripId(trip.trip_id);
 
-      allUserTrips.push({route: route, stops: stops, timestamp: timestamp, email: created_user_email[0], category:category, addresses: addresses, route_id: trip.route_id});
+      allUserTrips.push({route_polyline: trip_route[0].route_polyline, route_time: trip_route[0].route_time, stops: trip_stops, timestamp: timestamp, email: created_user_email[0], category:category, addresses: addresses, route_id: trip.route_id, trip_id: trip.trip_id});
     };
     console.log(`Number of trips returned: ${allUserTrips.length}`);
     res.status(200).json(allUserTrips);
@@ -196,12 +187,6 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
     console.error('Error fetching user rides:', error);
     res.status(500).json({message: 'Failed to fetch user rides'});
   }
-
-  //HARDCODED FOR NOW
-  //const route = {"distanceMeters":13105,"duration":"1709s","polyline":{"encodedPolyline":"el}jFr}hfPg@dKoB|WxD^nPpATLtIt@\\GrJv@nCJpALd@x@FTCzASrEa@lMaAG`AF`@mMTeGPsFd@uJVcH\\aCXcAb@_Af@y@h@u@Rm@HmAdCkj@xAw[T[f@UdH|@v@mQ`@kI_AaASKkDYyAQwAr[g@p@kGq@uPyBuLeA{@Si@OyAQmGi@wBUeCrh@uBGsADyATiInBuAL}AAcFe@q@De@Pi@^c@f@rB{c@eAGw@Bi@JaCjAiAZaABk`@kDg_@}CeDc@_ASyEg@sCWxHr@r@J~@RlEh@db@jDjW|B~KaTLYXs@Ny@Fk@JWPkDVmGCW`@qIp@IHG^FhAJNHzPvAPNxLjAVKdBPfAwTB_A"},"optimizedIntermediateWaypointIndex":[2,1,3,0]};
-  //const stops = {origin:{latitude:38.6583662, longitude:-90.3267726, name:"anton@wustl.edu"}, destination:{latitude:38.6557666, longitude:-90.30495909999999, name:"Blueberry Hill"}};
-  //const timestamp = "1709020800";
-  //res.json([{route: route, stops: stops, timestamp: timestamp}]);
 });
 
 app.listen(PORT, () => {
