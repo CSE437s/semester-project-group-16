@@ -78,8 +78,11 @@ async function createTrip(routeId, userId, category, completed, timestamp) {
 async function getStopsWithTripId(tripId) {
     try {
         const query = `
-            SELECT * FROM STOP
-            WHERE trip_id = ?
+            SELECT STOP.*, USER.*
+            FROM STOP
+            JOIN TRIP ON STOP.trip_id = TRIP.trip_id
+            JOIN USER ON TRIP.user_id = USER.user_id
+            WHERE STOP.trip_id = ?
         `;
         const [stops] = await pool.execute(query, [tripId]);
         return stops;
