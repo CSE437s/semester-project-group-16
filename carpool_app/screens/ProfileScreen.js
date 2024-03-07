@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import {signOut} from 'firebase/auth';
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
+import CustomButton from '../components/CustomButton';
 
 const ProfileScreen = () => {
 
@@ -15,8 +16,7 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text>This is the profile screen!</Text>
-      <Button title="Log out" onPress={logout} /> 
+      <CustomButton title="Log out" onPress={logout} /> 
     </View>
   );
 };

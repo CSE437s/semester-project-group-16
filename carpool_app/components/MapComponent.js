@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button, Text } from 'react-native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import polyline from '@mapbox/polyline';
-
+import {checkUserExists} from '../Utils';
+import Icon from 'react-native-vector-icons/Ionicons';
 import * as Location from 'expo-location';
 
 
-const MapComponent = ({ ride }) => {
+const MapComponent = ({ ride, mapHeight=500 }) => {
 
   const [currentLocation, setCurrentLocation] = useState({});
   useEffect(() => {
@@ -20,6 +21,14 @@ const MapComponent = ({ ride }) => {
     };
     fetchLocation();
   }, []);
+
+
+  const styles = StyleSheet.create({
+    map: {
+      width: '100%',
+      height: mapHeight,
+    },
+  });
 
   if (!ride) {
     return (
@@ -46,17 +55,29 @@ const MapComponent = ({ ride }) => {
   const polylinePoints = decodePolyline(encodedPolyline);
 
   return (
-    <View style={styles.map}>
+    <View style={[styles.map, { height: mapHeight }]}>
       <MapView
         style={{ flex: 1 }}
         initialRegion={currentLocation}
-        region={currentLocation} // Use the state-managed region
+        region={currentLocation}
         followsUserLocation={true}
         showsUserLocation={true}
-        onRegionChangeComplete={setCurrentLocation} // Optional: update the region when the user drags/zooms the map
+        onRegionChangeComplete={setCurrentLocation}
       >
+        {ride.stops.map((stop, index) => (
+        <Marker
+          key={index}
+          coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
+          title={`Stop ${index + 1}`}
+          description={stop.email}
+          anchor={{ x: 0.5, y: 1 }} 
+        >
+          <Icon name="location" size={30} color="#D00000" />
+        </Marker>
+        ))}
+
         <Polyline
-          coordinates={polylinePoints}
+          coordinates={polylinePoints} 
           strokeColor="#022940"
           strokeWidth={6}
         />
@@ -73,6 +94,11 @@ async function getLocation() {
   }
   const location = await Location.getCurrentPositionAsync({});
   return location.coords;
+}
+
+const isYourStop = async (stop) => {
+  const user = await checkUserExists();
+  return stop.user_id == user.uid;
 }
 
 //Centers map display.
@@ -134,11 +160,6 @@ const decodePolyline = (encodedPolyline) => {
   }));
 };
 
-const styles = StyleSheet.create({
-  map: {
-    width: '100%',
-    height: 500,
-  },
-});
+
 
 export default MapComponent;

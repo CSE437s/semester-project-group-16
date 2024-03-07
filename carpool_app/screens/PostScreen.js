@@ -5,7 +5,7 @@ import PostCreation from '../components/PostCreation';
 import {useState, useEffect} from 'react';
 import { StyleSheet} from 'react-native';
 import { getUserRides } from '../Utils';
-
+import CustomButton from '../components/CustomButton';
 
 import axios from 'axios';
 //import { BASE_URL} from '@env';
@@ -42,7 +42,7 @@ const PostScreen = () => {
   return (
     <View style={styles.container}>
       <View>
-        <Button title="Create Post" onPress={openPostCreation} />
+        <CustomButton title="New Driving Event" onPress={openPostCreation} />
         <Modal visible={showPostCreation} animationType="slide">
           <PostCreation onClose={closePostCreation} />
         </Modal>
@@ -61,6 +61,7 @@ const PostScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop:60,
     display:'flex',
     justifyContent: 'center',
   },

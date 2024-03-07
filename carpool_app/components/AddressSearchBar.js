@@ -1,6 +1,6 @@
 import 'react-native-get-random-values';
 import React, { useState, useEffect } from 'react';
-import { TextInput, View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { TextInput, View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import {REACT_APP_MAPBOX_API_KEY} from '@env';
 import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -79,23 +79,48 @@ const AddressSearchBar = ({handleTextChange}) => {
     };
 
     return (
-        <View>
-            <TextInput
-                value={input}
-                onChangeText={handleInputChange}
-                placeholder="Start typing an address..."
-            />
-            <FlatList
-                data={suggestions}
-                keyExtractor={(item, index) => item.mapbox_id} // Assuming each item has a unique id
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleAddressPress(item)}>
-                    <Text>{displayNameAndAddress(item)}</Text>
-                  </TouchableOpacity>
-                )}
-            />
+        <View style={styles.container}>
+          <TextInput
+            value={input}
+            onChangeText={handleInputChange}
+            placeholder="Start typing an address..."
+            style={styles.textInput}
+          />
+          <FlatList
+            data={suggestions}
+            keyExtractor={(item, index) => item.mapbox_id}
+            renderItem={({ item }) => (
+              <TouchableOpacity style={styles.listItem} onPress={() => handleAddressPress(item)}>
+                <Text style={styles.listItemText}>{displayNameAndAddress(item)}</Text>
+              </TouchableOpacity>
+            )}
+          />
         </View>
-    );
-};
+      );
+    };
+    
+    const styles = StyleSheet.create({
+      container: {
+        // Add padding or any other styles for the container if needed
+      },
+      textInput: {
+        fontSize: 16, 
+        padding: 10, 
+        borderWidth: 1, 
+        borderColor: '#ccc', 
+        borderRadius: 5, 
+        backgroundColor: '#fff', 
+        marginBottom: 10, 
+      },
+      listItem: {
+        padding: 10, 
+        borderBottomWidth: 1, 
+        borderBottomColor: '#ccc', 
+      },
+      listItemText: {
+        fontFamily: 'Poppins-SemiBold',
+        fontSize: 16, 
+      },
+    });
 
 export default AddressSearchBar;

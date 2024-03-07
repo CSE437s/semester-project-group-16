@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Modal, TouchableOpacity, ScrollView} from 'react-native';
-//import {Picker } from 'react-native-picker';
 import { Picker } from '@react-native-picker/picker';
 import AddressSearchBar from './AddressSearchBar'
 import { REACT_APP_REMOTE_SERVER } from '@env';
 import axios from 'axios'; 
 import { checkUserExists } from '../Utils';
 import ChooseDate from './ChooseDate';
+import BackArrow from './BackArrow';
+import Icon from 'react-native-vector-icons/Ionicons';
+import CustomPicker from './CustomPicker';
+import CustomButton from './CustomButton';
 
 const PostCreation = ({ onClose }) => {
   // Simplified state hooks for addresses
@@ -57,37 +60,33 @@ const PostCreation = ({ onClose }) => {
 
   return (
     <View style={styles.container}>
-        <View style={styles.topContainer}>
-          <Button title="Exit" onPress={onClose} />
+        <BackArrow onClose={onClose} />
+
+        <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
+          <Icon name={"business-outline"} size={20}/>
+          <Text style={styles.headerText}>Starting Address</Text>
         </View>
-        <Text style={styles.headerText}>Starting Address:</Text>
+
         <AddressSearchBar handleTextChange={setStartAddress}/>
 
-        <Text style={styles.headerText}>Destination Address:</Text>
+        <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
+          <Icon name={"flag-outline"} size={20}/>
+          <Text style={styles.headerText}>Destination Address</Text>
+        </View>
         <AddressSearchBar handleTextChange={setTargetAddress}/>
 
-        <Text style={styles.headerText}>When are you getting there?</Text>
+        <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
+          <Icon name={"alarm-outline"} size={20}/>
+          <Text style={styles.headerText}>Time of Arrival</Text>
+        </View>
         <ChooseDate setSelectedDate={setDate} />
 
-        <Text style={styles.headerText}>Ride category:</Text>
-        <TouchableOpacity onPress={togglePickerVisibility}>
-          <Text style={styles.selectedValueText}>{category}</Text>
-        </TouchableOpacity>
-        {isPickerVisible && (
-        <Picker
-          selectedValue={category}
-          onValueChange={(itemValue) => {
-            setCategory(itemValue);
-            togglePickerVisibility();
-          }}
-          style={styles.pickerStyle}
-        >
-          <Picker.Item label="Campus" value="Campus" />
-          <Picker.Item label="Groceries" value="Groceries" />
-          <Picker.Item label="Misc" value="Misc" />
-        </Picker>
-      )}
-        <Button title="Submit" onPress={handleSubmit} />
+        <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
+          <Icon name={"map-outline"} size={20}/>
+          <Text style={styles.headerText}>Category</Text>
+        </View>
+          <CustomPicker category={category} setCategory={setCategory} />
+        <CustomButton title="Submit" onPress={handleSubmit} />
     </View>
   );
 };
@@ -95,7 +94,9 @@ const PostCreation = ({ onClose }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F0F0', 
+    marginTop:60,
+    margin:20,
+    gap:5,
   },
   scrollViewContainer: {
     padding: 60, 
@@ -107,8 +108,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18, 
-    fontWeight: 'bold',
-    color: '#333333',
+    fontFamily:'Poppins-Black',
     paddingTop: 10,
   },
   input: {

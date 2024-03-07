@@ -4,42 +4,111 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MapComponent  from './MapComponent';
 import StopCreation from './StopCreation';
 import BackArrow from './BackArrow';
+import {timestampToWrittenDate, checkUserExists} from '../Utils';
+import CustomButton from './CustomButton'; 
 
-const ShowPost = ({trip, onClose}) => {
+  const formatRouteTime = (routeTimeInSeconds) => {
+    const minutes = Math.floor(parseInt(routeTimeInSeconds, 10) / 60);
+    return `${minutes} minute`;
+  };
+  const didUserCreatePost = async (trip) => {
+    const user = await checkUserExists();
+    return user.uid == trip.trip.user_id;
+  }
+  
+  const ShowPost = ({ trip, onClose }) => {
+    console.log(JSON.stringify(trip));
     const [showApply, setShowApply] = useState(false);
+    const [isYourPost, setIsYourPost] = useState(false);
 
+    useEffect(() => {
+        const checkIfUserCreatedPost = async () => {
+          const result = await didUserCreatePost(trip);
+          setIsYourPost(result);
+        };
+        checkIfUserCreatedPost();
+      }, [])
+  
     const handleClose = () => {
-        setShowApply(false)
+      setShowApply(false);
+    };
+
+    //TODO IMPLEMENT COMPONENT. might be unnecessary. Posts implemented to only show those that aren't yours.
+    const handleEditPost = () => {
+        console.log("Post creator wants to edit.");
     }
-
+  
+    const routeTimeFormatted = formatRouteTime(trip.route.route_time);
+  
     return (
-        <View style={styles.container}>
-            <BackArrow onClose={onClose} />
-
-            <MapComponent ride={trip} />
-            <TouchableOpacity onPress={() => setShowApply(true)} style={styles.applyButton}>
-                <Text>Apply</Text>
-            </TouchableOpacity>
-
-            <Modal visible={showApply} animationType="slide">
-                <StopCreation onClose={handleClose} tripRouteId={trip.trip.route_id} tripId={trip.trip.trip_id} /> 
-            </Modal>
+      <View style={styles.container}>
+        <BackArrow onClose={onClose} />
+        <Text style={styles.email}>{trip.email}'s Trip</Text>
+  
+        <MapComponent ride={trip} mapHeight={200} />
+  
+        <View style={styles.tripDetails}>
+        <Text style={styles.timestamp}>{timestampToWrittenDate(trip.trip.timestamp)}</Text>
+        <View style={{display:'flex', flexDirection:'row', gap:5}}>
+        <Icon name={"business-outline"} size={16}/>
+        <Text style={styles.address}> {trip.route.origin_address}</Text>
+      </View>
+      <View style={{display:'flex', flexDirection:'row', gap:5}}>
+        <Icon name={"flag-outline"} size={16}/>
+        <Text style={styles.address}> {trip.route.destination_address}</Text>
+      </View>
+        <View style={{display:'flex', flexDirection:'row', justifyContent:'space-around', alignItems:'center', margin: 10}}>
+          <Text style={styles.detailText}>{routeTimeFormatted} trip</Text>
+          <Text style={styles.detailText}>{trip.trip.category}</Text>
+          <Text style={styles.detailText}>{trip.stops.length} Passengers</Text>
         </View>
+        </View>
+  
+        {isYourPost ? (
+            <CustomButton onPress={() => handleEditPost} title="Edit" />
+        ) : (
+            <CustomButton onPress={() => setShowApply(true)} title="Apply" />
+        )}
+  
+        <Modal visible={showApply} animationType="slide">
+          <StopCreation onClose={handleClose} tripRouteId={trip.trip.route_id} tripId={trip.trip.trip_id} /> 
+        </Modal>
+      </View>
     );
-}
-
-const styles = StyleSheet.create({
+  };
+  
+  const styles = StyleSheet.create({
     container: {
-        marginTop: 120,
-        flex: 1,
+      marginTop: 60,
+      flex: 1,
+      padding: 20,
     },
-    backButton: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    tripDetails: {
+      marginBottom: 20,
+    },
+    detailText: {
+      fontSize: 16,
+      marginBottom: 5,
     },
     applyButton: {
-        // Styles for your apply button
-        marginTop: 20, // Example spacing, adjust as needed
+      backgroundColor: '#007bff',
+      padding: 10,
+      alignItems: 'center',
+      borderRadius: 5,
     },
-});
-export default ShowPost;
+    email: {
+        fontSize:18,
+        fontFamily:'Poppins-SemiBold',
+        margin:8,
+    },
+    timestamp: {
+        fontSize:22,
+        fontFamily:'Poppins-Black',
+        padding:16,
+    },
+    address: {
+        margin:5,
+    }
+  });
+  
+  export default ShowPost;

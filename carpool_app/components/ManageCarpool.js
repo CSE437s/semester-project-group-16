@@ -1,7 +1,7 @@
 import React, { useEffect, useState , useCallback} from 'react';
 import {Modal,View,Text,StyleSheet,ActivityIndicator,TouchableOpacity} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-
+import CustomButton from './CustomButton';
 import { Calendar } from 'react-native-calendars';
 import {timestampToDate} from '../Utils';
 
@@ -9,22 +9,21 @@ function ManageCarpool({userRides}) {
     const [modalVisible, setModalVisible] = useState(false);
     const [markedDates, setMarkedDates] = useState({});
 
+
     const onManageCarpoolsPress = () => {
-        const newMarkedDates = userRides.reduce((acc, ride) => {
-          const dateKey = timestampToDate(ride.timestamp);
-          acc[dateKey] = { selected: true, marked: true, selectedColor: 'blue'};
-          return acc;
-        }, {});
+      const newMarkedDates = userRides.reduce((acc, ride) => {
+        const dateKey = timestampToDate(ride.timestamp);
+        acc[dateKey] = { selected: true, marked: true, selectedColor: 'blue'};
+        return acc;
+      }, {});
     
-        setMarkedDates(newMarkedDates);
-        setModalVisible(true);
-      };
+      setMarkedDates(newMarkedDates);
+      setModalVisible(true);
+    };
 
     return (
     <>
-    <TouchableOpacity onPress={onManageCarpoolsPress} style={styles.buttonStyle}>
-        <Text style={styles.buttonTextStyle}>Manage Carpools</Text>
-    </TouchableOpacity>
+    <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} />
 
     <Modal animationType="slide" transparent={true} visible={modalVisible}
     onRequestClose={() => setModalVisible(!modalVisible)}>
@@ -33,9 +32,7 @@ function ManageCarpool({userRides}) {
             <Text style={styles.modalText}>Manage Carpools</Text>
             <Calendar markedDates={markedDates} />
 
-            <TouchableOpacity style={styles.buttonStyle} onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.buttonTextStyle}>Hide Calendar</Text>
-            </TouchableOpacity>
+            <CustomButton onPress={() => setModalVisible(false)} title={"Close"} />
 
             </View>
         </View>
@@ -44,6 +41,7 @@ function ManageCarpool({userRides}) {
     );
 
 }
+ 
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,

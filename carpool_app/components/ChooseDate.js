@@ -23,7 +23,7 @@ const ChooseDate = ({ setSelectedDate }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Select Date</Text>
+    
       <DateTimePicker
         testID="datePicker"
         value={date}
@@ -33,7 +33,6 @@ const ChooseDate = ({ setSelectedDate }) => {
         style={styles.datePicker}
       />
 
-      <Text style={styles.label}>Select Time</Text>
       <DateTimePicker
         testID="timePicker"
         value={date}
@@ -49,17 +48,14 @@ const ChooseDate = ({ setSelectedDate }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 20,
-    marginVertical: 10,
+    flexDirection: 'row',
+    justifyContent: 'left', 
+    alignItems: 'center', 
   },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-  },
-  datePicker: {
-    width: '100%',
-    marginBottom: 20,
   },
 });
 

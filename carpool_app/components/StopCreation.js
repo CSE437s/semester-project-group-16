@@ -5,6 +5,7 @@ import { REACT_APP_REMOTE_SERVER } from '@env';
 import axios from 'axios'; 
 import AddressSearchBar from './AddressSearchBar';
 import BackArrow from './BackArrow';
+import CustomButton from './CustomButton';
 
   const StopCreation = ({ onClose, tripRouteId, tripId }) => {
     const [address, setAddress] = useState('');
@@ -48,7 +49,7 @@ import BackArrow from './BackArrow';
       <AddressSearchBar handleTextChange={setAddress} />
 
       <View style={styles.buttonContainer}>
-        <Button title="Submit" onPress={handleSubmit} />
+        <CustomButton title="Submit" onPress={handleSubmit} />
       </View>
 
     </View>

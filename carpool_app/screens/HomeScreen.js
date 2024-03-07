@@ -43,9 +43,9 @@ const HomeScreen = () => {
       {userRides.length > 0 ? (
         <>
           <View style={styles.tripInfo}>
-            <Text style={[{fontSize: 16}, styles.tripInfoText]}>Your Next Trip</Text>
+            <Text style={[{fontSize: 14}, styles.tripInfoText]}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
-              <Text style={[{fontSize: 22}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[0].trip.timestamp)}</Text>
+              <Text style={[{fontSize: 18}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[0].trip.timestamp)}</Text>
             </TouchableOpacity>
           </View>
           <Divider color={"black"} width={1} style={styles.divider} />
