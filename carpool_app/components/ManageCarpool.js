@@ -12,7 +12,7 @@ function ManageCarpool({userRides}) {
 
     const onManageCarpoolsPress = () => {
       const newMarkedDates = userRides.reduce((acc, ride) => {
-        const dateKey = timestampToDate(ride.timestamp);
+        const dateKey = timestampToDate(ride.trip.timestamp);
         acc[dateKey] = { selected: true, marked: true, selectedColor: 'blue'};
         return acc;
       }, {});
@@ -20,6 +20,8 @@ function ManageCarpool({userRides}) {
       setMarkedDates(newMarkedDates);
       setModalVisible(true);
     };
+    console.log(`Carpools in manage carpool: ${JSON.stringify(userRides)}`);
+    console.log(`Marked dates: ${JSON.stringify(markedDates)}`);
 
     return (
     <>
