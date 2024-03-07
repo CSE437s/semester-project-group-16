@@ -24,7 +24,6 @@ export const getUserRides = async (getAll) => {
       throw new Error('Failed to fetch from protected endpoint');
     }
     const responseData = await response.json();
-    console.log(`Got response data! ${JSON.stringify(responseData)}`);
     return responseData;
   } catch (error) {
     console.error('Error making API call:', error);
@@ -81,7 +80,7 @@ export const checkUserIsVerified = () => {
   return user;
 };
 
-const createNewTrip = async (
+export const createNewTrip = async (
   userId,
   originAddress,
   destinationAddress,
@@ -127,3 +126,22 @@ const createNewTrip = async (
   }
 };
 
+export const timestampToDate = (timestamp) => {
+  const date = new Date(timestamp);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+    2,
+    '0'
+  )}-${String(date.getDate()).padStart(2, '0')}`;
+};
+
+export const timestampToWrittenDate = (timestamp) => {
+  const date = new Date(timestamp);
+  
+  const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+  const formattedDate = new Intl.DateTimeFormat('en-US', dateOptions).format(date);
+  
+  const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+  const formattedTime = new Intl.DateTimeFormat('en-US', timeOptions).format(date);
+  
+  return `${formattedDate}, ${formattedTime}`;
+};

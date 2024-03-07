@@ -1,46 +1,66 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
-import React, {useState} from 'react';
-import {Platform, StyleSheet, Text, ScrollView, View, Button} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
-
-const ChooseDate = ({setSelectedDate}) => {
+const ChooseDate = ({ setSelectedDate }) => {
   const [date, setDate] = useState(new Date());
 
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
-      const currentDate = selectedDate;
-      setDate(currentDate);
+      setDate(selectedDate);
     }
   };
 
   const onChangeTime = (event, selectedTime) => {
     if (selectedTime) {
-      const updatedDateTime = new Date(date.setHours(selectedTime.getHours(), selectedTime.getMinutes()));
+      const updatedDateTime = new Date(date);
+      updatedDateTime.setHours(selectedTime.getHours());
+      updatedDateTime.setMinutes(selectedTime.getMinutes());
       setDate(updatedDateTime);
-      setSelectedDate(updatedDateTime); 
+      setSelectedDate(updatedDateTime);
     }
   };
 
   return (
-    <View>
-        <DateTimePicker
-          testID="datePicker"
-          value={date}
-          mode="date"
-          display="default"
-          onChange={onChangeDate}
-        />
-        <DateTimePicker
-          testID="timePicker"
-          value={date}
-          mode="time"
-          is24Hour={true}
-          display="default"
-          onChange={onChangeTime}
-        />
+    <View style={styles.container}>
+      <Text style={styles.label}>Select Date</Text>
+      <DateTimePicker
+        testID="datePicker"
+        value={date}
+        mode="date"
+        display="default"
+        onChange={onChangeDate}
+        style={styles.datePicker}
+      />
 
+      <Text style={styles.label}>Select Time</Text>
+      <DateTimePicker
+        testID="timePicker"
+        value={date}
+        mode="time"
+        is24Hour={true}
+        display="default"
+        onChange={onChangeTime}
+        style={styles.datePicker}
+      />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginHorizontal: 20,
+    marginVertical: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  datePicker: {
+    width: '100%',
+    marginBottom: 20,
+  },
+});
 
 export default ChooseDate;

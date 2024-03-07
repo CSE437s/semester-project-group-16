@@ -4,222 +4,98 @@ import { useFocusEffect } from '@react-navigation/native';
 
 import { Calendar } from 'react-native-calendars';
 import MapComponent from '../components/MapComponent';
-import { getUserRides } from '../Utils';
-//import MapView, { Marker } from 'react-native-maps';
-//import Geolocation from 'react-native-geolocation-service';
+import ManageCarpool from '../components/ManageCarpool';
+import { getUserRides, timestampToDate, timestampToWrittenDate } from '../Utils';
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
+import { Divider } from '@rneui/themed';
+import LinearGradient from 'react-native-linear-gradient';
 
 const HomeScreen = () => {
-  const [currentRegion, setCurrentRegion] = useState({latitude: 38.6488, longitude:-90.3108});
-  //PLACEHOLDER POLYLINE!!
   const [userRides, setUserRides] = useState([]);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [markedDates, setMarkedDates] = useState({});
 
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
         try {
-          getCurrentLocation();
           const rides = await getUserRides('false');
           if (rides) {
             setUserRides(rides);
-            console.log(`getUserRides was successful: ${JSON.stringify(rides)}`);
           }
         } catch (error) {
           console.error(error);
         }
       };
       fetchData();
-
     }, []) 
   );
-
-  const getCurrentLocation = () => {
-    if ('geolocation' in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          console.log(`LAT AND LONG ${latitude} ${longitude}`);
-          setCurrentRegion({
-            latitude,
-            longitude,
-            latitudeDelta: 1, // Zoom level for latitude
-            longitudeDelta: 1, // Zoom level for longitude
-          });
-        },
-        (error) => {
-          console.log(error.code, error.message);
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
-    } else {
-      console.log('Geolocation is not supported by this browser.');
-    }
-  };
-
+  //TODO you can view an upcoming map from this, else remove 
   const onDatePress = () => {
     console.log('Date is pressed!');
   };
-  const onManageCarpoolsPress = () => {
-    console.log('Manage carpools is pressed!');
-    const newMarkedDates = userRides.reduce((acc, ride) => {
-      const dateKey = timestampToDate(ride.timestamp); // Convert each timestamp to date key
-      acc[dateKey] = {
-        selected: true,
-        marked: true,
-        selectedColor: 'blue',
-      };
-      return acc;
-    }, {});
-
-    setMarkedDates(newMarkedDates);
-    setModalVisible(true);
-  };
+  if (!userRides) {
+    <ActivityIndicator />
+  }
 
   return (
-    <>
-      {userRides && userRides.length > 0 ? (
-        <View style={styles.container}>
+    
+    <View style={styles.container}> 
+      {userRides.length > 0 ? (
+        <>
           <View style={styles.tripInfo}>
-            <Text style={styles.tripInfoText}>Your Next Trip</Text>
+            <Text style={[{fontSize: 16}, styles.tripInfoText]}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
-              <Text style={styles.tripInfoText}>{timestampToDate(userRides[0].timestamp)}</Text>
+              <Text style={[{fontSize: 22}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[0].trip.timestamp)}</Text>
             </TouchableOpacity>
           </View>
-           <MapComponent currentRegion={currentRegion} ride={userRides[0]} />
+          <Divider color={"black"} width={1} style={styles.divider} />
 
-          <TouchableOpacity
-            onPress={onManageCarpoolsPress}
-            style={styles.buttonStyle}
-          >
-            <Text style={styles.buttonTextStyle}>Manage Carpools</Text>
-          </TouchableOpacity>
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Manage Carpools</Text>
-                <Calendar
-                  markedDates={markedDates}
-                />
-                <TouchableOpacity
-                  style={styles.buttonStyle}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text style={styles.buttonTextStyle}>Hide Calendar</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </Modal>
-        </View>
+          <MapComponent ride={userRides[0]} />
+          <ManageCarpool userRides={userRides}/>
+          </>
       ) : (
-        <ActivityIndicator />
+        <>
+        <Text style={[{fontSize: 24}, styles.tripInfoText]}> You have no upcoming trips! </Text>
+        <MapComponent />
+        <ManageCarpool userRides={userRides}/>
+        </>
       )}
-    </>
+    </View>
   );
 };
 
-const timestampToDate = (timestamp) => {
-  const date = new Date(timestamp);
-  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
-    2,
-    '0'
-  )}-${String(date.getDate()).padStart(2, '0')}`;
-};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
     alignItems: 'center',
-    justifyContent: 'space-around', // Distribute space evenly
+    justifyContent: 'space-around',
     paddingTop: 60,
-    backgroundColor: '#F5F5F5', // Soft background color
+  },
+  divider: {
+    alignSelf:'left',
+    marginLeft:10,
+    borderRadius:5,
+    marginTop:-45,
+    marginBottom: -20,
+    width:'80%', 
   },
   tripInfo: {
-    flexDirection: 'row',
+    alignSelf:'left',
+    marginLeft:10,
+    flexDirection: 'column',
+    alignItems:'flex-start',
     justifyContent: 'space-around',
-    width: '70%', // Increase width for better spacing
-    padding: 10,
-    backgroundColor: '#FFFFFF', // Light background to highlight this section
-    borderRadius: 10, // Rounded corners
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    width: '80%',
   },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  openButton: {
-    backgroundColor: '#022940', 
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    fontWeight: 'bold', 
-    fontSize: 20, 
-  },
-  buttonStyle: {
-    backgroundColor: '#022940', 
-    padding: 10,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginTop: 20, // Add some margin at the top
-  },
-  buttonTextStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
   },
   tripInfoText: {
-    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
   }
 });
 

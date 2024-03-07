@@ -174,14 +174,11 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
         origin_address: trip_route[0].origin_address,
         destination_address: trip_route[0].destination_address
     }
-      const timestamp = trip.timestamp;
-      const created_user = trip.user_id;
-      const created_user_email = await getEmailFromUserId(created_user);
-      const category = trip.category;
+      const created_user_email = await getEmailFromUserId(trip.user_id);
       
       let trip_stops = await getStopsWithTripId(trip.trip_id);
 
-      allUserTrips.push({route_polyline: trip_route[0].route_polyline, route_time: trip_route[0].route_time, stops: trip_stops, timestamp: timestamp, email: created_user_email[0], category:category, addresses: addresses, route_id: trip.route_id, trip_id: trip.trip_id});
+      allUserTrips.push({route:trip_route[0], stops: trip_stops, email: created_user_email[0].email, trip:trip});
     };
     console.log(`Number of trips returned: ${allUserTrips.length}`);
     res.status(200).json(allUserTrips);
@@ -190,6 +187,8 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
     res.status(500).json({message: 'Failed to fetch user rides'});
   }
 });
+
+app.post('/')
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

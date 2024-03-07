@@ -9,33 +9,37 @@ const Tab = createBottomTabNavigator();
 
 function NavigationBar() {
 
-    return (
-        <NavigationContainer>
-            <Tab.Navigator screenOptions={({ route }) => ({
+  return (
+    <NavigationContainer>
+      <Tab.Navigator 
+        screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-
             if (route.name === 'Home') {
-              iconName = 'home-outline'; // Specify your icon for Home
+              iconName = 'home-outline'; 
             } else if (route.name === 'Posts') {
-              iconName = 'grid-outline'; // Specify your icon for Posts
+              iconName = 'grid-outline'; 
             } else if (route.name === 'Profile') {
-              iconName = 'person-outline'; // Specify your icon for Profile
+              iconName = 'person-outline';
             }
-
             return <Icon name={iconName} size={size} color={color} />;
           },
+          tabBarActiveTintColor: "#022940", 
+          tabBarInactiveTintColor: "gray", 
+          tabBarStyle: [ 
+            {
+              "display": "flex"
+            },
+            null
+          ]
         })}
-        tabBarOptions={{
-          activeTintColor: '#022940',
-          inactiveTintColor: 'gray',
-        }}>
-                <Tab.Screen name="Home" component={HomeScreen} />
-                <Tab.Screen name="Posts" component={PostScreen} />
-                <Tab.Screen name="Profile" component={ProfileScreen} />
-            </Tab.Navigator>
-        </NavigationContainer>
-    )
+      >
+        <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+        <Tab.Screen name="Posts" component={PostScreen} options={{ headerShown: false }}/>
+        <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
 }
 
 export default NavigationBar;

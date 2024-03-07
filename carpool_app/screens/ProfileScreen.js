@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import {signOut} from 'firebase/auth';
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
 
@@ -14,11 +14,17 @@ const ProfileScreen = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text>This is the profile screen!</Text>
       <Button title="Log out" onPress={logout} /> 
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: 120,
+  }
+})
 
 export default ProfileScreen;
