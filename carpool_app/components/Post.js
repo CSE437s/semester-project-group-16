@@ -24,20 +24,20 @@ const Post = ({ trip }) => {
   };
   return (
     <TouchableOpacity style={styles.container} onPress={handleApply}>
-      <Text style={styles.email}>{trip.email}</Text>
-      <Text style={styles.timestamp}>{timestampToWrittenDate(trip.trip.timestamp)}</Text>
+      <Text style={styles.email}>{trip.tripUserEmail}</Text>
+      <Text style={styles.timestamp}>{timestampToWrittenDate(trip.timestamp)}</Text>
 
       <View style={{display:'flex', flexDirection:'row', gap:5}}>
         <Icon name={"business-outline"} size={16}/>
-        <Text style={styles.address}> {trip.route.origin_address}</Text>
+        <Text style={styles.address}> {trip.route.originAddress}</Text>
       </View>
       <View style={{display:'flex', flexDirection:'row', gap:5}}>
         <Icon name={"flag-outline"} size={16}/>
-        <Text style={styles.address}> {trip.route.destination_address}</Text>
+        <Text style={styles.address}> {trip.route.destinationAddress}</Text>
       </View>
       <View style={{display:'flex', flexDirection:'row', justifyContent:'space-around', margin: 10}}>
-        <Text style={styles.category}>{trip.trip.category}</Text>
-        <Text style={styles.completed}>{trip.trip.completed ? 'Completed' : 'Upcoming'}</Text>
+        <Text style={styles.category}>{trip.category}</Text>
+        <Text style={styles.completed}>{trip.completed ? 'Completed' : 'Upcoming'}</Text>
       </View>
       <Modal visible={showPost} animationType="slide">
         <ShowPost trip={trip} onClose={handleClose}/> 

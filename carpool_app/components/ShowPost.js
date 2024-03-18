@@ -13,7 +13,7 @@ import CustomButton from './CustomButton';
   };
   const didUserCreatePost = async (trip) => {
     const user = await checkUserExists();
-    return user.uid == trip.trip.user_id;
+    return user.uid == trip.userId;
   }
   
   const ShowPost = ({ trip, onClose }) => {
@@ -38,28 +38,28 @@ import CustomButton from './CustomButton';
         console.log("Post creator wants to edit.");
     }
   
-    const routeTimeFormatted = formatRouteTime(trip.route.route_time);
+    const routeTimeFormatted = formatRouteTime(trip.route.routeTime);
   
     return (
       <View style={styles.container}>
         <BackArrow onClose={onClose} />
-        <Text style={styles.email}>{trip.email}'s Trip</Text>
+        <Text style={styles.email}>{trip.tripUserEmail}'s Trip</Text>
   
         <MapComponent ride={trip} mapHeight={200} />
   
         <View style={styles.tripDetails}>
-        <Text style={styles.timestamp}>{timestampToWrittenDate(trip.trip.timestamp)}</Text>
+        <Text style={styles.timestamp}>{timestampToWrittenDate(trip.timestamp)}</Text>
         <View style={{display:'flex', flexDirection:'row', gap:5}}>
         <Icon name={"business-outline"} size={16}/>
-        <Text style={styles.address}> {trip.route.origin_address}</Text>
+        <Text style={styles.address}> {trip.route.originAddress}</Text>
       </View>
       <View style={{display:'flex', flexDirection:'row', gap:5}}>
         <Icon name={"flag-outline"} size={16}/>
-        <Text style={styles.address}> {trip.route.destination_address}</Text>
+        <Text style={styles.address}> {trip.route.destinationAddress}</Text>
       </View>
         <View style={{display:'flex', flexDirection:'row', justifyContent:'space-around', alignItems:'center', margin: 10}}>
           <Text style={styles.detailText}>{routeTimeFormatted} trip</Text>
-          <Text style={styles.detailText}>{trip.trip.category}</Text>
+          <Text style={styles.detailText}>{trip.category}</Text>
           <Text style={styles.detailText}>{trip.stops.length} Passengers</Text>
         </View>
         </View>
@@ -71,7 +71,7 @@ import CustomButton from './CustomButton';
         )}
   
         <Modal visible={showApply} animationType="slide">
-          <StopCreation onClose={handleClose} tripRouteId={trip.trip.route_id} tripId={trip.trip.trip_id} /> 
+          <StopCreation onClose={handleClose} tripRouteId={trip.route.routeId} tripId={trip.tripId} /> 
         </Modal>
       </View>
     );

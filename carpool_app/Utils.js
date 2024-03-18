@@ -1,14 +1,13 @@
 //Contains API call functions
 import { FIREBASE_AUTH } from './components/FirebaseConfig';
 import { REACT_APP_LOCAL_SERVER, REACT_APP_REMOTE_SERVER } from '@env';
+import {TripClass, RideClass, StopClass, CoordinateClass} from './ApiDataClasses';
 
 export const getUserRides = async (getAll) => {
   try {
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
-    //const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}`;
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/${getAll}`;
-    //console.log(`USER ID IN GET USER RIDES: ${user.uid}`);
     const userId = user.uid;
 
     const response = await fetch(apiUrl, {
@@ -24,7 +23,11 @@ export const getUserRides = async (getAll) => {
       throw new Error('Failed to fetch from protected endpoint');
     }
     const responseData = await response.json();
-    return responseData;
+    let trips = []
+    responseData.forEach((trip) => {
+      trips.push(new TripClass(trip));
+    })
+    return trips;
   } catch (error) {
     console.error('Error making API call:', error);
   }
@@ -32,7 +35,6 @@ export const getUserRides = async (getAll) => {
 
 export const createNewUser = async () => {
   try {
-    console.log("Inside this function")
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     //const apiUrl = `http://localhost:3000/users`;

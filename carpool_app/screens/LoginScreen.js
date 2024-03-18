@@ -53,13 +53,8 @@ const LoginScreen = () => {
       validateSignupInput();
       
       const response = await createUserWithEmailAndPassword(auth, username, password);
-      console.log("User created successfully, sending verification email...");
-      
       await sendEmailVerification(response.user);
-      console.log("Verification email sent. Please check your inbox.");
-  
       await createNewUser();
-      console.log("New user should be created");
   
       showAlert("Please verify your email. Check your inbox for the verification link.");
     } catch (error) {

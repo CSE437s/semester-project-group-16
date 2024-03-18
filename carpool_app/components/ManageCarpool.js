@@ -12,7 +12,7 @@ function ManageCarpool({userRides}) {
 
     const onManageCarpoolsPress = () => {
       const newMarkedDates = userRides.reduce((acc, ride) => {
-        const dateKey = timestampToDate(ride.trip.timestamp);
+        const dateKey = timestampToDate(ride.timestamp);
         acc[dateKey] = { selected: true, marked: true, selectedColor: 'blue'};
         return acc;
       }, {});

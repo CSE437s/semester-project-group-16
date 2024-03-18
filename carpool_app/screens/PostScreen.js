@@ -19,7 +19,6 @@ const PostScreen = () => {
   const fetchTrips = async () => {
     try {
       const userTrips = await getUserRides('true'); 
-      console.log('User Trips:', userTrips); 
       setTrips(userTrips);
   
     } catch (error) {

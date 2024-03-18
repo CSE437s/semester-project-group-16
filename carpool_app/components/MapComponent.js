@@ -36,10 +36,10 @@ const MapComponent = ({ ride, mapHeight=500 }) => {
       <MapView
         style={{ flex: 1 }}
         initialRegion={currentLocation}
-        region={currentLocation} // Use the state-managed region
+        region={currentLocation} 
         followsUserLocation={true}
         showsUserLocation={true}
-        onRegionChangeComplete={setCurrentLocation} // Optional: update the region when the user drags/zooms the map
+        onRegionChangeComplete={setCurrentLocation} 
       />
       </View>
     ) 
@@ -47,7 +47,8 @@ const MapComponent = ({ ride, mapHeight=500 }) => {
   if (!currentLocation || typeof currentLocation.latitude === 'undefined' || typeof currentLocation.longitude === 'undefined') {
     return null;
   }
-  const encodedPolyline = ride.route.route_polyline;
+  console.log(`ROUTE: ${ride.route.routePolyline}`);
+  const encodedPolyline = ride.route.routePolyline;
   if (typeof encodedPolyline === 'undefined') {
     console.log('PolyLine is undefined, check your data?');
     return null;
@@ -67,9 +68,9 @@ const MapComponent = ({ ride, mapHeight=500 }) => {
         {ride.stops.map((stop, index) => (
         <Marker
           key={index}
-          coordinate={{ latitude: stop.latitude, longitude: stop.longitude }}
+          coordinate={{ latitude: stop.stopCoordinates.latitude, longitude: stop.stopCoordinates.longitude }}
           title={`Stop ${index + 1}`}
-          description={stop.email}
+          description={stop.userEmail}
           anchor={{ x: 0.5, y: 1 }} 
         >
           <Icon name="location" size={30} color="#D00000" />
@@ -98,7 +99,7 @@ async function getLocation() {
 
 const isYourStop = async (stop) => {
   const user = await checkUserExists();
-  return stop.user_id == user.uid;
+  return stop.userId == user.uid;
 }
 
 //Centers map display.
@@ -108,10 +109,12 @@ function getMidpointCoordinate(ride) {
   }
   console.log(`user ride: ${ride}`)
   const allCoordinatesList = [
-    ...ride.stops,
-    { latitude: ride.route.origin_latitude, longitude: ride.route.origin_longitude },
-    { latitude: ride.route.destination_latitude, longitude: ride.route.destination_longitude }
+    { latitude: ride.route.originCoordinates.latitude, longitude: ride.route.originCoordinates.longitude },
+    { latitude: ride.route.destinationCoordinates.latitude, longitude: ride.route.destinationCoordinates.longitude }
   ];
+  ride.stops.forEach((stop) => {
+    allCoordinatesList.push(stop.stopCoordinates);
+  });
   const total = allCoordinatesList.reduce((acc, curr) => {
     acc.latitude += curr.latitude;
     acc.longitude += curr.longitude;
@@ -129,11 +132,14 @@ function getZoomDeltas(ride) {
   if (!ride) {
     return {}
   }
-  const allCoordinatesList = [
-    ...ride.stops,
-    { latitude: ride.route.origin_latitude, longitude: ride.route.origin_longitude },
-    { latitude: ride.route.destination_latitude, longitude: ride.route.destination_longitude }
+  let allCoordinatesList = [
+    { latitude: ride.route.originCoordinates.latitude, longitude: ride.route.originCoordinates.longitude },
+    { latitude: ride.route.destinationCoordinates.latitude, longitude: ride.route.destinationCoordinates.longitude }
   ];
+  ride.stops.forEach((stop) => {
+    allCoordinatesList.push(stop.stopCoordinates);
+  });
+
   let maxLat = -Infinity, minLat = Infinity, maxLng = -Infinity, minLng = Infinity;
 
   allCoordinatesList.forEach(coord => {
@@ -159,7 +165,6 @@ const decodePolyline = (encodedPolyline) => {
     longitude: array[1],
   }));
 };
-
 
 
 export default MapComponent;
