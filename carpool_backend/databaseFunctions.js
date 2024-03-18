@@ -51,8 +51,11 @@ async function createStop(stopAddress, userId, tripId, routeId=null) {
             const googleRouteResponse = await getRoutes(route_origin, route_destination, stops);
             const newRoutePolyline = googleRouteResponse.routes[0].polyline.encodedPolyline;
 
-            let updateRouteQuery = `UPDATE ROUTE SET route_polyline = ? WHERE route_id = ?`;
-            const [updateResult] = await pool.execute(updateRouteQuery, [newRoutePolyline, routeId]);
+            const newRouteTime = googleRouteResponse.routes[0].duration;
+            console.log(newRouteTime);
+
+            let updateRouteQuery = `UPDATE ROUTE SET route_polyline = ?, route_time = ? WHERE route_id = ?`;
+            const [updateResult] = await pool.execute(updateRouteQuery, [newRoutePolyline, newRouteTime, routeId]);
             console.log('Route updated with new polyline:', updateResult);
         }
         console.log('Insert Result:', result);
