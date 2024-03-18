@@ -5,7 +5,7 @@ import {signInWithEmailAndPassword, createUserWithEmailAndPassword,sendEmailVeri
 import CustomAlert from '../components/CustomAlert';
 import {createNewUser} from '../Utils';
 
-const LoginScreen = () => {
+const LoginScreen = ({setUser}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -34,11 +34,14 @@ const LoginScreen = () => {
     setLoading(true);
     try {
       const response = await signInWithEmailAndPassword(auth, username, password);
-      if (response.user && !response.user.emailVerified) {
+      await response.user.reload();
+      const updatedUser = auth.currentUser;
+
+      if (updatedUser && !updatedUser.emailVerified) {
         showAlert("Please verify your email before logging in.");
       } else {
-        await response.user.reload();
         console.log("Login successful, user email is verified.");
+        setUser(updatedUser);
       }
     } catch (error) {
       showAlert(`Login Error: ${error.message}`);
