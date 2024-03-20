@@ -5,7 +5,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import { Calendar } from 'react-native-calendars';
 import MapComponent from '../components/MapComponent';
 import ManageCarpool from '../components/ManageCarpool';
-import { getUserRides, timestampToDate, timestampToWrittenDate } from '../Utils';
+import { getUserRides, timestampToDate, timestampToWrittenDate, getUserWithUserId, checkUserExists, userHasSufficientInfo} from '../Utils';
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
 import { Divider } from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
@@ -14,12 +14,17 @@ import UserInfoForm from '../components/UserInfoForm';
 const HomeScreen = () => {
   const [userRides, setUserRides] = useState([]);
   const [mapLoaded, setMapLoaded] = useState(false);
+
+
   const [showUserInfoForm, setShowUserInfoForm] = useState(true);
 
   useFocusEffect(
     useCallback(() => {
       const fetchData = async () => {
         try {
+          const user = checkUserExists();
+          const userFromDb = await getUserWithUserId(user.uid);
+          setShowUserInfoForm(!userHasSufficientInfo(userFromDb));
           const rides = await getUserRides('false');
           if (rides) {
             setUserRides(rides);
@@ -55,6 +60,7 @@ const HomeScreen = () => {
       {userRides.length > 0 ? (
         <>
           <View style={styles.tripInfo}>
+    
             <Text style={[{fontSize: 14}, styles.tripInfoText]}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
               <Text style={[{fontSize: 18}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[0].timestamp)}</Text>

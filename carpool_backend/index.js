@@ -88,6 +88,23 @@ app.post('/users/info', authenticate, async(req, res) => {
   return res.status(200).json({})
 });
 
+app.get('/users/:userId', authenticate, async(req, res) => {
+  const userId = req.params.userId;
+  
+  try {
+    const [rows, fields] = await pool.query('SELECT * FROM USER WHERE user_id = ?', [userId]);
+    if (rows.length > 0) {
+      res.json(rows[0]);
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('An error occurred');
+  }
+  
+});
+
 app.post('/routes', authenticate, async(req, res) => {
   // const user_id = req.body.userId;
   // const originAddress = req.body.originAddress;

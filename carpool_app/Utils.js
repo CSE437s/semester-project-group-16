@@ -74,6 +74,28 @@ export const checkUserExists = () => {
   return user;
 };
 
+export async function getUserWithUserId(userId) {
+  const user = checkUserExists();
+  const idToken = await user.getIdToken(true);
+  const apiUrl = `${REACT_APP_REMOTE_SERVER}/users/${userId}`;
+
+  const response = await fetch(apiUrl, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${idToken}`,
+      userid: user.uid,
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch from protected endpoint');
+  }
+  const responseData = await response.json(); 
+  console.log(JSON.stringify(responseData));
+  return responseData;
+}
+
 export const checkUserIsVerified = () => {
   const user = FIREBASE_AUTH.currentUser;
   if (!user || !user.emailVerified) {
@@ -81,6 +103,17 @@ export const checkUserIsVerified = () => {
   }
   return user;
 };
+
+export const userHasSufficientInfo = (dbUserObject) => {
+  if (!dbUserObject.full_name || !dbUserObject.student_id || !dbUserObject.dob || !dbUserObject.phone_number) {
+    return false
+  } 
+  if (dbUserObject.full_name.length == 0 || dbUserObject.student_id.length == 0 || dbUserObject.dob.length == 0 || dbUserObject.phone_number.length != 10) {
+    return false
+  } 
+
+  return true
+}
 
 export const createNewTrip = async (
   userId,
