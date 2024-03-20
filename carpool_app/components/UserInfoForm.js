@@ -1,0 +1,175 @@
+/*
+What data to collect for new users
+-----------------------------------
+
+Full name
+
+Age, DOB
+
+Student ID
+
+Phone number
+
+Profile photo?
+--would have to have path to image on EC2
+
+Vehicle Make, Model, year
+Seat capacity/preference (shouldn't display posts if ride is full)
+
+Home address
+
+
+*/
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet, Switch, ScrollView } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import BackArrow from './BackArrow';
+import AddressSearchBar from './AddressSearchBar';
+import CarInfoForm from './CarInfoForm';
+import CustomButton from './CustomButton';
+import {checkUserExists} from '../Utils';
+import {REACT_APP_REMOTE_SERVER} from '@env';
+const NewUserForm = ({onClose}) => {
+    const [fullName, setFullName] = useState('');
+    const [studentId, setStudentId] = useState('');
+    const [dob, setDob] = useState(new Date());
+    const [phoneNumber, setPhoneNumber] = useState('');
+
+    const [vehicleMake, setVehicleMake] = useState('');
+    const [vehicleModel, setVehicleModel] = useState('');
+    const [vehicleYear, setVehicleYear] = useState('');
+    const [licensePlate, setLicensePlate] = useState('');
+    const [seatCapacity, setSeatCapacity] = useState('');
+    const [homeAddress, setHomeAddress] = useState('');
+
+    const [vehicleInfoVisible, setVehicleInfoVisible] = useState(false);
+
+    function handleSubmit() {
+        submitUserData();
+    }
+
+    function handleVehicleInfoChange(make, model, year, lp, seats) {
+        setLicensePlate(lp);
+        setVehicleMake(make);
+        setVehicleModel(model);
+        setVehicleYear(year);
+        setSeatCapacity(seats);
+    }
+    const submitUserData = async () => {
+        const user = checkUserExists();
+        const userData = {
+          userId:user.uid,
+          fullName,
+          studentId,
+          dob: dob.toISOString(), 
+          phoneNumber,
+          vehicleInfo: {
+            make: vehicleMake,
+            model: vehicleModel,
+            year: vehicleYear,
+            licensePlate,
+            seatCapacity,
+          },
+          homeAddress,
+        };
+        await updateUserInfo(userData, user, onClose);
+    }
+
+    const onChangeDate = (event, selectedDate) => {
+        setDob(selectedDate);
+    }
+  
+    return (
+      <View style={styles.container}>
+        <BackArrow onClose={onClose}/>
+        <Text> Welcome to Ride Along! To use our services we need more information </Text>
+        <TextInput
+          placeholder="Full Name"
+          value={fullName}
+          onChangeText={setFullName}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="Student ID"
+          value={studentId}
+          onChangeText={setStudentId}
+          keyboardType="phone-pad"
+          style={styles.input}
+        />
+        <Text>Birth Date </Text>
+        <DateTimePicker
+            testID="datePicker"
+            value={dob}
+            mode="date"
+            display="default"
+            onChange={onChangeDate}
+            style={styles.datePicker}
+        />
+        <TextInput
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="numeric"
+          style={styles.input}
+        />
+
+        <Text> Set Home Address </Text>
+        <AddressSearchBar handleTextChange={setHomeAddress} />
+        <View style={styles.switchContainer}>
+            <Text>{vehicleInfoVisible ? "I have a car" : "I do not have a car"}</Text>
+            <Switch
+            value={vehicleInfoVisible}
+            onValueChange={(newValue) => setVehicleInfoVisible(newValue)}
+            style={styles.switch}
+            />
+        </View>
+        {vehicleInfoVisible && <CarInfoForm onVehicleInfoChange={handleVehicleInfoChange} />}
+        <CustomButton title="Submit" onPress={handleSubmit} />
+        
+      </View>
+    );
+  };
+
+  async function updateUserInfo(userData, user, onClose) {
+    const idToken = await user.getIdToken(true);
+    const apiUrl = `${REACT_APP_REMOTE_SERVER}/users/info`;
+    try {
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${idToken}`,
+            userid: userData.userId,
+          },
+          body: JSON.stringify(userData), 
+        });
+    
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+    
+        const jsonResponse = await response.json();
+        console.log('Success:', jsonResponse);
+        onClose();
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+  
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      padding: 20,
+    },
+    input: {
+      height: 40,
+      marginVertical: 10,
+      borderWidth: 1,
+      padding: 10,
+    },
+  });
+  
+  export default NewUserForm;

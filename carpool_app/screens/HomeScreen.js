@@ -9,10 +9,12 @@ import { getUserRides, timestampToDate, timestampToWrittenDate } from '../Utils'
 import { FIREBASE_AUTH } from '../components/FirebaseConfig';
 import { Divider } from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
+import UserInfoForm from '../components/UserInfoForm';
 
 const HomeScreen = () => {
   const [userRides, setUserRides] = useState([]);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [showUserInfoForm, setShowUserInfoForm] = useState(true);
 
   useFocusEffect(
     useCallback(() => {
@@ -33,12 +35,22 @@ const HomeScreen = () => {
   const onDatePress = () => {
     console.log('Date is pressed!');
   };
+
+  const toggleShowUserInfoForm = () => {
+    setShowUserInfoForm(!showUserInfoForm)
+  };
+
   if (!userRides) {
     <ActivityIndicator />
   }
 
+  if (showUserInfoForm) {
+    return (
+      <UserInfoForm onClose={toggleShowUserInfoForm} />
+    )
+  }
+
   return (
-    
     <View style={styles.container}> 
       {userRides.length > 0 ? (
         <>

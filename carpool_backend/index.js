@@ -14,7 +14,8 @@ const {
   getDrivingTripsWithUserId,
   getRidingTripsWithUserId,
   getRoutesWithRouteId,
-  getEmailFromUserId
+  getEmailFromUserId,
+  updateUserDetails,
 } = require("./databaseFunctions");
 const {getRoutes, getCoordinatesOfAddress} = require('./utils');
 const app = express();
@@ -79,6 +80,12 @@ app.post('/users', authenticate, async(req, res) => {
     console.error('Error inserting user:', error.message);
     return res.status(500).json({message: "Failed to insert user"});
   }
+});
+
+app.post('/users/info', authenticate, async(req, res) => {
+  console.log(`Got users/info data ${JSON.stringify(req.body)}`);
+  await updateUserDetails(req.body.userId, req.body.fullName, req.body.studentId, req.body.dob, req.body.phoneNumber, req.body.vehicleInfo.make, req.body.vehicleInfo.model, req.body.vehicleInfo.year, req.body.vehicleInfo.licensePlate, req.body.vehicleInfo.seatCapacity, req.body.homeAddress);
+  return res.status(200).json({})
 });
 
 app.post('/routes', authenticate, async(req, res) => {

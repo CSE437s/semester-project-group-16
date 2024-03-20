@@ -78,6 +78,30 @@ async function createTrip(routeId, userId, category, completed, timestamp) {
     }
 }
 
+async function updateUserDetails(user_id, full_name, student_id, dob, phone_number, vehicle_make, vehicle_model, vehicle_year, license_plate, seat_capacity, home_address) {
+    try  {
+        const query = `UPDATE USER
+        SET 
+            full_name = ?,
+            student_id = ?,
+            dob = STR_TO_DATE(?, '%Y-%m-%dT%T.%fZ'),
+            phone_number = ?,
+            vehicle_make = ?,
+            vehicle_model = ?,
+            vehicle_year = ?,
+            license_plate = ?,
+            seat_capacity = ?,
+            home_address = ?
+        WHERE user_id = ?;`;
+
+        const [result] = await pool.execute(query, [full_name, student_id, dob, phone_number, vehicle_make, vehicle_model, vehicle_year, license_plate, seat_capacity, home_address, user_id]);
+        return result;
+    } catch (error) {
+        console.error(`Error updating user entry: ${error}`);
+        throw error;
+    }
+}
+
 async function getStopsWithTripId(tripId) {
     try {
         const query = `
@@ -182,4 +206,5 @@ module.exports = {
     getRidingTripsWithUserId,
     getRoutesWithRouteId,
     getEmailFromUserId,
+    updateUserDetails,
   };
