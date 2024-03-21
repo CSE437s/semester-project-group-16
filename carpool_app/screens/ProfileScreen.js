@@ -4,6 +4,7 @@ import {signOut} from 'firebase/auth';
 import {FIREBASE_AUTH} from'../components/FirebaseConfig';
 import CustomButton from '../components/CustomButton';
 import {getUserWithUserId, checkUserExists} from '../Utils';
+import UserInfoForm from '../components/UserInfoForm';
 
 const ProfileScreen = () => {
   const user = checkUserExists();
@@ -20,6 +21,10 @@ const ProfileScreen = () => {
 
   }, []);
 
+  const onClose = () => {
+    console.log("updated!");
+  }
+
 
 
   const logout = () => {
@@ -33,12 +38,14 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <CustomButton title="Log out" onPress={logout} /> 
+      <UserInfoForm onClose={onClose}/>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    display:'flex',
     marginTop: 120,
   }
 })

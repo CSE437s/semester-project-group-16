@@ -20,14 +20,14 @@ Home address
 
 
 */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Switch, ScrollView } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import BackArrow from './BackArrow';
 import AddressSearchBar from './AddressSearchBar';
 import CarInfoForm from './CarInfoForm';
 import CustomButton from './CustomButton';
-import {checkUserExists} from '../Utils';
+import {checkUserExists, getUserWithUserId} from '../Utils';
 import {REACT_APP_REMOTE_SERVER} from '@env';
 const NewUserForm = ({onClose}) => {
     const [fullName, setFullName] = useState('');
@@ -43,6 +43,28 @@ const NewUserForm = ({onClose}) => {
     const [homeAddress, setHomeAddress] = useState('');
 
     const [vehicleInfoVisible, setVehicleInfoVisible] = useState(false);
+
+    useEffect(() => {
+        async function getUserInfo() {
+            const user = checkUserExists();
+            const userObj = await getUserWithUserId(user.uid);
+
+            setFullName(userObj.full_name || '');
+            setStudentId(userObj.student_id || '');
+            setDob(userObj.dob ? new Date(userObj.dob) : new Date());
+            setPhoneNumber(userObj.phone_number || '');
+            
+            setVehicleMake(userObj.vehicle_make || '');
+            setVehicleModel(userObj.vehicle_model || '');
+            setVehicleYear(userObj.vehicle_year || '');
+            setLicensePlate(userObj.license_plate || '');
+            setSeatCapacity(userObj.seat_capacity || '');
+            setHomeAddress(userObj.home_address || '');
+        }
+
+        getUserInfo();
+
+    }, []);
 
     function handleSubmit() {
         submitUserData();
@@ -81,8 +103,6 @@ const NewUserForm = ({onClose}) => {
   
     return (
       <View style={styles.container}>
-        <BackArrow onClose={onClose}/>
-        <Text> Welcome to Ride Along! To use our services we need more information </Text>
         <TextInput
           placeholder="Full Name"
           value={fullName}
@@ -114,7 +134,7 @@ const NewUserForm = ({onClose}) => {
         />
 
         <Text> Set Home Address </Text>
-        <AddressSearchBar handleTextChange={setHomeAddress} />
+        <AddressSearchBar handleTextChange={setHomeAddress} defaultText={homeAddress}/>
         <View style={styles.switchContainer}>
             <Text>{vehicleInfoVisible ? "I have a car" : "I do not have a car"}</Text>
             <Switch
@@ -160,7 +180,6 @@ const NewUserForm = ({onClose}) => {
   
   const styles = StyleSheet.create({
     container: {
-      flex: 1,
       justifyContent: 'center',
       padding: 20,
     },

@@ -5,8 +5,8 @@ import {REACT_APP_MAPBOX_API_KEY} from '@env';
 import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const AddressSearchBar = ({handleTextChange}) => {
-    const [input, setInput] = useState('');
+const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
+    const [input, setInput] = useState(defaultText);
     const [address, setAddress] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [prevInputLength, setPrevInputLength] = useState(0);
@@ -59,7 +59,7 @@ const AddressSearchBar = ({handleTextChange}) => {
     };
 
     useEffect(() => {
-        if (input.length > 5 && prevInputLength < input.length) {
+        if (input.length > 5 && prevInputLength < input.length && input != defaultText) {
             fetchAddressSuggestions(input).then(setSuggestions).catch(console.error);
         } else {
             setSuggestions([]);

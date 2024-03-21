@@ -10,6 +10,7 @@ import { FIREBASE_AUTH } from '../components/FirebaseConfig';
 import { Divider } from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
 import UserInfoForm from '../components/UserInfoForm';
+import BackArrow from '../components/BackArrow';
 
 const HomeScreen = () => {
   const [userRides, setUserRides] = useState([]);
@@ -51,7 +52,11 @@ const HomeScreen = () => {
 
   if (showUserInfoForm) {
     return (
-      <UserInfoForm onClose={toggleShowUserInfoForm} />
+      <View style={styles.userInfoContainer}>
+        <BackArrow onClose={toggleShowUserInfoForm} />
+        <Text style={styles.tripInfoText}>Welcome to Ride Along! To use our services we need to know more about you. </Text>
+        <UserInfoForm onClose={toggleShowUserInfoForm} />
+      </View>
     )
   }
 
@@ -85,11 +90,14 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    height:'100%',
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingTop: 60,
+  },
+  userInfoContainer: {
+    paddingTop:80,
   },
   divider: {
     alignSelf:'left',
