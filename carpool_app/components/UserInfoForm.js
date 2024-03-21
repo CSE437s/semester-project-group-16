@@ -103,20 +103,22 @@ const NewUserForm = ({onClose}) => {
   
     return (
       <View style={styles.container}>
+        <ScrollView style={{paddingBottom:200, marginBottom:100}}>
         <TextInput
           placeholder="Full Name"
           value={fullName}
           onChangeText={setFullName}
-          style={styles.input}
+          style={styles.textInput}
         />
         <TextInput
           placeholder="Student ID"
           value={studentId}
           onChangeText={setStudentId}
           keyboardType="phone-pad"
-          style={styles.input}
+          style={styles.textInput}
         />
-        <Text>Birth Date </Text>
+        <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
+        <Text style={styles.headerText}>Date of Birth</Text>
         <DateTimePicker
             testID="datePicker"
             value={dob}
@@ -125,26 +127,28 @@ const NewUserForm = ({onClose}) => {
             onChange={onChangeDate}
             style={styles.datePicker}
         />
+        </View>
         <TextInput
           placeholder="Phone Number"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
           keyboardType="numeric"
-          style={styles.input}
+          style={styles.textInput}
         />
 
-        <Text> Set Home Address </Text>
+        <Text style={styles.headerText}> Home Address </Text>
         <AddressSearchBar handleTextChange={setHomeAddress} defaultText={homeAddress}/>
-        <View style={styles.switchContainer}>
-            <Text>{vehicleInfoVisible ? "I have a car" : "I do not have a car"}</Text>
+        <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
+            <Text style={styles.headerText}>{vehicleInfoVisible ? "I have a car" : "I do not have a car"}</Text>
             <Switch
             value={vehicleInfoVisible}
             onValueChange={(newValue) => setVehicleInfoVisible(newValue)}
             style={styles.switch}
             />
         </View>
-        {vehicleInfoVisible && <CarInfoForm onVehicleInfoChange={handleVehicleInfoChange} />}
+        {vehicleInfoVisible && <CarInfoForm onVehicleInfoChange={handleVehicleInfoChange} make={vehicleMake} model={vehicleModel} year={vehicleYear} license={licensePlate} seat={seatCapacity}/>}
         <CustomButton title="Submit" onPress={handleSubmit} />
+        </ScrollView>
         
       </View>
     );
@@ -182,6 +186,7 @@ const NewUserForm = ({onClose}) => {
     container: {
       justifyContent: 'center',
       padding: 20,
+      gap:10,
     },
     input: {
       height: 40,
@@ -189,6 +194,20 @@ const NewUserForm = ({onClose}) => {
       borderWidth: 1,
       padding: 10,
     },
+    headerText: {
+        fontSize: 18, 
+        fontFamily:'Poppins-Black',
+        paddingTop: 10,
+      },
+      textInput: {
+        fontSize: 16, 
+        padding: 10, 
+        borderWidth: 1, 
+        borderColor: '#ccc', 
+        borderRadius: 5, 
+        backgroundColor: '#fff', 
+        marginBottom: 10, 
+      },
   });
   
   export default NewUserForm;

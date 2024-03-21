@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 
-const CarInfoForm = ({ onVehicleInfoChange }) => {
-  const [vehicleMake, setVehicleMake] = useState('');
-  const [vehicleModel, setVehicleModel] = useState('');
-  const [vehicleYear, setVehicleYear] = useState('');
-  const [seatCapacity, setSeatCapacity] = useState('');
-  const [vehicleLicensePlate, setVehicleLicensePlate] = useState('');
+const CarInfoForm = ({ onVehicleInfoChange, make='', model='', year='', license='', seat=''}) => {
+  const [vehicleMake, setVehicleMake] = useState(make);
+  const [vehicleModel, setVehicleModel] = useState(model);
+  const [vehicleYear, setVehicleYear] = useState(String(year));
+  const [seatCapacity, setSeatCapacity] = useState(String(seat));
+  const [vehicleLicensePlate, setVehicleLicensePlate] = useState(license);
+  console.log(`make: ${vehicleMake} model: ${vehicleModel}, year: ${vehicleYear} plate: ${vehicleLicensePlate} capacity: ${seatCapacity}`)
 
   useEffect(() => {
     updateVehicleInfo();
@@ -40,7 +41,6 @@ const CarInfoForm = ({ onVehicleInfoChange }) => {
         placeholder="Vehicle Year"
         value={vehicleYear}
         onChangeText={(text) => { setVehicleYear(text)}}
-        keyboardType="numeric"
         style={styles.input}
       />
       <TextInput
@@ -53,7 +53,6 @@ const CarInfoForm = ({ onVehicleInfoChange }) => {
         placeholder="Seat Capacity"
         value={seatCapacity}
         onChangeText={setSeatCapacity}
-        keyboardType="numeric"
         style={styles.input}
     />
     </View>

@@ -14,7 +14,6 @@ const ProfileScreen = () => {
     const getUserData = async() => {
       const userFromDb = await getUserWithUserId(user.uid);
       setUserDb(userFromDb);
-      console.log(`We got user ${JSON.stringify(userFromDb)}`);
     }
 
     getUserData();

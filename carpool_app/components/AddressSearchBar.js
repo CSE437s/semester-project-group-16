@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
+  console.log('defaultText:', defaultText); // Debugging line
+
     const [input, setInput] = useState(defaultText);
     const [address, setAddress] = useState('');
     const [suggestions, setSuggestions] = useState([]);
@@ -59,11 +61,11 @@ const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
     };
 
     useEffect(() => {
-        if (input.length > 5 && prevInputLength < input.length && input != defaultText) {
-            fetchAddressSuggestions(input).then(setSuggestions).catch(console.error);
-        } else {
-            setSuggestions([]);
-        }
+      if (input.length > 5 && prevInputLength < input.length && input != defaultText) {
+          fetchAddressSuggestions().then(setSuggestions).catch(console.error);
+      } else {
+          setSuggestions([]);
+      }
     }, [input]);
 
     const handleInputChange = (userInput) => {
@@ -88,6 +90,7 @@ const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
           />
           <FlatList
             data={suggestions}
+            scrollEnabled={false}
             keyExtractor={(item, index) => item.mapbox_id}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.listItem} onPress={() => handleAddressPress(item)}>
