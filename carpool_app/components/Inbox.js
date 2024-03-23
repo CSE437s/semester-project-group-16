@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { Button, View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import BackArrow from './BackArrow';
 import { fetchRideRequests } from '../Utils';
+import MessageThread from './MessageThread';
 
 const Inbox = ({ onClose }) => {
   const [incomingMessages, setIncomingMessages] = useState([]);
   const [outgoingMessages, setOutgoingMessages] = useState([]);
-  const [isIncomingSelected, setIsIncomingSelected] = useState(true); // true for Incoming, false for Outgoing
+  const [isIncomingSelected, setIsIncomingSelected] = useState(true); 
+  const [selectedRequest, setSelectedRequest] = useState({});
 
   useEffect(() => {
     const getMessages = async () => {
@@ -18,9 +20,18 @@ const Inbox = ({ onClose }) => {
     getMessages();
   }, []);
 
+  const onCloseMessageThread = () => {
+    setSelectedRequest({});
+  }
+
+  if(Object.keys(selectedRequest).length !== 0) {
+    return <MessageThread onClose={onCloseMessageThread} rideRequest={selectedRequest} />
+  };
+
   const renderItem = ({ item }) => (
     <View style={styles.item}>
       <Text>{item.rideRequestId}</Text>
+      <Button onPress={() => setSelectedRequest(item)} title="View message" />
     </View>
   );
 
