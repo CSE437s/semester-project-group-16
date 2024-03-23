@@ -21,44 +21,16 @@ async function createRoute(originAddress, destinationAddress, routePolyline, rou
 }
 
 
-async function createStop(stopAddress, userId, tripId, routeId=null) {
+async function createStop(stopAddress, userId, routeId=null) {
     try {
         const stop_coordinates = await getCoordinatesOfAddress(stopAddress);
         const query = `
-            INSERT INTO STOP (latitude, longitude, trip_id, user_id)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO STOP (latitude, longitude, user_id)
+            VALUES (?, ?, ?)
         `;
-        const [result] = await pool.execute(query, [stop_coordinates.latitude, stop_coordinates.longitude, tripId, userId]);
-        //After we create the stop, fetch the entire route from the db and recompute route.
-        if (routeId) {
-            let routeQuery = `SELECT * FROM ROUTE WHERE route_id = ?`;
-            const [routeResult] = await pool.execute(routeQuery, [routeId]);
-            console.log('Route:', routeResult);
+        const [result] = await pool.execute(query, [stop_coordinates.latitude, stop_coordinates.longitude, userId]);
 
-            let stopsQuery = `SELECT * FROM STOP WHERE trip_id = ? ORDER BY stop_id ASC`;
-            const [stopsResult] = await pool.execute(stopsQuery, [tripId]);
-            console.log('Stops for Route:', stopsResult);
-
-            let route = routeResult[0];
-            let route_origin = {latitude: route.origin_latitude, longitude: route.origin_longitude};
-            let route_destination = {latitude: route.destination_latitude, longitude: route.destination_longitude};
-
-            let stops = stopsResult.map(stop => ({
-                latitude: stop.latitude,
-                longitude: stop.longitude
-            }));
-
-            const googleRouteResponse = await getRoutes(route_origin, route_destination, stops);
-            const newRoutePolyline = googleRouteResponse.routes[0].polyline.encodedPolyline;
-
-            const newRouteTime = googleRouteResponse.routes[0].duration;
-            console.log(newRouteTime);
-
-            let updateRouteQuery = `UPDATE ROUTE SET route_polyline = ?, route_time = ? WHERE route_id = ?`;
-            const [updateResult] = await pool.execute(updateRouteQuery, [newRoutePolyline, newRouteTime, routeId]);
-            console.log('Route updated with new polyline:', updateResult);
-        }
-        console.log('Insert Result:', result);
+        console.log('Insert Result:', result.insertId);
         return result;
     } catch (error) {
         console.error('Error inserting Stop:', error);
@@ -196,6 +168,90 @@ async function getRidingTripsWithUserId(userId, findAll) {
     }
 }
 
+async function getRideRequestsWithUserId(userId) {
+    const outgoingQuery = 'SELECT * FROM RIDEREQUEST WHERE outgoing_user_id = ?';
+    const incomingQuery = 'SELECT * FROM RIDEREQUEST WHERE incoming_user_id = ?';
+  
+    try {
+      const [outgoingRequests] = await pool.execute(outgoingQuery, [userId]);
+      const [incomingRequests] = await pool.execute(incomingQuery, [userId]);
+      const result = { outgoingRequests, incomingRequests };
+      console.log(`db has result: ${JSON.stringify(result)}`);
+      return result;
+    } catch (error) {
+      console.error('Failed to get ride requests:', error);
+      throw error;
+    }
+}
+
+const createRideRequest = async (incomingUserId, outgoingUserId, tripId, stopId) => {
+    const insertQuery = 'INSERT INTO RIDEREQUEST (incoming_user_id, outgoing_user_id, trip_id, stop_id) VALUES (?, ?, ?, ?)';
+  
+    try {
+      console.log(`incomingUserId: ${incomingUserId}, outgoingUserId: ${outgoingUserId}, tripId: ${tripId}, stopId: ${stopId}`);
+
+      const [result] = await pool.execute(insertQuery, [incomingUserId, outgoingUserId, tripId, stopId]);
+      return result;
+    } catch (error) {
+      console.error('Failed to create ride request:', error);
+      throw error;
+    }
+  };
+
+
+  const deleteRideRequestsWithRideRequestId = async (rideRequestId) => {
+    const deleteQuery = 'DELETE FROM RIDEREQUEST WHERE request_id = ?';
+
+    try {
+      const [result] = await pool.execute(deleteQuery, [rideRequestId]);
+      return result;
+    } catch (error) {
+      console.error('Failed to delete ride request:', error);
+      throw error;
+    }
+  };
+
+  const updateStopTripId = async (stopId, tripId) => {
+    const updateQuery = 'UPDATE STOP SET trip_id = ? WHERE stop_id = ?';
+  
+    try {
+      const [result] = await pool.execute(updateQuery, [tripId, stopId]);
+      return result;
+    } catch (error) {
+      console.error('Failed to update stop:', error);
+      throw error;
+    }
+  };
+
+  async function recomputeRoute(routeId, tripId) {
+    let routeQuery = `SELECT * FROM ROUTE WHERE route_id = ?`;
+    const [routeResult] = await pool.execute(routeQuery, [routeId]);
+    console.log('Route:', routeResult);
+
+    let stopsQuery = `SELECT * FROM STOP WHERE trip_id = ? ORDER BY stop_id ASC`;
+    const [stopsResult] = await pool.execute(stopsQuery, [tripId]);
+    console.log('Stops for Route:', stopsResult);
+
+    let route = routeResult[0];
+    let route_origin = {latitude: route.origin_latitude, longitude: route.origin_longitude};
+    let route_destination = {latitude: route.destination_latitude, longitude: route.destination_longitude};
+
+    let stops = stopsResult.map(stop => ({
+        latitude: stop.latitude,
+        longitude: stop.longitude
+    }));
+
+    const googleRouteResponse = await getRoutes(route_origin, route_destination, stops);
+    const newRoutePolyline = googleRouteResponse.routes[0].polyline.encodedPolyline;
+
+    const newRouteTime = googleRouteResponse.routes[0].duration;
+    console.log(newRouteTime);
+
+    let updateRouteQuery = `UPDATE ROUTE SET route_polyline = ?, route_time = ? WHERE route_id = ?`;
+    const [updateResult] = await pool.execute(updateRouteQuery, [newRoutePolyline, newRouteTime, routeId]);
+    console.log('Route updated with new polyline:', updateResult);
+  }
+
 module.exports = {
     createRoute,
     createStop,
@@ -207,4 +263,8 @@ module.exports = {
     getRoutesWithRouteId,
     getEmailFromUserId,
     updateUserDetails,
+    getRideRequestsWithUserId,
+    createRideRequest,
+    deleteRideRequestsWithRideRequestId,
+    updateStopTripId,
   };

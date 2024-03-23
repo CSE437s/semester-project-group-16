@@ -11,10 +11,13 @@ import { Divider } from '@rneui/themed';
 import LinearGradient from 'react-native-linear-gradient';
 import UserInfoForm from '../components/UserInfoForm';
 import BackArrow from '../components/BackArrow';
+import Inbox from '../components/Inbox';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const HomeScreen = () => {
   const [userRides, setUserRides] = useState([]);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [showInbox, setShowInbox] = useState(false);
 
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(true);
@@ -46,6 +49,17 @@ const HomeScreen = () => {
     setShowUserInfoForm(!showUserInfoForm)
   };
 
+  const onInboxPress = () => {
+    setShowInbox(true);
+  }
+  const onInboxClose = () => {
+    setShowInbox(false);
+  }
+
+  if(showInbox) {
+    return (<Inbox onClose={onInboxClose} />);
+  }
+
   if (!userRides) {
     <ActivityIndicator />
   }
@@ -62,14 +76,20 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}> 
+
+      
       {userRides.length > 0 ? (
         <>
+        <View style={styles.homeHeader}>
           <View style={styles.tripInfo}>
-    
             <Text style={[{fontSize: 14}, styles.tripInfoText]}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
               <Text style={[{fontSize: 18}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[0].timestamp)}</Text>
             </TouchableOpacity>
+          </View>
+          <TouchableOpacity onPress={onInboxPress}>
+            <Icon name={"paper-plane-outline"} size={32}/>
+          </TouchableOpacity>
           </View>
           <Divider color={"black"} width={1} style={styles.divider} />
 
@@ -78,7 +98,14 @@ const HomeScreen = () => {
           </>
       ) : (
         <>
-        <Text style={[{fontSize: 24}, styles.tripInfoText]}> You have no upcoming trips! </Text>
+        <View style={styles.homeHeader}>
+          <View style={styles.tripInfo}>
+            <Text style={[{fontSize: 24}, styles.tripInfoText]}> You have no upcoming trips! </Text>
+          </View>
+          <TouchableOpacity onPress={onInboxPress}>
+            <Icon name={"paper-plane-outline"} size={32}/>
+          </TouchableOpacity>
+        </View>
         <MapComponent />
         <ManageCarpool userRides={userRides}/>
         </>
@@ -95,6 +122,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-around',
     paddingTop: 60,
+  },
+  homeHeader: {
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-around',
+
   },
   userInfoContainer: {
     paddingTop:80,

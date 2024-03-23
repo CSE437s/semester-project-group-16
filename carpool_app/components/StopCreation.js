@@ -7,7 +7,8 @@ import AddressSearchBar from './AddressSearchBar';
 import BackArrow from './BackArrow';
 import CustomButton from './CustomButton';
 
-  const StopCreation = ({ onClose, tripRouteId, tripId }) => {
+  const StopCreation = ({ onClose, trip}) => {
+
     const [address, setAddress] = useState('');
   
     const handleSubmit = async () => {
@@ -18,9 +19,10 @@ import CustomButton from './CustomButton';
     try {
         const response = await axios.post(`${REACT_APP_REMOTE_SERVER}/stops`, {
           userId: userId,
-          routeId: tripRouteId,
-          tripId: tripId,
+          routeId: trip.route.RouteId,
+          tripId: trip.tripId,
           stopAddress: address,
+          incomingUserId: trip.tripUserId,
         }, {
         headers: {
             'Content-Type': 'application/json',

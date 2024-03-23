@@ -71,7 +71,7 @@ import CustomButton from './CustomButton';
         )}
   
         <Modal visible={showApply} animationType="slide">
-          <StopCreation onClose={handleClose} tripRouteId={trip.route.routeId} tripId={trip.tripId} /> 
+          <StopCreation onClose={handleClose} trip={trip} /> 
         </Modal>
       </View>
     );

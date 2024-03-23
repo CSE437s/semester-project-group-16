@@ -16,6 +16,10 @@ const {
   getRoutesWithRouteId,
   getEmailFromUserId,
   updateUserDetails,
+  getRideRequestsWithUserId,
+  createRideRequest,
+  deleteRideRequestsWithRideRequestId,
+  updateStopTripId,
 } = require("./databaseFunctions");
 const {getRoutes, getCoordinatesOfAddress} = require('./utils');
 const app = express();
@@ -122,20 +126,25 @@ app.post('/routes', authenticate, async(req, res) => {
 
 app.post('/stops', authenticate, async(req, res) => {
   const stopAddress = req.body.stopAddress;
-  const userId = req.body.userId;
+  const outgoingUserId = req.body.userId;
   const routeId = req.body.routeId;
   const tripId = req.body.tripId;
+  const incomingUserId = req.body.incomingUserId;
+  console.log("Here")
 
   //console.log(req.body);
 
-  if (!stopAddress || !userId) {
+  if (!stopAddress || !outgoingUserId) {
     return res.status(400).json({ error: "Missing required fields" });
   }
   try {
-      const result = await createStop(stopAddress, userId, tripId, routeId);
+      const result = await createStop(stopAddress, outgoingUserId, tripId, routeId);
+      const stopId = result.insertId;
+      
+      const requestResult = await createRideRequest(incomingUserId, outgoingUserId, tripId, stopId);
       res.status(200).json({ message: "Stop created successfully", stopId: result.insertId });
   } catch (error) {
-      console.error('Error creating Stop:', error);
+      console.error('Error creating Stop or ride request:', error);
       res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -212,7 +221,63 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
   }
 });
 
-app.post('/')
+app.get('/riderequests/:userId', authenticate, async(req, res) => {
+  const user_id = req.params.userId;
+  console.log("Making get riderequests request");
+
+  try {
+    const { outgoingRequests, incomingRequests } = await getRideRequestsWithUserId(user_id);
+    console.log(`postRideRequest: ${JSON.stringify(outgoingRequests), JSON.stringify(incomingRequests)}`);
+    res.json({
+      outgoingRequests,
+      incomingRequests
+    });
+  } catch (error) {
+    console.log(`error: ${error}`);
+    res.status(500).send({ message: 'Error fetching ride requests' });
+  }
+
+});
+
+app.delete('/riderequests/:rideRequestId', authenticate, async (req, res) => {
+  const rideRequestId = req.params.rideRequestId;
+  console.log("Making delete rideRequests request");
+
+  try {
+    const result = await deleteRideRequestById(rideRequestId);
+    console.log(`deleteRideRequest: ${JSON.stringify(result)}`);
+
+    if (result.affectedRows > 0) {
+      res.send({ message: 'Ride request deleted successfully' });
+    } else {
+      res.status(404).send({ message: 'No ride request found for the provided ID' });
+    }
+  } catch (error) {
+    res.status(500).send({ message: 'Error deleting ride request' });
+  }
+});
+
+app.patch('/riderequests', authenticate, async(req, res) => {
+  const { rideRequestId, stopId, tripId } = req.body;
+  console.log("Making patch riderequests request");
+
+  try {
+    const updateResult = await updateStopTripId(stopId, tripId);
+    console.log(`updateStopTripId: ${JSON.stringify(updateResult)}`);
+
+    const deleteResult = await deleteRideRequestsWithRideRequestId(rideRequestId);
+    console.log(`deleteRideRequests: ${JSON.stringify(deleteResult)}`);
+
+    if (deleteResult.affectedRows > 0) {
+      res.send({ message: 'Ride request accepted and deleted successfully' });
+    } else {
+      res.status(404).send({ message: 'No ride requests found for the provided ID' });
+    }
+  } catch (error) {
+    console.error('Error processing the request:', error);
+    res.status(500).send({ message: 'Error accepting ride request' });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

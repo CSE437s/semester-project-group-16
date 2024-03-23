@@ -1,7 +1,7 @@
 //Contains API call functions
 import { FIREBASE_AUTH } from './components/FirebaseConfig';
 import { REACT_APP_LOCAL_SERVER, REACT_APP_REMOTE_SERVER } from '@env';
-import {TripClass, RideClass, StopClass, CoordinateClass} from './ApiDataClasses';
+import {TripClass, RideClass, StopClass, CoordinateClass, RideRequestClass} from './ApiDataClasses';
 
 export const getUserRides = async (getAll) => {
   try {
@@ -180,3 +180,76 @@ export const timestampToWrittenDate = (timestamp) => {
   
   return `${formattedDate}, ${formattedTime}`;
 };
+
+
+export const deleteRideRequest = async(rideRequest) => {
+  const user = checkUserExists();
+  const idToken = await user.getIdToken(true);
+  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/riderequests/${rideRequest.rideRequestId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${idToken}`,
+      userid: user.uid,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to delete ride request: ${response.status} ${error}`);
+  }
+
+  return await response.json();
+}
+
+export async function acceptRideRequest(rideRequest) {
+  const user = checkUserExists();
+  const idToken = await user.getIdToken(true);
+  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/riderequests`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${idToken}`,
+      userid: user.uid,
+    },
+    body: JSON.stringify({
+      rideRequestId: rideRequest.rideRequestId,
+      stopId: rideRequest.stopId,
+      tripId: rideRequest.tripId,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to accept ride request: ${response.status} ${error}`);
+  }
+
+  return await response.json();
+}
+
+
+export async function fetchRideRequests() {
+  const user = checkUserExists();
+  const idToken = await user.getIdToken(true);
+  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/riderequests/${user.uid}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${idToken}`,
+      userid: user.uid,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to fetch ride requests: ${response.status} ${error}`);
+  }
+
+  const data = await response.json();
+  console.log(`We successfully got data!${JSON.stringify(data)}`);
+  
+  const outgoingRequests = data.outgoingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id));
+  const incomingRequests = data.incomingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id));
+
+  return { outgoingRequests, incomingRequests };
+}
