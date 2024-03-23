@@ -115,6 +115,17 @@ async function getTripsWithRouteId(routeId) {
     return trips;
 }
 
+async function getTripsWithTripId(tripId) {
+    
+    const query = `
+        SELECT * FROM TRIP
+        WHERE trip_id = ?
+    `;
+    const [trip] = await pool.execute(query, [tripId]);
+    return trip;
+}
+
+
 
 async function getDrivingTripsWithUserId(userId, findAll) {
     try {
@@ -224,13 +235,15 @@ const createRideRequest = async (incomingUserId, outgoingUserId, tripId, stopId)
   };
 
   async function recomputeRoute(routeId, tripId) {
+    console.log("Inside recompute route");
+    console.log(routeId)
+    console.log(tripId)
+
     let routeQuery = `SELECT * FROM ROUTE WHERE route_id = ?`;
     const [routeResult] = await pool.execute(routeQuery, [routeId]);
-    console.log('Route:', routeResult);
 
     let stopsQuery = `SELECT * FROM STOP WHERE trip_id = ? ORDER BY stop_id ASC`;
     const [stopsResult] = await pool.execute(stopsQuery, [tripId]);
-    console.log('Stops for Route:', stopsResult);
 
     let route = routeResult[0];
     let route_origin = {latitude: route.origin_latitude, longitude: route.origin_longitude};
@@ -250,6 +263,7 @@ const createRideRequest = async (incomingUserId, outgoingUserId, tripId, stopId)
     let updateRouteQuery = `UPDATE ROUTE SET route_polyline = ?, route_time = ? WHERE route_id = ?`;
     const [updateResult] = await pool.execute(updateRouteQuery, [newRoutePolyline, newRouteTime, routeId]);
     console.log('Route updated with new polyline:', updateResult);
+    return updateResult;
   }
 
 module.exports = {
@@ -267,4 +281,6 @@ module.exports = {
     createRideRequest,
     deleteRideRequestsWithRideRequestId,
     updateStopTripId,
+    getTripsWithTripId,
+    recomputeRoute,
   };

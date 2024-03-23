@@ -20,6 +20,9 @@ const {
   createRideRequest,
   deleteRideRequestsWithRideRequestId,
   updateStopTripId,
+  getTripsWithTripId,
+  recomputeRoute,
+
 } = require("./databaseFunctions");
 const {getRoutes, getCoordinatesOfAddress} = require('./utils');
 const app = express();
@@ -244,15 +247,17 @@ app.delete('/riderequests/:rideRequestId', authenticate, async (req, res) => {
   console.log("Making delete rideRequests request");
 
   try {
-    const result = await deleteRideRequestById(rideRequestId);
+    const result = await deleteRideRequestsWithRideRequestId(rideRequestId);
     console.log(`deleteRideRequest: ${JSON.stringify(result)}`);
 
     if (result.affectedRows > 0) {
       res.send({ message: 'Ride request deleted successfully' });
     } else {
+      console.log("No request found");
       res.status(404).send({ message: 'No ride request found for the provided ID' });
     }
   } catch (error) {
+    console.error(error);
     res.status(500).send({ message: 'Error deleting ride request' });
   }
 });
@@ -260,6 +265,7 @@ app.delete('/riderequests/:rideRequestId', authenticate, async (req, res) => {
 app.patch('/riderequests', authenticate, async(req, res) => {
   const { rideRequestId, stopId, tripId } = req.body;
   console.log("Making patch riderequests request");
+  console.log(`ride request id: ${rideRequestId}, stopId=${stopId}, tripId=${tripId}`)
 
   try {
     const updateResult = await updateStopTripId(stopId, tripId);
@@ -267,6 +273,14 @@ app.patch('/riderequests', authenticate, async(req, res) => {
 
     const deleteResult = await deleteRideRequestsWithRideRequestId(rideRequestId);
     console.log(`deleteRideRequests: ${JSON.stringify(deleteResult)}`);
+
+    const trip = await getTripsWithTripId(tripId);
+    const routeId = trip[0].route_id;
+    console.log(`route id: ${routeId}`);
+    console.log(`trip: ${JSON.stringify(trip)}`);
+    
+    const result = await recomputeRoute(routeId, tripId);
+
 
     if (deleteResult.affectedRows > 0) {
       res.send({ message: 'Ride request accepted and deleted successfully' });
