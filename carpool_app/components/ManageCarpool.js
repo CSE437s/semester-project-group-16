@@ -1,95 +1,107 @@
 import React, { useEffect, useState , useCallback} from 'react';
-import {Modal,View,Text,StyleSheet,ActivityIndicator,TouchableOpacity} from 'react-native';
+import {Modal,View,Text,StyleSheet,ActivityIndicator,TouchableOpacity,ScrollView} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomButton from './CustomButton';
 import { Calendar } from 'react-native-calendars';
 import {timestampToDate} from '../Utils';
+import BackArrow from './BackArrow';
+import Post from './Post';
 
-function ManageCarpool({userRides}) {
-    const [modalVisible, setModalVisible] = useState(false);
-    const [markedDates, setMarkedDates] = useState({});
+const ManageCarpool = ({ userRides, onClose }) => {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [markedDates, setMarkedDates] = useState({});
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
+  useEffect(() => {
+    const newMarkedDates = userRides.reduce((acc, ride) => {
+      const dateKey = timestampToDate(ride.timestamp);
+      acc[dateKey] = { selected: true, marked: true, selectedColor: '#022940'};
+      return acc;
+    }, {});
 
-    const onManageCarpoolsPress = () => {
-      const newMarkedDates = userRides.reduce((acc, ride) => {
-        const dateKey = timestampToDate(ride.timestamp);
-        acc[dateKey] = { selected: true, marked: true, selectedColor: 'blue'};
-        return acc;
-      }, {});
-    
-      setMarkedDates(newMarkedDates);
-      setModalVisible(true);
-    };
-    console.log(`Carpools in manage carpool: ${JSON.stringify(userRides)}`);
-    console.log(`Marked dates: ${JSON.stringify(markedDates)}`);
+    setMarkedDates(newMarkedDates);
+    setModalVisible(true);
+  }, [userRides]);
 
-    return (
-    <>
-    <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/>
+  const onDayPress = (day) => {
+    setSelectedDate(day.dateString);
+  };
+  const getRidesForSelectedDate = () => {
+    return userRides.filter((ride) => {
+      const rideDate = timestampToDate(ride.timestamp);
+      return rideDate === selectedDate;
+    });
+  };
+  const formattedSelectedDate = (selectedDate) => {
+    const date = new Date(selectedDate);
+    date.setDate(date.getDate() + 1); // Add one day to fix calendar one-off error
+    return date.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric', 
+    });
+  };
 
-    <Modal animationType="slide" transparent={true} visible={modalVisible}
-    onRequestClose={() => setModalVisible(!modalVisible)}>
-        <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-            <Text style={styles.modalText}>Manage Carpools</Text>
-            <Calendar markedDates={markedDates} />
+  return (
+    <View style={styles.container}>
+      <View style={styles.topView}>
+      <BackArrow onClose={onClose} />
+      <Text style={styles.headerText}>Manage My Carpools</Text>
+      </View>
+      <View style={styles.calendarContainer}>
+        <Calendar
 
-            <CustomButton onPress={() => setModalVisible(false)} title={"Close"} />
+          theme={{
+            backgroundColor: '#ffffff',
+            calendarBackground: '#ffffff',
+            textSectionTitleColor: '#b6c1cd',
+            selectedDayBackgroundColor: '#00adf5',
+            selectedDayTextColor: '#ffffff',
+            todayTextColor: '#00adf5',
+            dayTextColor: '#2d4150',
+          }}
+        
 
-            </View>
+          markedDates={markedDates}
+          onDayPress={onDayPress}
+        />
         </View>
-    </Modal>
-    </>
-    );
-
-}
+        <Text style={styles.infoText }>{formattedSelectedDate(selectedDate)} </Text>
+        <ScrollView>
+        {getRidesForSelectedDate().length == 0 && <Text style={styles.infoText }>You have no trips on this date!</Text>}
+        {selectedDate && getRidesForSelectedDate().map((ride, index) => (
+          <Post key={index} trip={ride} />
+        ))}
+        </ScrollView>
+    </View>
+  );
+};
  
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
+  headerText: {
+    alignSelf:'center',
+    fontFamily:'Poppins-Black',
+    fontSize:24,
   },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+  topView: {
+    display:'flex',
+    flexDirection:'row',
+    gap:15,
   },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    fontWeight: 'bold', 
-    fontSize: 20, 
+  infoText: {
+    alignSelf:'center',
+    fontSize:18,
+    fontFamily:'Poppins-SemiBold'
   },
-  buttonStyle: {
-    backgroundColor: '#022940', 
-    padding: 10,
-    borderRadius: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-    marginTop: 20, 
+  container: {  
+    backgroundColor:'white',
+    marginTop:60,
+    flex:1,
   },
-  buttonTextStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
+  calendarContainer: {
+    width:'80%',
+    alignSelf:'center',
   },
+
 });
 export default ManageCarpool;

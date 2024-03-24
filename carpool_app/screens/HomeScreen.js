@@ -1,7 +1,7 @@
 import React, { useEffect, useState , useCallback} from 'react';
 import {Modal,View,Text,StyleSheet,ActivityIndicator,TouchableOpacity} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
-
+import CustomButton from '../components/CustomButton';
 import { Calendar } from 'react-native-calendars';
 import MapComponent from '../components/MapComponent';
 import ManageCarpool from '../components/ManageCarpool';
@@ -18,6 +18,7 @@ const HomeScreen = () => {
   const [userRides, setUserRides] = useState([]);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
+  const [myCarpoolsVisible, setMyCarpoolsVisible] = useState(false);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -56,6 +57,12 @@ const HomeScreen = () => {
   const onInboxClose = () => {
     setShowInbox(false);
   }
+  const onManageCarpoolsPress = () => {
+    setMyCarpoolsVisible(true);
+  }
+  const onManageCarpoolsClose = () => {
+    setMyCarpoolsVisible(false);
+  }
 
   function getSecondsFromRouteTime(routeTimeStr) {
     return parseInt(routeTimeStr.slice(0, -1), 10); //removes 's' from the routes API routeTime
@@ -66,6 +73,10 @@ const HomeScreen = () => {
     const routeTimeInMilliseconds = routeTimeInSeconds * 1000;
     const departureTimestamp = new Date(new Date(timestampStr).getTime() - routeTimeInMilliseconds);
     return departureTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
+  if(myCarpoolsVisible == true) {
+    return (<ManageCarpool userRides={userRides} onClose={onManageCarpoolsClose}/>);
   }
 
   if(showInbox) {
@@ -115,6 +126,8 @@ const HomeScreen = () => {
           </View>
 
           <MapComponent ride={userRides[selectedIndex]} />
+          <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/>
+
           <ManageCarpool userRides={userRides}/>
           </>
       ) : (
@@ -142,13 +155,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingTop: 60,
+    paddingTop: 80,
   },
   moreTripInfo: {
     display:'flex',
     flexDirection:'row',
-    alignItems:'center',
+    marginRight:'10%',
     gap:10,
+    marginBottom:20,
   },
   homeHeader: {
     display:'flex',
@@ -164,6 +178,7 @@ const styles = StyleSheet.create({
     marginLeft:'5%',
     borderRadius:5,
     width:'80%', 
+    margin:10,
   },
   tripInfo: {
     alignSelf:'left',
