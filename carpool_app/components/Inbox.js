@@ -3,12 +3,17 @@ import { Button, View, Text, FlatList, StyleSheet, TouchableOpacity } from 'reac
 import BackArrow from './BackArrow';
 import { fetchRideRequests } from '../Utils';
 import MessageThread from './MessageThread';
+import SegmentedControl from '@react-native-segmented-control/segmented-control';
 
 const Inbox = ({ onClose }) => {
   const [incomingMessages, setIncomingMessages] = useState([]);
   const [outgoingMessages, setOutgoingMessages] = useState([]);
   const [isIncomingSelected, setIsIncomingSelected] = useState(true); 
   const [selectedRequest, setSelectedRequest] = useState({});
+
+  const [numMessages, setNumMessages] = useState(0);
+
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -20,32 +25,34 @@ const Inbox = ({ onClose }) => {
     getMessages();
   }, []);
 
+
   const onCloseMessageThread = () => {
     setSelectedRequest({});
   }
 
+  // Views the conversation
   if(Object.keys(selectedRequest).length !== 0) {
     return <MessageThread onClose={onCloseMessageThread} rideRequest={selectedRequest} />
   };
 
   const renderItem = ({ item }) => (
-    <View style={styles.item}>
+    <TouchableOpacity style={styles.item} onPress={() => setSelectedRequest(item)}>
       <Text>{item.rideRequestId}</Text>
-      <Button onPress={() => setSelectedRequest(item)} title="View message" />
-    </View>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <BackArrow onClose={onClose} />
-      <TouchableOpacity
-        style={styles.toggleButton}
-        onPress={() => setIsIncomingSelected(!isIncomingSelected)}
-      >
-        <Text>{isIncomingSelected ? "Show Outgoing" : "Show Incoming"}</Text>
-      </TouchableOpacity>
+      <SegmentedControl
+        values={['Join Requests', 'My Requests']}
+        selectedIndex={selectedIndex}
+        onChange={(event) => {
+          setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
+        }}
+      />
       <FlatList
-        data={isIncomingSelected ? incomingMessages : outgoingMessages}
+        data={selectedIndex == 0 ? incomingMessages : outgoingMessages}
         renderItem={renderItem}
         keyExtractor={(item) => item.rideRequestId.toString()}
       />
@@ -65,10 +72,13 @@ const styles = StyleSheet.create({
     marginVertical: 20,
   },
   item: {
-    padding: 20,
+    padding: 10,
     marginVertical: 8,
     marginHorizontal: 16,
-    backgroundColor: "#f9c2ff",
+    borderWidth: 1,
+    borderColor: 'black', 
+    borderRadius: 10, 
+    
   },
 });
 

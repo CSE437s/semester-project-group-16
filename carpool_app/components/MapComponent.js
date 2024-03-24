@@ -25,8 +25,13 @@ const MapComponent = ({ ride, mapHeight=500 }) => {
 
   const styles = StyleSheet.create({
     map: {
-      width: '100%',
+      width: '90%',
+      borderColor:'black',
+      borderRadius:10,
+      borderWidth:1,
       height: mapHeight,
+      overflow: 'hidden',
+      alignSelf:'center',
     },
   });
 
@@ -47,7 +52,7 @@ const MapComponent = ({ ride, mapHeight=500 }) => {
   if (!currentLocation || typeof currentLocation.latitude === 'undefined' || typeof currentLocation.longitude === 'undefined') {
     return null;
   }
-  console.log(`ROUTE: ${ride.route.routePolyline}`);
+
   const encodedPolyline = ride.route.routePolyline;
   if (typeof encodedPolyline === 'undefined') {
     console.log('PolyLine is undefined, check your data?');
@@ -58,7 +63,7 @@ const MapComponent = ({ ride, mapHeight=500 }) => {
   return (
     <View style={[styles.map, { height: mapHeight }]}>
       <MapView
-        style={{ flex: 1 }}
+        style={{ flex: 1,borderColor:'black',borderRadius:10,}}
         initialRegion={currentLocation}
         region={currentLocation}
         followsUserLocation={true}

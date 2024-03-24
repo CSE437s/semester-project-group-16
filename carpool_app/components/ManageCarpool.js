@@ -25,7 +25,7 @@ function ManageCarpool({userRides}) {
 
     return (
     <>
-    <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} />
+    <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/>
 
     <Modal animationType="slide" transparent={true} visible={modalVisible}
     onRequestClose={() => setModalVisible(!modalVisible)}>

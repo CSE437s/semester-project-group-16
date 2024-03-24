@@ -1,9 +1,11 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-const CustomButton = ({ onPress, title }) => {
+const CustomButton = ({ onPress, title, iconName=""}) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.buttonStyle}>
+      {iconName!="" && <Icon name={iconName} color={'white'} size={22}/>} 
       <Text style={styles.buttonTextStyle}>{title}</Text>
     </TouchableOpacity>
   );
@@ -13,6 +15,11 @@ const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: '#022940',
     padding: 10,
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'center',
+    gap:5,
+    alignItems:'center',
     borderRadius: 5,
     shadowColor: '#000',
     shadowOffset: {

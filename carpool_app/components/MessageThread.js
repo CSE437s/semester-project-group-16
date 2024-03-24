@@ -10,7 +10,6 @@ const MessageThread = ({ onClose, rideRequest }) => {
   return (
     <View style={styles.container}>
       <BackArrow onClose={onClose} />
-      <Text>This is my message thread!</Text>
       <RequestMessage onClose={onClose} rideRequest={rideRequest} isYourRequest={rideRequest.outgoingUserId == user.uid}/>
     </View> 
   );

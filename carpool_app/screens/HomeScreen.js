@@ -19,6 +19,7 @@ const HomeScreen = () => {
   const [mapLoaded, setMapLoaded] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
 
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(true);
 
@@ -56,6 +57,17 @@ const HomeScreen = () => {
     setShowInbox(false);
   }
 
+  function getSecondsFromRouteTime(routeTimeStr) {
+    return parseInt(routeTimeStr.slice(0, -1), 10); //removes 's' from the routes API routeTime
+  }
+
+  function formatLeaveByTime(timestampStr, routeTimeStr) {
+    const routeTimeInSeconds = getSecondsFromRouteTime(routeTimeStr);
+    const routeTimeInMilliseconds = routeTimeInSeconds * 1000;
+    const departureTimestamp = new Date(new Date(timestampStr).getTime() - routeTimeInMilliseconds);
+    return departureTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
   if(showInbox) {
     return (<Inbox onClose={onInboxClose} />);
   }
@@ -78,22 +90,31 @@ const HomeScreen = () => {
     <View style={styles.container}> 
 
       
-      {userRides.length > 0 ? (
+      {userRides.length - 1 >= selectedIndex ? (
         <>
         <View style={styles.homeHeader}>
           <View style={styles.tripInfo}>
             <Text style={[{fontSize: 14}, styles.tripInfoText]}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
-              <Text style={[{fontSize: 18}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[0].timestamp)}</Text>
+              <Text style={[{fontSize: 18}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[selectedIndex].timestamp)}</Text>
             </TouchableOpacity>
           </View>
+
           <TouchableOpacity onPress={onInboxPress}>
             <Icon name={"paper-plane-outline"} size={32}/>
           </TouchableOpacity>
           </View>
+          
           <Divider color={"black"} width={1} style={styles.divider} />
 
-          <MapComponent ride={userRides[0]} />
+          <View style={styles.moreTripInfo}>
+          <Icon name={"people-circle-outline"} size={22}/>
+          <Text>{userRides[selectedIndex].stops.length} Stops </Text>
+          <Icon name={"time-outline"} size={22}/>
+          <Text>Driver Leaves By {formatLeaveByTime(userRides[selectedIndex].timestamp, userRides[selectedIndex].route.routeTime)}</Text>
+          </View>
+
+          <MapComponent ride={userRides[selectedIndex]} />
           <ManageCarpool userRides={userRides}/>
           </>
       ) : (
@@ -123,6 +144,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     paddingTop: 60,
   },
+  moreTripInfo: {
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center',
+    gap:10,
+  },
   homeHeader: {
     display:'flex',
     flexDirection:'row',
@@ -134,15 +161,13 @@ const styles = StyleSheet.create({
   },
   divider: {
     alignSelf:'left',
-    marginLeft:10,
+    marginLeft:'5%',
     borderRadius:5,
-    marginTop:-45,
-    marginBottom: -20,
     width:'80%', 
   },
   tripInfo: {
     alignSelf:'left',
-    marginLeft:10,
+    marginLeft:'5%',
     flexDirection: 'column',
     alignItems:'flex-start',
     justifyContent: 'space-around',
