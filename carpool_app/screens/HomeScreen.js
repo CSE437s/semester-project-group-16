@@ -172,7 +172,10 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     marginRight:'10%',
     gap:10,
-    marginBottom:20,
+    marginBottom:15,
+    marginTop: 5,
+    marginLeft: -18,
+    //backgroundColor: 'pink',
   },
   homeHeader: {
     display:'flex',
