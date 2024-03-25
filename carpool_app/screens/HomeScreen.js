@@ -2,7 +2,6 @@ import React, { useEffect, useState , useCallback} from 'react';
 import {Modal,View,Text,StyleSheet,ActivityIndicator,TouchableOpacity} from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import CustomButton from '../components/CustomButton';
-import { Calendar } from 'react-native-calendars';
 import MapComponent from '../components/MapComponent';
 import ManageCarpool from '../components/ManageCarpool';
 import { getUserRides, timestampToDate, timestampToWrittenDate, getUserWithUserId, checkUserExists, userHasSufficientInfo} from '../Utils';
