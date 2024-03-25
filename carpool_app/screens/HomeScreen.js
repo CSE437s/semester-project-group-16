@@ -141,12 +141,16 @@ const HomeScreen = () => {
       ) : (
         <>
         <View style={styles.homeHeader}>
-            <View style={styles.tripInfo}>
-             <Text style={[{fontSize: 20}, styles.tripInfoText]}> You have no upcoming trips! </Text>
+        <View style={[styles.tripInfoTextContainer, styles.tripInfoTextContainer2]}>
+
+            <View style={[{}, styles.tripInfo]}>
+             <Text style={[{fontSize: 20}, styles.tripInfoText3]}> You have no upcoming trips! </Text>
             </View>
-            <TouchableOpacity onPress={onInboxPress}>
+            <TouchableOpacity onPress={onInboxPress} style={[{}, style=styles.planeIcon2]}>
               <Icon name={"paper-plane-outline"} size={32}/>
             </TouchableOpacity>
+
+        </View>
         </View>
         <MapComponent />
         <ManageCarpool userRides={userRides}/>
@@ -171,7 +175,9 @@ const styles = StyleSheet.create({
     flexDirection:'row',
     marginRight:'10%',
     gap:10,
-    marginBottom:20,
+    marginBottom:15,
+    marginTop: 5,
+    marginLeft: -18,
   },
   homeHeader: {
     display:'flex',
@@ -196,7 +202,6 @@ const styles = StyleSheet.create({
     //alignItems:'left',
     justifyContent: 'flex-start',
     width: '80%',
-    //backgroundColor: 'pink',
   },
   centeredView: {
     flex: 1,
@@ -213,9 +218,24 @@ const styles = StyleSheet.create({
     marginLeft:0,
     marginBottom:-25,
    },
+   tripInfoText3:{
+    fontFamily: 'Poppins-SemiBold',
+    height: 50,
+    width: '100%',
+    marginLeft: 15,
+    marginBottom: -10
+   },
    planeIcon:{
     //backgroundColor: 'red',
     justifyContent: 'center',
+    width: 'auto',
+   },
+   planeIcon2:{
+    //backgroundColor: 'aqua',
+    justifyContent: 'center',
+    width: 'auto',
+    marginLeft: 20,
+    marginBottom: 5
    },
    tripInfoTextContainer: {
     flexDirection: 'row',
@@ -224,6 +244,12 @@ const styles = StyleSheet.create({
    userInfoFlexContainer: {
     flexDirection: 'row',
    },
+   tripInfoTextContainer2:{
+    //backgroundColor: 'pink',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: '100%',
+   }
 });
 
 export default HomeScreen;
