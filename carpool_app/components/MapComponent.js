@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as Location from 'expo-location';
 
 
-const MapComponent = ({ ride, mapHeight=500 }) => {
+const MapComponent = ({ ride, mapHeight=565 }) => {
 
   const [currentLocation, setCurrentLocation] = useState({});
   useEffect(() => {
@@ -25,12 +25,13 @@ const MapComponent = ({ ride, mapHeight=500 }) => {
 
   const styles = StyleSheet.create({
     map: {
-      width: '90%',
-      borderColor:'black',
-      borderRadius:10,
-      borderWidth:1,
+      width: '100%',
+      //borderColor:'black',
+      //borderTopRadius:10,
+      //borderWidth: 1,
+      borderTopWidth:1,
+      borderTopColor: 'light-gray',
       height: mapHeight,
-      overflow: 'hidden',
       alignSelf:'center',
     },
   });
