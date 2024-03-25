@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
   },
   moreTripInfo: {
     display:'flex',
+    alignItems:'center',
     flexDirection:'row',
     marginRight:'10%',
     gap:10,

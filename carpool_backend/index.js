@@ -22,6 +22,8 @@ const {
   updateStopTripId,
   getTripsWithTripId,
   recomputeRoute,
+  deleteStopWithStopId,
+  deleteTripWithTripId,
 
 } = require("./databaseFunctions");
 const {getRoutes, getCoordinatesOfAddress} = require('./utils');
@@ -193,8 +195,11 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
     let allUserTrips = [];
 
     for (let trip of trips) {
-      console.log(trips.length);
-      console.log(trip.route_id);
+      const tripDate = new Date(trip.timestamp);
+    
+      if (tripDate <= new Date()) {
+          continue;
+      }
       let trip_route = await getRoutesWithRouteId(trip.route_id); // Assuming getTripsWithUserId includes route details
 
       const origin = {
@@ -214,9 +219,10 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
       
       let trip_stops = await getStopsWithTripId(trip.trip_id);
 
+
+
       allUserTrips.push({route:trip_route[0], stops: trip_stops, email: created_user_email[0].email, trip:trip});
     };
-    console.log(`Number of trips returned: ${allUserTrips.length}`);
     res.status(200).json(allUserTrips);
   } catch (error) {
     console.error('Error fetching user rides:', error);
@@ -230,7 +236,6 @@ app.get('/riderequests/:userId', authenticate, async(req, res) => {
 
   try {
     const { outgoingRequests, incomingRequests } = await getRideRequestsWithUserId(user_id);
-    console.log(`postRideRequest: ${JSON.stringify(outgoingRequests), JSON.stringify(incomingRequests)}`);
     res.json({
       outgoingRequests,
       incomingRequests
@@ -248,7 +253,6 @@ app.delete('/riderequests/:rideRequestId', authenticate, async (req, res) => {
 
   try {
     const result = await deleteRideRequestsWithRideRequestId(rideRequestId);
-    console.log(`deleteRideRequest: ${JSON.stringify(result)}`);
 
     if (result.affectedRows > 0) {
       res.send({ message: 'Ride request deleted successfully' });
@@ -264,20 +268,14 @@ app.delete('/riderequests/:rideRequestId', authenticate, async (req, res) => {
 
 app.patch('/riderequests', authenticate, async(req, res) => {
   const { rideRequestId, stopId, tripId } = req.body;
-  console.log("Making patch riderequests request");
-  console.log(`ride request id: ${rideRequestId}, stopId=${stopId}, tripId=${tripId}`)
 
   try {
     const updateResult = await updateStopTripId(stopId, tripId);
-    console.log(`updateStopTripId: ${JSON.stringify(updateResult)}`);
 
     const deleteResult = await deleteRideRequestsWithRideRequestId(rideRequestId);
-    console.log(`deleteRideRequests: ${JSON.stringify(deleteResult)}`);
 
     const trip = await getTripsWithTripId(tripId);
     const routeId = trip[0].route_id;
-    console.log(`route id: ${routeId}`);
-    console.log(`trip: ${JSON.stringify(trip)}`);
     
     const result = await recomputeRoute(routeId, tripId);
 
@@ -292,6 +290,40 @@ app.patch('/riderequests', authenticate, async(req, res) => {
     res.status(500).send({ message: 'Error accepting ride request' });
   }
 });
+
+app.delete('/stops/:stopId', authenticate, async(req, res) => {
+  const { stopId } = req.params; // Extracting stopId from the route parameters
+  console.log(`stopId: ${stopId}`);
+
+  try {
+    const result = await deleteStopWithStopId(stopId);
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Stop not found' });
+    }
+    res.status(200).json({ message: 'Stop deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete the stop' });
+  }
+
+});
+
+app.delete('/trips/:tripId', authenticate, async(req, res) => {
+  const { tripId } = req.params;
+
+  try {
+    const result = await deleteTripWithTripId(tripId);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Trip not found' });
+    }
+
+    res.status(200).json({ message: 'Trip deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete the trip' });
+  }
+
+});
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

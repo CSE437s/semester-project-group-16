@@ -70,7 +70,7 @@ const ManageCarpool = ({ userRides, onClose }) => {
         <ScrollView>
         {getRidesForSelectedDate().length == 0 && <Text style={styles.infoText }>You have no trips on this date!</Text>}
         {selectedDate && getRidesForSelectedDate().map((ride, index) => (
-          <Post key={index} trip={ride} />
+          <Post key={index} trip={ride} fromManageCarpools={true} />
         ))}
         </ScrollView>
     </View>

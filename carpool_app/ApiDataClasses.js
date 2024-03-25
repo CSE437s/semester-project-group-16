@@ -17,6 +17,16 @@ class TripClass {
         });
         return stopsList;
     }
+
+    getStopIdWithUserId(userId) {
+        for (const stop of this.stops) {
+            console.log(stop.userId);
+            if (stop.userId === userId) {
+                return stop.stopId;
+            }
+        }
+        return -1;
+    }
 }
 
 class RouteClass {

@@ -80,7 +80,7 @@ async function getStopsWithTripId(tripId) {
             SELECT STOP.*, USER.*
             FROM STOP
             JOIN TRIP ON STOP.trip_id = TRIP.trip_id
-            JOIN USER ON TRIP.user_id = USER.user_id
+            JOIN USER ON STOP.user_id = USER.user_id
             WHERE STOP.trip_id = ?
         `;
         const [stops] = await pool.execute(query, [tripId]);
@@ -88,6 +88,7 @@ async function getStopsWithTripId(tripId) {
     } catch (error) {
         console.error('Error fetching Stops with tripId:', error);
         throw error;
+
     }
 }
 async function getRoutesWithRouteId(routeId) {
@@ -221,7 +222,17 @@ const createRideRequest = async (incomingUserId, outgoingUserId, tripId, stopId)
       throw error;
     }
   };
-
+  const deleteStopWithStopId = async (stopId) => {
+    const deleteQuery = 'DELETE FROM STOP WHERE stop_id = ?';
+  
+    try {
+      const [result] = await pool.execute(deleteQuery, [stopId]);
+      return result;
+    } catch (error) {
+      console.error('Failed to delete stop:', error);
+      throw error;
+    }
+  };
   const updateStopTripId = async (stopId, tripId) => {
     const updateQuery = 'UPDATE STOP SET trip_id = ? WHERE stop_id = ?';
   
@@ -266,6 +277,18 @@ const createRideRequest = async (incomingUserId, outgoingUserId, tripId, stopId)
     return updateResult;
   }
 
+  const deleteTripWithTripId = async (tripId) => {
+    const deleteQuery = 'DELETE FROM TRIP WHERE trip_id = ?';
+  
+    try {
+      const [result] = await pool.execute(deleteQuery, [tripId]);
+      return result;
+    } catch (error) {
+      console.error('Failed to delete trip:', error);
+      throw error;
+    }
+  };
+
 module.exports = {
     createRoute,
     createStop,
@@ -283,4 +306,6 @@ module.exports = {
     updateStopTripId,
     getTripsWithTripId,
     recomputeRoute,
+    deleteStopWithStopId,
+    deleteTripWithTripId,
   };

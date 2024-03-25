@@ -202,6 +202,46 @@ export const deleteRideRequest = async(rideRequest) => {
   return await response.json();
 }
 
+export const deleteStop = async (stopId) => {
+  const user = checkUserExists();
+  const idToken = await user.getIdToken(true);
+  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/stops/${stopId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${idToken}`,
+      userid: user.uid,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to delete stop: ${response.status} ${error}`);
+  }
+
+  return await response.json();
+};
+
+export const deleteTrip = async (tripId) => {
+  const user = checkUserExists();
+  const idToken = await user.getIdToken(true);
+  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/trips/${tripId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${idToken}`,
+      userid: user.uid,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Failed to delete trip: ${response.status} ${error}`);
+  }
+
+  return await response.json();
+};
+
 export async function acceptRideRequest(rideRequest) {
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);

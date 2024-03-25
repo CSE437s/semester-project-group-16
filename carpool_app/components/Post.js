@@ -8,9 +8,10 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ShowPost from './ShowPost';
 
-const Post = ({ trip }) => {
+const Post = ({ trip, fromManageCarpools=false }) => {
 
   const [showPost, setShowPost] = useState(false);
+
 
   const handleApply = () => {
     setShowPost(true); 
@@ -40,7 +41,7 @@ const Post = ({ trip }) => {
         <Text style={styles.completed}>{trip.completed ? 'Completed' : 'Upcoming'}</Text>
       </View>
       <Modal visible={showPost} animationType="slide">
-        <ShowPost trip={trip} onClose={handleClose}/> 
+        <ShowPost trip={trip} onClose={handleClose} fromManageCarpools={fromManageCarpools}/> 
       </Modal>
     </TouchableOpacity>
   );

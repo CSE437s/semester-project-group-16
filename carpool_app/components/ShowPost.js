@@ -4,26 +4,27 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import MapComponent  from './MapComponent';
 import StopCreation from './StopCreation';
 import BackArrow from './BackArrow';
-import {timestampToWrittenDate, checkUserExists} from '../Utils';
+import {timestampToWrittenDate, checkUserExists, deleteStop, deleteTrip} from '../Utils';
 import CustomButton from './CustomButton'; 
+
 
   const formatRouteTime = (routeTimeInSeconds) => {
     const minutes = Math.floor(parseInt(routeTimeInSeconds, 10) / 60);
     return `${minutes} minute`;
   };
-  const didUserCreatePost = async (trip) => {
-    const user = await checkUserExists();
-    return user.uid == trip.userId;
-  }
+
   
-  const ShowPost = ({ trip, onClose }) => {
+  const ShowPost = ({ trip, onClose, fromManageCarpools=false }) => {
     console.log(JSON.stringify(trip));
     const [showApply, setShowApply] = useState(false);
     const [isYourPost, setIsYourPost] = useState(false);
 
     useEffect(() => {
         const checkIfUserCreatedPost = async () => {
-          const result = await didUserCreatePost(trip);
+          const user = await checkUserExists();
+          const result = user.uid === trip.tripUserId;
+          console.log(user.uid)
+          console.log(trip.tripUserId)
           setIsYourPost(result);
         };
         checkIfUserCreatedPost();
@@ -33,9 +34,27 @@ import CustomButton from './CustomButton';
       setShowApply(false);
     };
 
-    //TODO IMPLEMENT COMPONENT. might be unnecessary. Posts implemented to only show those that aren't yours.
-    const handleEditPost = () => {
-        console.log("Post creator wants to edit.");
+    const handleDeletePost = async() => {
+      try {
+        console.log("2")
+        await deleteTrip(trip.tripId);
+        console.log("Deleted trip was successful!")
+        onClose();
+      } catch(error) {
+        console.error(error)
+      }
+    }
+    const handleDeleteStop = async() => {
+      try {
+        console.log("1")
+        const user = checkUserExists();
+        const stopId = trip.getStopIdWithUserId(user.uid);
+        await deleteStop(stopId);
+        console.log("Deleted stop was successful!")
+        onClose();
+      } catch(error) {
+        console.error(error)
+      }
     }
   
     const routeTimeFormatted = formatRouteTime(trip.route.routeTime);
@@ -63,9 +82,14 @@ import CustomButton from './CustomButton';
           <Text style={styles.detailText}>{trip.stops.length} Passengers</Text>
         </View>
         </View>
-  
-        {isYourPost ? (
-            <CustomButton onPress={() => handleEditPost} title="Edit" />
+
+        {fromManageCarpools==true ? (
+          <>
+          {isYourPost == true ? 
+            <CustomButton onPress={() => handleDeletePost()} title="Delete post" />
+            :<CustomButton onPress={() => handleDeleteStop()} title="Cancel my stop" />
+          }
+          </>
         ) : (
             <CustomButton onPress={() => setShowApply(true)} title="Apply" />
         )}
