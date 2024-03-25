@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
 import PostScreen from '../screens/PostScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import MessagingScreen from '../screens/MessagingScreen';
 
 const Tab = createBottomTabNavigator(); 
 
@@ -36,6 +37,7 @@ function NavigationBar() {
       >
         <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
         <Tab.Screen name="Posts" component={PostScreen} options={{ headerShown: false }}/>
+        <Tab.Screen name="Messages" component={MessagingScreen} options={{ headerShown: false }}/>
         <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
       </Tab.Navigator>
     </NavigationContainer>
