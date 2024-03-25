@@ -75,9 +75,9 @@ const HomeScreen = () => {
     return departureTimestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
   }
 
-  if(myCarpoolsVisible == true) {
-    return (<ManageCarpool userRides={userRides} onClose={onManageCarpoolsClose}/>);
-  }
+  // if(myCarpoolsVisible == true) {
+  //   return (<ManageCarpool userRides={userRides} onClose={onManageCarpoolsClose}/>);
+  // }
 
   if(showInbox) {
     return (<Inbox onClose={onInboxClose} />);
@@ -134,9 +134,9 @@ const HomeScreen = () => {
           </View>
 
           <MapComponent ride={userRides[selectedIndex]} />
-          <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/>
+          {/* <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/> */}
 
-          <ManageCarpool userRides={userRides}/>
+          {/* <ManageCarpool userRides={userRides}/> */}
           </>
       ) : (
         <>
@@ -153,7 +153,7 @@ const HomeScreen = () => {
         </View>
         </View>
         <MapComponent />
-        <ManageCarpool userRides={userRides}/>
+        {/* <ManageCarpool userRides={userRides}/> */}
         </>
       )}
     </View>
