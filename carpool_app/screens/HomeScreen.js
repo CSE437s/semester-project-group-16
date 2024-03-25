@@ -109,14 +109,18 @@ const HomeScreen = () => {
       {userRides.length - 1 >= selectedIndex ? (
         <>
         <View style={styles.homeHeader}>
-          <View style={styles.tripInfo}>
-            <Text style={[{fontSize: 14}, styles.tripInfoText]}>Your Next Trip</Text>
+          <View style={[{}, styles.tripInfo]}>
+
+            <Text style={[{fontSize: 14}, styles.tripInfoText, styles.tripInfoText2]}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
-              <Text style={[{fontSize: 18}, styles.tripInfoText]}>{timestampToWrittenDate(userRides[selectedIndex].timestamp)}</Text>
+
+              <Text style={[{fontSize: 18}, styles.tripInfoText, styles.tripInfoText2]}>{timestampToWrittenDate(userRides[selectedIndex].timestamp)}</Text>
+
             </TouchableOpacity>
+
           </View>
 
-          <TouchableOpacity onPress={onInboxPress}>
+          <TouchableOpacity onPress={onInboxPress} style={[{}, style=styles.planeIcon]}>
             <Icon name={"paper-plane-outline"} size={32}/>
           </TouchableOpacity>
           </View>
@@ -190,7 +194,7 @@ const styles = StyleSheet.create({
     alignSelf:'left',
     //marginLeft:'5%',
     flexDirection: 'column',
-    alignItems:'center',
+    //alignItems:'left',
     justifyContent: 'flex-start',
     width: '80%',
     //backgroundColor: 'pink',
@@ -203,9 +207,16 @@ const styles = StyleSheet.create({
   tripInfoText: {
     fontFamily: 'Poppins-SemiBold',
     height: 50,
-    width: 'auto',
+    width: '80%',
     marginLeft: -10,
+   },
+   tripInfoText2:{
+    marginLeft:0,
+    marginBottom:-25,
+   },
+   planeIcon:{
     //backgroundColor: 'red',
+    justifyContent: 'center',
    },
    tripInfoTextContainer: {
     flexDirection: 'row',
