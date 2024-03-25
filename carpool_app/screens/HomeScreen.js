@@ -110,7 +110,7 @@ const HomeScreen = () => {
         <View style={styles.homeHeader}>
           <View style={[{}, styles.tripInfo]}>
 
-            <Text style={[{fontSize: 14}, styles.tripInfoText, styles.tripInfoText2]}>Your Next Trip</Text>
+            <Text style={[{fontSize: 14, color: 'gray'}, styles.tripInfoText, styles.tripInfoText2]}>Your Next Trip</Text>
             <TouchableOpacity onPress={onDatePress}>
 
               <Text style={[{fontSize: 18}, styles.tripInfoText, styles.tripInfoText2]}>{timestampToWrittenDate(userRides[selectedIndex].timestamp)}</Text>
