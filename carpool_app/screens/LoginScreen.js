@@ -88,6 +88,7 @@ const LoginScreen = ({setUser}) => {
           placeholder="Email"
           value={username}
           onChangeText={setUsername}
+          autoCapitalize="none" 
         />
 
         <TextInput
@@ -95,6 +96,7 @@ const LoginScreen = ({setUser}) => {
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
+          //autoCapitalize="none" 
           secureTextEntry
         />
         {loading ? <ActivityIndicator size="large" /> 

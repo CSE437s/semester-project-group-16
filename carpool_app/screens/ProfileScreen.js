@@ -45,7 +45,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     display:'flex',
-    marginTop: 120,
+    marginTop: 60,
   }
 })
 

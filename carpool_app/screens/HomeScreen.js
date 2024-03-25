@@ -13,6 +13,7 @@ import UserInfoForm from '../components/UserInfoForm';
 import BackArrow from '../components/BackArrow';
 import Inbox from '../components/Inbox';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { color } from '@rneui/themed/dist/config';
 
 const HomeScreen = () => {
   const [userRides, setUserRides] = useState([]);
@@ -90,8 +91,12 @@ const HomeScreen = () => {
   if (showUserInfoForm) {
     return (
       <View style={styles.userInfoContainer}>
-        <BackArrow onClose={toggleShowUserInfoForm} />
-        <Text style={styles.tripInfoText}>Welcome to Ride Along! To use our services we need to know more about you. </Text>
+        <View style={styles.userInfoFlexContainer}>
+          <BackArrow onClose={toggleShowUserInfoForm} />
+          <View style={styles.tripInfoTextContainer}>
+            <Text style={styles.tripInfoText} width={'92%'} marginLeft={-25} marginTop={8}>Welcome to Ride Along! To use our services we need to know more about you. </Text>
+         </View>
+        </View>
         <UserInfoForm onClose={toggleShowUserInfoForm} />
       </View>
     )
@@ -133,12 +138,12 @@ const HomeScreen = () => {
       ) : (
         <>
         <View style={styles.homeHeader}>
-          <View style={styles.tripInfo}>
-            <Text style={[{fontSize: 24}, styles.tripInfoText]}> You have no upcoming trips! </Text>
-          </View>
-          <TouchableOpacity onPress={onInboxPress}>
-            <Icon name={"paper-plane-outline"} size={32}/>
-          </TouchableOpacity>
+            <View style={styles.tripInfo}>
+             <Text style={[{fontSize: 20}, styles.tripInfoText]}> You have no upcoming trips! </Text>
+            </View>
+            <TouchableOpacity onPress={onInboxPress}>
+              <Icon name={"paper-plane-outline"} size={32}/>
+            </TouchableOpacity>
         </View>
         <MapComponent />
         <ManageCarpool userRides={userRides}/>
@@ -168,8 +173,8 @@ const styles = StyleSheet.create({
   homeHeader: {
     display:'flex',
     flexDirection:'row',
-    justifyContent:'space-around',
-
+    justifyContent:'center',
+    //backgroundColor: 'blue',
   },
   userInfoContainer: {
     paddingTop:80,
@@ -178,16 +183,17 @@ const styles = StyleSheet.create({
     alignSelf:'left',
     marginLeft:'5%',
     borderRadius:5,
-    width:'80%', 
     margin:10,
+    width:'80%', 
   },
   tripInfo: {
     alignSelf:'left',
-    marginLeft:'5%',
+    //marginLeft:'5%',
     flexDirection: 'column',
-    alignItems:'flex-start',
-    justifyContent: 'space-around',
+    alignItems:'center',
+    justifyContent: 'flex-start',
     width: '80%',
+    //backgroundColor: 'pink',
   },
   centeredView: {
     flex: 1,
@@ -196,7 +202,18 @@ const styles = StyleSheet.create({
   },
   tripInfoText: {
     fontFamily: 'Poppins-SemiBold',
-  }
+    height: 50,
+    width: 'auto',
+    marginLeft: -10,
+    //backgroundColor: 'red',
+   },
+   tripInfoTextContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+   },
+   userInfoFlexContainer: {
+    flexDirection: 'row',
+   },
 });
 
 export default HomeScreen;

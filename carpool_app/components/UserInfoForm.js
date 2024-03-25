@@ -103,7 +103,7 @@ const NewUserForm = ({onClose}) => {
   
     return (
       <View style={styles.container}>
-        <ScrollView style={{paddingBottom:200, marginBottom:100}}>
+        <ScrollView style={{paddingBottom:500, marginBottom:100}}>
         <TextInput
           placeholder="Full Name"
           value={fullName}
@@ -117,8 +117,9 @@ const NewUserForm = ({onClose}) => {
           keyboardType="phone-pad"
           style={styles.textInput}
         />
+        <View marginBottom={10}>
         <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
-        <Text style={styles.headerText}>Date of Birth</Text>
+        <Text style={styles.headerText} alignItems={'center'}>Date of Birth :</Text>
         <DateTimePicker
             testID="datePicker"
             value={dob}
@@ -127,6 +128,7 @@ const NewUserForm = ({onClose}) => {
             onChange={onChangeDate}
             style={styles.datePicker}
         />
+        </View>
         </View>
         <TextInput
           placeholder="Phone Number"
@@ -148,6 +150,8 @@ const NewUserForm = ({onClose}) => {
         </View>
         {vehicleInfoVisible && <CarInfoForm onVehicleInfoChange={handleVehicleInfoChange} make={vehicleMake} model={vehicleModel} year={vehicleYear} license={licensePlate} seat={seatCapacity}/>}
         <CustomButton title="Submit" onPress={handleSubmit} />
+
+        <View style={{height: 20}}></View>
         </ScrollView>
         
       </View>
@@ -206,7 +210,7 @@ const NewUserForm = ({onClose}) => {
         borderColor: '#ccc', 
         borderRadius: 5, 
         backgroundColor: '#fff', 
-        marginBottom: 10, 
+        marginBottom: 15, 
       },
   });
   
