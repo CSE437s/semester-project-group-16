@@ -4,6 +4,7 @@ import BackArrow from './BackArrow';
 import { fetchRideRequests } from '../Utils';
 import MessageThread from './MessageThread';
 import SegmentedControl from '@react-native-segmented-control/segmented-control';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const Inbox = ({ onClose }) => {
   const [incomingMessages, setIncomingMessages] = useState([]);
@@ -37,7 +38,16 @@ const Inbox = ({ onClose }) => {
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.item} onPress={() => setSelectedRequest(item)}>
-      <Text>{item.rideRequestId}</Text>
+      <Text style={styles.itemText}>Request sent by {item.userFullName}</Text>
+        <View style={[{ display: 'flex', justifyContent:'center', alignItems:'center', flexDirection: 'row', gap: 5 }, styles.addressInfo]}>
+        <Icon name={"business-outline"} size={16}/>
+        <Text style={styles.itemText}>{item.originAddress}</Text>
+
+        </View>
+        <View style={[{ display: 'flex', justifyContent:'center',alignItems:'center', flexDirection: 'row', gap: 5, marginBottom: 10 }, styles.addressInfo]}>
+        <Icon name={"flag-outline"} size={16}/>
+        <Text style={styles.itemText}>{item.destinationAddress}</Text>
+        </View>
     </TouchableOpacity>
   );
 
@@ -80,6 +90,10 @@ const styles = StyleSheet.create({
     borderRadius: 10, 
     
   },
+  itemText: {
+    fontFamily:'Poppins-SemiBold',
+    alignSelf:'center',
+  }
 });
 
 export default Inbox;

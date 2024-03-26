@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   tripInfoText: {
     fontFamily: 'Poppins-SemiBold',
     height: 50,
-    width: '80%',
+    width: '100%',
     marginLeft: -10,
   },
   tripInfoText2: {

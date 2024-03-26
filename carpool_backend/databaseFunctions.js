@@ -186,13 +186,16 @@ async function getRideRequestsWithUserId(userId) {
         rr.*,  
         u.full_name AS user_full_name,  
         u.email AS user_email,  
-        t.*  
+        t.*,  
+        rt.*
     FROM 
         RIDEREQUEST rr
     JOIN 
         USER u ON rr.outgoing_user_id = u.user_id  
     JOIN 
         TRIP t ON rr.trip_id = t.trip_id  
+    JOIN 
+        ROUTE rt ON t.route_id = rt.route_id
     WHERE
         rr.outgoing_user_id = ?;
 `;
@@ -202,13 +205,16 @@ const incomingQuery = `
         rr.*,  
         u.full_name AS user_full_name,   
         u.email AS user_email,  
-        t.*  
+        t.*,  
+        rt.*
     FROM 
         RIDEREQUEST rr
     JOIN 
-        USER u ON rr.outgoing_user_id = u.user_id
+        USER u ON rr.outgoing_user_id = u.user_id  
     JOIN 
         TRIP t ON rr.trip_id = t.trip_id  
+    JOIN 
+        ROUTE rt ON t.route_id = rt.route_id
     WHERE
         rr.incoming_user_id = ?;
 `;

@@ -26,8 +26,7 @@ const RequestMessage = ({onClose, rideRequest, isYourRequest }) => {
 
   return (
     <View style={styles.container}>
-        {isYourRequest ? <Text> You want to join this ride! </Text> : <Text> {rideRequest.userFullName} wants to join your ride! </Text> }
-        <Text>{rideRequest.rideRequestId}</Text>
+        {isYourRequest ? <Text style={styles.messageText}> You want to join this ride! </Text> : <Text style={styles.messageText}> {rideRequest.userFullName} wants to join your ride! </Text> }
         <View style={styles.requestButtons}>
         {!isYourRequest && <CustomButton title="Accept" onPress={onPressAccept} />}
         <CustomButton title={!isYourRequest ? "Deny Request": "Cancel Request"} onPress={onPressDeny} />
@@ -53,6 +52,9 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         marginTop: 'auto',
         gap:20,
+    },
+    messageText: {
+        fontFamily:'Poppins-SemiBold',
     }
 });
 

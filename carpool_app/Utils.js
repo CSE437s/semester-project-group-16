@@ -289,8 +289,8 @@ export async function fetchRideRequests() {
   const data = await response.json();
   console.log(`We successfully got data!${JSON.stringify(data)}`);
   
-  const outgoingRequests = data.outgoingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id, req.user_full_name, req.user_email));
-  const incomingRequests = data.incomingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id, req.user_full_name, req.user_email));
+  const outgoingRequests = data.outgoingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id, req.user_full_name, req.user_email, req.origin_address, req.destination_address, req.timestamp));
+  const incomingRequests = data.incomingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id, req.user_full_name, req.user_email, req.origin_address, req.destination_address, req.timestamp));
 
   return { outgoingRequests, incomingRequests };
 }
