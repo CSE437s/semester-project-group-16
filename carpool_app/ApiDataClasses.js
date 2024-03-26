@@ -59,12 +59,14 @@ class StopClass {
 }
 
 class RideRequestClass {
-    constructor(rideRequestId, incomingUserId, outgoingUserId, stopId, tripId) {
+    constructor(rideRequestId, incomingUserId, outgoingUserId, stopId, tripId, outgoing_full_name, outgoing_user_email) {
         this.rideRequestId = rideRequestId;
         this.incomingUserId = incomingUserId;
         this.outgoingUserId = outgoingUserId;
         this.stopId = stopId;
         this.tripId = tripId;
+        this.userFullName = outgoing_full_name;
+        this.userEmail = outgoing_user_email;
     }
 }
 export { TripClass, RouteClass, CoordinateClass, StopClass, RideRequestClass};

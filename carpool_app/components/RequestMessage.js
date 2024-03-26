@@ -5,6 +5,7 @@ import {checkUserExists, acceptRideRequest, deleteRideRequest } from '../Utils';
 import CustomButton from './CustomButton.js';
 
 const RequestMessage = ({onClose, rideRequest, isYourRequest }) => {
+    console.log(JSON.stringify(rideRequest));
 
     const onPressAccept = async() => {
         try {
@@ -25,13 +26,12 @@ const RequestMessage = ({onClose, rideRequest, isYourRequest }) => {
 
   return (
     <View style={styles.container}>
-        {isYourRequest ? <Text> You want to join this ride! </Text> : <Text> User wants to join your ride! </Text> }
+        {isYourRequest ? <Text> You want to join this ride! </Text> : <Text> {rideRequest.userFullName} wants to join your ride! </Text> }
         <Text>{rideRequest.rideRequestId}</Text>
         <View style={styles.requestButtons}>
-        {!isYourRequest && <Button title="Accept" onPress={onPressAccept} />}
+        {!isYourRequest && <CustomButton title="Accept" onPress={onPressAccept} />}
         <CustomButton title={!isYourRequest ? "Deny Request": "Cancel Request"} onPress={onPressDeny} />
         </View>
-
     </View>
   );
 };
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'center',
         marginTop: 'auto',
+        gap:20,
     }
 });
 

@@ -184,7 +184,7 @@ async function getRideRequestsWithUserId(userId) {
     const outgoingQuery = `
     SELECT 
         rr.*,  
-        u.name AS user_name,  
+        u.full_name AS user_full_name,  
         u.email AS user_email,  
         t.*  
     FROM 
@@ -200,7 +200,7 @@ async function getRideRequestsWithUserId(userId) {
 const incomingQuery = `
     SELECT 
         rr.*,  
-        u.name AS user_name,  
+        u.full_name AS user_full_name,   
         u.email AS user_email,  
         t.*  
     FROM 
