@@ -41,7 +41,7 @@ const PostScreen = () => {
   return (
     <View style={styles.container}>
       <View>
-        <CustomButton title="New Driving Event" onPress={openPostCreation} />
+        <CustomButton title="New Driving Event" onPress={openPostCreation} style={[{}, styles.customBtn]} />
         <Modal visible={showPostCreation} animationType="slide">
           <PostCreation onClose={closePostCreation} />
         </Modal>
@@ -69,7 +69,11 @@ const styles = StyleSheet.create({
       display: 'flex',
       alignItems: 'center', 
       justifyContent: 'center',
-  }
+  },
+  customBtn:{
+    borderRadius: 0,
+    height: 100
+  },
 });
 
 export default PostScreen;

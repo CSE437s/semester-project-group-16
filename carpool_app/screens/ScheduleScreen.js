@@ -31,6 +31,7 @@ const ScheduleScreen = () => {
               dots: [{ color: 'blue' }],
             };
           }
+          console.log(ride);
         });
 
         setMarkedDates(newMarkedDates);
