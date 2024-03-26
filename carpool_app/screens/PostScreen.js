@@ -52,6 +52,9 @@ const PostScreen = () => {
         {trips.map((trip, index) => (
           <Post key={index} trip={trip} />
         ))}
+
+      <View style={{height: 30}}></View>
+
       </ScrollView>
 
 

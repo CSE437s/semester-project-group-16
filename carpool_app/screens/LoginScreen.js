@@ -70,11 +70,11 @@ const LoginScreen = ({setUser}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ride Along</Text>
+      <Text style={styles.title}>ride along</Text>
       <View>
         <Image
           source={require('../assets/RALogo.png')}
-          style={{ width: 200, height: 200 }}
+          style={{ width: 200, height: 200, marginBottom: 20 }}
         />
       </View>
       <CustomAlert
@@ -101,12 +101,15 @@ const LoginScreen = ({setUser}) => {
         />
         {loading ? <ActivityIndicator size="large" /> 
         : <> 
+        <View style={styles.buttonsContainer}>
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleSignup}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </TouchableOpacity>
+        </View>
+
         </> 
         }
 
@@ -123,21 +126,28 @@ const styles = StyleSheet.create({
     paddingTop: 160,
     gap: 5,
   },
+  buttonsContainer:{
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '75%'
+  },
   title: {
     fontSize: 40,
+    fontFamily: 'Poppins-SemiBold'
   },
   button: {
     padding: 10,
     backgroundColor: '#022940',
     borderRadius: 5,
-    width: 100,
+    width: '49%',
   },
   buttonText: {
     color: 'white',
     textAlign: 'center',
   },
   input: {
-    width: '50%',
+    width: '75%',
     padding: 10,
     marginBottom: 10,
     borderWidth: 1,

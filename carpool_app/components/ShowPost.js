@@ -6,6 +6,8 @@ import StopCreation from './StopCreation';
 import BackArrow from './BackArrow';
 import {timestampToWrittenDate, checkUserExists, deleteStop, deleteTrip} from '../Utils';
 import CustomButton from './CustomButton'; 
+import { useNavigation } from '@react-navigation/native';
+
 
 
   const formatRouteTime = (routeTimeInSeconds) => {
@@ -14,7 +16,7 @@ import CustomButton from './CustomButton';
   };
 
   
-  const ShowPost = ({ trip, onClose, fromManageCarpools=false }) => {
+  const ShowPost = ({ trip, onClose, fromManageCarpools=false}) => {
     console.log(JSON.stringify(trip));
     const [showApply, setShowApply] = useState(false);
     const [isYourPost, setIsYourPost] = useState(false);

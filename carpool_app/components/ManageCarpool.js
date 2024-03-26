@@ -72,7 +72,7 @@ const ManageCarpool = ({ userRides, onClose }) => {
       </Text>
       <ScrollView>
         {getRidesForSelectedDate().length == 0 && (
-          <Text style={styles.infoText}>You have no trips on this date!</Text>
+          <Text style={styles.infoText2}>You have no trips on this date!</Text>
         )}
         {selectedDate &&
           getRidesForSelectedDate().map((ride, index) => (
@@ -87,22 +87,32 @@ const styles = StyleSheet.create({
   headerText: {
     textAlign: 'center',
     fontFamily: 'Poppins-Black',
-    fontSize: 24,
+    fontSize: 20,
   },
   topView: {
-    marginTop: 50, // Move marginTop from container to here for better spacing control
-    marginBottom: 10,
+    marginTop: 50, 
+    marginBottom: 0,
   },
   infoText: {
     alignSelf: 'center',
-    fontSize: 18,
-    fontFamily: 'Poppins-Black',
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
     marginBottom: 10,
     marginTop: -5
   },
+  infoText2: {
+    alignSelf: 'center',
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
+    marginBottom: 10,
+    marginTop: -5,
+    color: 'gray',
+  },
   container: {
-    marginTop: 10,
+    marginTop: 0,
+    paddingTop: 10,
     flex: 1,
+    backgroundColor: 'white'
   },
   calendarContainer: {
     width: '80%',

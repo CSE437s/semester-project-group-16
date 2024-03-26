@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black', 
     borderRadius: 10, 
-    
+    backgroundColor: 'white'
   },
   itemText: {
     fontFamily:'Poppins-SemiBold',

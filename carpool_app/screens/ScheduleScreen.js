@@ -21,7 +21,8 @@ const ScheduleScreen = () => {
     }, [])
   );
 
-  return <ManageCarpool userRides={scheduledRides} />;
+
+  return <ManageCarpool userRides={scheduledRides}/>;
 };
 
 export default ScheduleScreen;

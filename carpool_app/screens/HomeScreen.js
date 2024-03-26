@@ -284,11 +284,12 @@ const styles = StyleSheet.create({
   },
   tripInfoText3: {
     fontFamily: 'Poppins-SemiBold',
-    height: 50,
+    fontSize: 18,
+    height: 'fit',
     width: '100%',
     marginLeft: 15,
     marginBottom: -10,
-  },
+    },
   planeIcon: {
     //backgroundColor: 'red',
     justifyContent: 'center',

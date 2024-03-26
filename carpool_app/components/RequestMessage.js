@@ -40,11 +40,12 @@ const styles = StyleSheet.create({
       marginTop: 60,
       padding: 20,
       width:'80%',
-      height:200,
+      height: 'fit',
       borderColor:'black',
       borderRadius:10,
       borderWidth:1,
       alignSelf:'center',
+      backgroundColor: 'white'
     },
     requestButtons: {
         display:'flex',
