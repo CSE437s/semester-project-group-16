@@ -19,7 +19,9 @@ const PostScreen = () => {
   const fetchTrips = async () => {
     try {
       const userTrips = await getUserRides('true'); 
-      setTrips(userTrips);
+      const upcomingTrips = userTrips.filter(trip => !trip.isPast());
+
+      setTrips(upcomingTrips);
   
     } catch (error) {
       console.error('Error fetching user rides:', error);

@@ -8,10 +8,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
   console.log('defaultText:', defaultText); // Debugging line
 
+
     const [input, setInput] = useState(defaultText);
-    const [address, setAddress] = useState('');
+    const [address, setAddress] = useState(defaultText);
     const [suggestions, setSuggestions] = useState([]);
-    const [prevInputLength, setPrevInputLength] = useState(0);
+    const [prevInputLength, setPrevInputLength] = useState(input.length);
     const SESSION_METADATA_KEY = 'MAPBOX_SESSION_METADATA';
 
     const fetchAddressSuggestions = async() => {
@@ -61,19 +62,24 @@ const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
     };
 
     useEffect(() => {
+      console.log(input.length)
+      console.log(prevInputLength)
+      
       if (input.length > 5 && prevInputLength < input.length && input != defaultText) {
           fetchAddressSuggestions().then(setSuggestions).catch(console.error);
       } else {
           setSuggestions([]);
       }
-    }, [input]);
+    }, [input, prevInputLength]);
 
     const handleInputChange = (userInput) => {
         setPrevInputLength(input.length);
+        console.log(`setting input: ${userInput}`)
         setInput(userInput);
     }
 
     const handleAddressPress = (item) => {
+       console.log(`hap setting input: ${displayNameAndAddress(item)}`)
         setInput(displayNameAndAddress(item));
         handleTextChange(item.full_address); 
         setPrevInputLength(1000); //So that it no longer calls the autofill
