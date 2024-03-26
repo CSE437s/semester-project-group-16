@@ -76,7 +76,6 @@ class StopClass {
 }
 
 class RideRequestClass {
-<<<<<<< HEAD
     constructor(rideRequestId, incomingUserId, outgoingUserId, stopId, tripId, outgoing_full_name, outgoing_user_email) {
         this.rideRequestId = rideRequestId;
         this.incomingUserId = incomingUserId;
@@ -86,14 +85,5 @@ class RideRequestClass {
         this.userFullName = outgoing_full_name;
         this.userEmail = outgoing_user_email;
     }
-=======
-  constructor(rideRequestId, incomingUserId, outgoingUserId, stopId, tripId) {
-    this.rideRequestId = rideRequestId;
-    this.incomingUserId = incomingUserId;
-    this.outgoingUserId = outgoingUserId;
-    this.stopId = stopId;
-    this.tripId = tripId;
-  }
->>>>>>> a6603432eb5a624ea0251497dd6b87987853f687
 }
 export { TripClass, RouteClass, CoordinateClass, StopClass, RideRequestClass };
