@@ -29,6 +29,8 @@ import CarInfoForm from './CarInfoForm';
 import CustomButton from './CustomButton';
 import {checkUserExists, getUserWithUserId} from '../Utils';
 import {REACT_APP_REMOTE_SERVER} from '@env';
+import CustomAlert from './CustomAlert';
+
 const NewUserForm = ({onClose}) => {
     const [fullName, setFullName] = useState('');
     const [studentId, setStudentId] = useState('');
@@ -41,11 +43,15 @@ const NewUserForm = ({onClose}) => {
     const [licensePlate, setLicensePlate] = useState('');
     const [seatCapacity, setSeatCapacity] = useState('');
     const [homeAddress, setHomeAddress] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
+
 
     const [vehicleInfoVisible, setVehicleInfoVisible] = useState(false);
+    const [alertVisible, setAlertVisible] = useState(false);
 
     useEffect(() => {
         async function getUserInfo() {
+
             const user = checkUserExists();
             const userObj = await getUserWithUserId(user.uid);
 
@@ -60,11 +66,17 @@ const NewUserForm = ({onClose}) => {
             setLicensePlate(userObj.license_plate || '');
             setSeatCapacity(userObj.seat_capacity || '');
             setHomeAddress(userObj.home_address || '');
+            if (userObj.vehicleMake !='') {
+              setVehicleInfoVisible(true)
+            }
+            setIsLoading(false);
         }
 
         getUserInfo();
 
     }, []);
+
+
 
     function handleSubmit() {
         submitUserData();
@@ -95,6 +107,7 @@ const NewUserForm = ({onClose}) => {
           homeAddress,
         };
         await updateUserInfo(userData, user, onClose);
+        setAlertVisible(true);
     }
 
     const onChangeDate = (event, selectedDate) => {
@@ -120,6 +133,7 @@ const NewUserForm = ({onClose}) => {
         <View marginBottom={10}>
         <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
         <Text style={styles.headerText} alignItems={'center'}>Date of Birth :</Text>
+        <CustomAlert visible={alertVisible} message={"Profile information updated!"} onClose={() => setAlertVisible(false)} />
         <DateTimePicker
             testID="datePicker"
             value={dob}
@@ -139,7 +153,8 @@ const NewUserForm = ({onClose}) => {
         />
 
         <Text style={styles.headerText}> Home Address </Text>
-        <AddressSearchBar handleTextChange={setHomeAddress} defaultText={homeAddress}/>
+        {!isLoading && 
+        <AddressSearchBar handleTextChange={setHomeAddress} defaultText={homeAddress}/>}
         <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
             <Text style={styles.headerText}>{vehicleInfoVisible ? "I have a car" : "I do not have a car"}</Text>
             <Switch
