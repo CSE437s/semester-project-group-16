@@ -45,11 +45,16 @@ import CustomButton from './CustomButton';
     };
 
   return (
-    <View style={styles.container}>
-      <BackArrow onClose={onClose} />
-      <Text style={styles.headerText}>Pickup Location:</Text>
-      <AddressSearchBar handleTextChange={setAddress} />
-
+    <View style={[{},styles.container]}>
+      <View style={[{},styles.arrowContainer]}>
+       <BackArrow onClose={onClose}/>
+       <View style={[{},styles.textContainer]}>
+        <Text style={styles.headerText}>Pickup Location</Text>
+       </View>
+      </View>
+      <View style={[{},styles.searchBarContainer]}>
+      <AddressSearchBar handleTextChange={setAddress} style={[{},styles.searchBarContainer]}/>
+      </View>
       <View style={styles.buttonContainer}>
         <CustomButton title="Submit" onPress={handleSubmit} />
       </View>
@@ -62,6 +67,13 @@ const styles = StyleSheet.create({
     headerText: {
       fontSize: 20,
       marginBottom: 10,
+      //backgroundColor: 'green',
+      width: 'fit',
+      height: 'fit',
+      justifyContent:'center',
+      alignItems: 'center',
+      marginTop: 10,
+      fontFamily:'Poppins-Black',
     },
     input: {
       width: '80%',
@@ -70,18 +82,40 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       marginBottom: 10,
       paddingHorizontal: 10,
+      //backgroundColor: 'pink'
+    },
+    arrowContainer:{
+      //backgroundColor: 'cyan',
+      width: '90%',
+      //marginTop: 50,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      marginLeft: -20,
+    },
+      textContainer:{
+      //backgroundColor: 'cyan',
+      width: 'fit',
+      flexDirection: 'column',
+      justifyContent: 'center'
     },
     container: {
-      marginTop:120,
-      height:200,
-      justifyContent: 'center',
+      marginTop:60,
+      height: '90%',
+      justifyContent: 'flex-start',
       alignItems: 'center',
+      //backgroundColor:'blue',
     },
     buttonContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-evenly',
-      width: '80%',
-      marginTop: 20,
+      width: '90%',
+      marginTop: -30,
+      //backgroundColor: 'pink',
     },
+    searchBarContainer: {
+      //backgroundColor: 'purple',
+      width: '90%',
+      margin: 10,
+      height: 'fit'
+    }
+
   });
 export default StopCreation;

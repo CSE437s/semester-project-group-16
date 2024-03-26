@@ -8,7 +8,7 @@ import {
   FlatList,
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { getUserRides, timestampToDate } from '../Utils';
+import { getUserRides, timestampToDate } from '../Utils'; // Ensure this is correctly imported
 import ManageCarpool from '../components/ManageCarpool';
 
 const ScheduleScreen = () => {
@@ -31,6 +31,7 @@ const ScheduleScreen = () => {
               dots: [{ color: 'blue' }],
             };
           }
+          console.log(ride);
         });
 
         setMarkedDates(newMarkedDates);

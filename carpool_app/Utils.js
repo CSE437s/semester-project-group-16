@@ -27,6 +27,7 @@ export const getUserRides = async (getAll) => {
     responseData.forEach((trip) => {
       trips.push(new TripClass(trip));
     })
+    console.log(`Trips: ${JSON.stringify(trips)}`)
     return trips;
   } catch (error) {
     console.error('Error making API call:', error);

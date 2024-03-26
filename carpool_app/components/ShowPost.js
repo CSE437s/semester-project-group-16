@@ -61,10 +61,15 @@ import CustomButton from './CustomButton';
   
     return (
       <View style={styles.container}>
+        <View style={[{},styles.arrowContainer]}>
         <BackArrow onClose={onClose} />
-        <Text style={styles.email}>{trip.tripUserEmail}'s Trip</Text>
+        <View style={[{},styles.textContainer]}>
+        <Text adjustsFontSizeToFit numberOfLines={1} style={[{}, styles.email]}>{trip.tripUserEmail}'s Trip</Text>
+        </View>
+        </View>
+
   
-        <MapComponent ride={trip} mapHeight={200} />
+        <MapComponent ride={trip} mapHeight={400} />
   
         <View style={styles.tripDetails}>
         <Text style={styles.timestamp}>{timestampToWrittenDate(trip.timestamp)}</Text>
@@ -86,12 +91,15 @@ import CustomButton from './CustomButton';
         {fromManageCarpools==true ? (
           <>
           {isYourPost == true ? 
+          
             <CustomButton onPress={() => handleDeletePost()} title="Delete post" />
             :<CustomButton onPress={() => handleDeleteStop()} title="Cancel my stop" />
           }
           </>
         ) : (
+            <View style={styles.buttonContainer}>
             <CustomButton onPress={() => setShowApply(true)} title="Apply" />
+            </View>
         )}
   
         <Modal visible={showApply} animationType="slide">
@@ -105,10 +113,19 @@ import CustomButton from './CustomButton';
     container: {
       marginTop: 60,
       flex: 1,
-      padding: 20,
+      //padding: 20,
+      marginTop:60,
+      height: '90%',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      //backgroundColor: 'purple',
+      //height: 100,
     },
     tripDetails: {
       marginBottom: 20,
+      width: '93%',
+      //backgroundColor: 'green',
+      height: 'fit'
     },
     detailText: {
       fontSize: 16,
@@ -119,11 +136,18 @@ import CustomButton from './CustomButton';
       padding: 10,
       alignItems: 'center',
       borderRadius: 5,
+      width: '100%',
     },
     email: {
-        fontSize:18,
-        fontFamily:'Poppins-SemiBold',
+        fontSize:16,
+        fontFamily:'Poppins-Black',
         margin:8,
+    },
+    textContainer:{
+      //backgroundColor: 'pink',
+      width: 'fit',
+      flexDirection: 'column',
+      justifyContent: 'center'
     },
     timestamp: {
         fontSize:22,
@@ -132,7 +156,21 @@ import CustomButton from './CustomButton';
     },
     address: {
         margin:5,
-    }
+    },
+    arrowContainer:{
+      //backgroundColor: 'cyan',
+      width: '100%',
+      //marginTop: 50,
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      //marginLeft: -20,
+    },
+    buttonContainer: {
+      width: '90%',
+      marginTop: -30,
+      //backgroundColor: 'pink',
+    },
+
   });
   
   export default ShowPost;

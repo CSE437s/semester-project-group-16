@@ -161,6 +161,7 @@ app.post('/trips', authenticate, async(req, res) => {
   const category = req.body.category;
   const completed = req.body.completed;
   const timestamp = req.body.timestamp;
+
   console.log("Initialized params");
 
   try {
@@ -195,11 +196,12 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
     let allUserTrips = [];
 
     for (let trip of trips) {
-      const tripDate = new Date(trip.timestamp);
+      // const tripDate = new Date(trip.timestamp);
+      // console.log(tripDate);
     
-      if (tripDate <= new Date()) {
-          continue;
-      }
+      // if (tripDate <= new Date()) {
+      //     continue;
+      // }
       let trip_route = await getRoutesWithRouteId(trip.route_id); // Assuming getTripsWithUserId includes route details
 
       const origin = {
@@ -230,6 +232,12 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
   }
 });
 
+/* We want this to return profile, and trip information. 
+
+Return user of the outgoing_user_id because they are making the request
+
+Join on trip, so that you can see extra info.
+*/
 app.get('/riderequests/:userId', authenticate, async(req, res) => {
   const user_id = req.params.userId;
   console.log("Making get riderequests request");
