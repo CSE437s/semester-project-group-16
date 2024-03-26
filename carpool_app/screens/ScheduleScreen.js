@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { getUserRides, timestampToDate } from '../Utils'; // Ensure this is correctly imported
+import ManageCarpool from '../components/ManageCarpool';
 
 const ScheduleScreen = () => {
   const [scheduledRides, setScheduledRides] = useState([]);
@@ -19,7 +20,7 @@ const ScheduleScreen = () => {
   useEffect(() => {
     const fetchAndMarkRides = async () => {
       try {
-        const rides = await getUserRides(true); // Or false depending on your needs
+        const rides = await getUserRides(false); // Or false depending on your needs
         const newMarkedDates = {};
 
         rides.forEach((ride) => {
@@ -46,6 +47,7 @@ const ScheduleScreen = () => {
     setSelectedDate(day.dateString);
     setIsModalVisible(true);
   };
+  return (<ManageCarpool userRides={scheduledRides} />);
 
   const renderRideItem = ({ item }) => (
     <View style={styles.rideItem}>
