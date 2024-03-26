@@ -273,6 +273,7 @@ const createRideRequest = async (incomingUserId, outgoingUserId, tripId, stopId)
   
     try {
       const [result] = await pool.execute(updateQuery, [tripId, stopId]);
+      console.log(`success updating stop! ${result}`)
       return result;
     } catch (error) {
       console.error('Failed to update stop:', error);
@@ -323,6 +324,34 @@ const createRideRequest = async (incomingUserId, outgoingUserId, tripId, stopId)
       throw error;
     }
   };
+  const getTripAndRouteIdByStopId = async (stopId) => {
+    console.log(`stop id inside db function: ${stopId}`)
+    const query = `
+      SELECT 
+        S.trip_id, 
+        T.route_id 
+      FROM STOP S
+      JOIN TRIP T ON S.trip_id = T.trip_id
+      WHERE S.stop_id = ?
+    `;
+  
+    try {
+      const [rows] = await pool.execute(query, [stopId]);
+      console.log("after rows")
+      console.log(JSON.stringify(rows))
+  
+      if (rows.length > 0) {
+        const { trip_id, route_id } = rows[0];
+        return { trip_id, route_id };
+      } else {
+        console.log("Found null")
+        return null;
+      }
+    } catch (error) {
+      console.error('Failed to fetch trip_id and route_id for stop:', error);
+      throw error;
+    }
+  };
 
 module.exports = {
     createRoute,
@@ -343,4 +372,5 @@ module.exports = {
     recomputeRoute,
     deleteStopWithStopId,
     deleteTripWithTripId,
+    getTripAndRouteIdByStopId,
   };

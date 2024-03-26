@@ -24,10 +24,11 @@ const PostScreen = () => {
     try {
       const userTrips = await getUserRides('true');
       // Filter trips based on selected category
+      const upcomingTrips = userTrips.filter(trip => !trip.isPast());
       const filteredTrips =
         selectedCategory === 'All'
-          ? userTrips
-          : userTrips.filter((trip) => trip.category === selectedCategory);
+          ? upcomingTrips
+          : upcomingTrips.filter((trip) => trip.category === selectedCategory);
       setTrips(filteredTrips);
     } catch (error) {
       console.error('Error fetching user rides:', error);
@@ -79,7 +80,7 @@ const PostScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 60,
   },
   newRideContainer: {
     paddingHorizontal: 10,

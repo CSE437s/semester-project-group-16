@@ -24,6 +24,7 @@ const {
   recomputeRoute,
   deleteStopWithStopId,
   deleteTripWithTripId,
+  getTripAndRouteIdByStopId,
 
 } = require("./databaseFunctions");
 const {getRoutes, getCoordinatesOfAddress} = require('./utils');
@@ -278,6 +279,7 @@ app.patch('/riderequests', authenticate, async(req, res) => {
   const { rideRequestId, stopId, tripId } = req.body;
 
   try {
+    console.log(`stopId: ${stopId} tripId: ${tripId}`)
     const updateResult = await updateStopTripId(stopId, tripId);
 
     const deleteResult = await deleteRideRequestsWithRideRequestId(rideRequestId);
@@ -304,14 +306,19 @@ app.delete('/stops/:stopId', authenticate, async(req, res) => {
   console.log(`stopId: ${stopId}`);
 
   try {
+    const { trip_id, route_id } = await getTripAndRouteIdByStopId(stopId);
     const result = await deleteStopWithStopId(stopId);
+
+    await recomputeRoute(trip_id, route_id);
+
+    console.log("After recompute route")
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ message: 'Stop not found' });
     }
     res.status(200).json({ message: 'Stop deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to delete the stop' });
+    res.status(500).json({ message: `Failed to delete the stop: ${error}` });
   }
 
 });

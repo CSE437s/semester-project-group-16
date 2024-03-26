@@ -40,11 +40,6 @@ function NavigationBar() {
           options={{ headerShown: false }}
         />
         <Tab.Screen
-          name="Posts"
-          component={PostScreen}
-          options={{ headerShown: false }}
-        />
-        <Tab.Screen
           name="Schedule"
           component={ScheduleScreen}
           options={{
@@ -54,6 +49,11 @@ function NavigationBar() {
               <Icon name="calendar-outline" color={color} size={size} />
             ),
           }}
+        />
+        <Tab.Screen
+          name="Posts"
+          component={PostScreen}
+          options={{ headerShown: false }}
         />
         <Tab.Screen
           name="Profile"
