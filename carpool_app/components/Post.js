@@ -30,12 +30,6 @@ const Post = ({ trip, fromManageCarpools = false }) => {
     setShowPost(false);
   };
 
-  const isTripPast = () => {
-    const tripDate = new Date(trip.timestamp);
-    const currentDate = new Date();
-    return tripDate < currentDate;
-  };
-
   return (
     <TouchableOpacity style={styles.container} onPress={handleApply}>
       <Text style={styles.email}>{trip.tripUserEmail}</Text>
@@ -61,7 +55,7 @@ const Post = ({ trip, fromManageCarpools = false }) => {
       >
         <Text style={styles.category}>{trip.category}</Text>
         <Text style={styles.completed}>
-          {isTripPast() ? 'Past' : 'Upcoming'}
+          {trip.isPast() ? 'Past' : 'Upcoming'}
         </Text>
       </View>
       <Modal visible={showPost} animationType="slide">
