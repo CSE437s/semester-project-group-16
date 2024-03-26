@@ -1,89 +1,105 @@
-import React from 'react';
-import { View, Text, Button, Modal, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Modal,
+  ScrollView,
+  Button,
+  StyleSheet,
+  Text,
+} from 'react-native';
 import Post from '../components/Post';
 import PostCreation from '../components/PostCreation';
-import {useState, useEffect} from 'react';
-import { StyleSheet} from 'react-native';
-import { getUserRides } from '../Utils';
 import CustomButton from '../components/CustomButton';
+import { getUserRides } from '../Utils';
 
-import axios from 'axios';
-//import { BASE_URL} from '@env';
-import { REACT_APP_REMOTE_SERVER } from '@env';
-
+// Categories for filtering
+const categories = ['All', 'Campus', 'Groceries', 'Misc'];
 
 const PostScreen = () => {
   const [trips, setTrips] = useState([]);
   const [showPostCreation, setShowPostCreation] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('All'); // State for selected category
 
   const fetchTrips = async () => {
     try {
-      const userTrips = await getUserRides('true'); 
-      setTrips(userTrips);
-  
+      const userTrips = await getUserRides('true');
+      // Filter trips based on selected category
+      const filteredTrips =
+        selectedCategory === 'All'
+          ? userTrips
+          : userTrips.filter((trip) => trip.category === selectedCategory);
+      setTrips(filteredTrips);
     } catch (error) {
       console.error('Error fetching user rides:', error);
     }
   };
 
-  const openPostCreation = () => {
-    setShowPostCreation(true);
-  };
-
-  const closePostCreation = () => {
-    setShowPostCreation(false);
-  };
-
   useEffect(() => {
-    fetchTrips();
-  }, []);
+    fetchTrips(); // Fetch trips whenever the selected category changes
+  }, [selectedCategory]);
 
   return (
     <View style={styles.container}>
-
-      <View style={styles.customBtnContainer}>
-        <CustomButton title="New Ride" onPress={openPostCreation} style={[{}, styles.customBtn]} />
-        <Modal visible={showPostCreation} animationType="slide">
-          <PostCreation onClose={closePostCreation} />
-        </Modal>
+      {/* "New Ride" Button */}
+      <View style={styles.newRideContainer}>
+        <CustomButton
+          title="New Ride"
+          onPress={() => setShowPostCreation(true)}
+          style={styles.newRideButton}
+        />
       </View>
-  
-      <ScrollView style={{ marginTop: 5 }}>
+
+      {/* Filter UI */}
+      <View style={styles.filterContainer}>
+        <Text style={styles.filterTitle}>Filter by:</Text>
+        {categories.map((category) => (
+          <Button
+            key={category}
+            title={category}
+            onPress={() => setSelectedCategory(category)}
+            color={selectedCategory === category ? 'blue' : 'gray'} // Highlight the selected category
+          />
+        ))}
+      </View>
+
+      <ScrollView style={styles.postsContainer}>
         {trips.map((trip, index) => (
           <Post key={index} trip={trip} />
         ))}
-
-      <View style={{height: 30}}></View>
-
+        <View style={{ height: 30 }}></View>
       </ScrollView>
 
-
-
+      <Modal visible={showPostCreation} animationType="slide">
+        <PostCreation onClose={() => setShowPostCreation(false)} />
+      </Modal>
     </View>
   );
-  
-}
-
+};
 
 const styles = StyleSheet.create({
   container: {
-    marginTop:60,
-    display:'flex',
+    flex: 1,
+    marginTop: 20,
+  },
+  newRideContainer: {
+    paddingHorizontal: 10,
+  },
+  newRideButton: {
+    marginBottom: 10, // Adjust as needed
+  },
+  filterContainer: {
+    flexDirection: 'row',
     justifyContent: 'center',
+    paddingVertical: 10,
+    flexWrap: 'wrap', // Ensure filters wrap if screen width is too narrow
   },
-  postContainer: {
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center', 
-      justifyContent: 'center',
+  filterTitle: {
+    marginRight: 10, // Adjust as needed
+    fontSize: 16, // Adjust as needed
+    alignSelf: 'center',
   },
-  customBtnContainer:{
-    marginTop: -25,
-    //backgroundColor: '#022940',
-    height: 'fit'
-  },
-  customBtn:{
-    padding: 30
+  postsContainer: {
+    marginTop: 5,
   },
 });
 
