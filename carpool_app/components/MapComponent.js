@@ -26,11 +26,11 @@ const MapComponent = ({ ride, mapHeight=565 }) => {
   const styles = StyleSheet.create({
     map: {
       width: '100%',
-      //borderColor:'black',
       //borderTopRadius:10,
-      //borderWidth: 1,
-      borderTopWidth:1,
+      borderTopWidth: 1,
+      borderBottomWidth: 1,
       borderTopColor: 'light-gray',
+      borderBottomColor: 'light-gray',
       height: mapHeight,
       alignSelf:'center',
     },
