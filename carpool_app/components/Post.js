@@ -77,7 +77,7 @@ const Post = ({ trip, fromManageCarpools = false }) => {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex', // Flex is default
+    display: 'flex', 
     justifyContent: 'space-between',
     alignItems: 'stretch',
     padding: 20,
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 14,
     width: '90%',
+    //backgroundColor: 'pink'
   },
   timestamp: {
     fontFamily: 'Poppins-Black',

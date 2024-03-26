@@ -69,19 +69,19 @@ import CustomButton from './CustomButton';
         </View>
 
   
-        <MapComponent ride={trip} mapHeight={400} />
+        <MapComponent ride={trip} mapHeight={375} />
   
         <View style={styles.tripDetails}>
         <Text style={styles.timestamp}>{timestampToWrittenDate(trip.timestamp)}</Text>
-        <View style={{display:'flex', flexDirection:'row', gap:5}}>
+        <View style={[{ display: 'flex', flexDirection: 'row', gap: 5 }, styles.addressInfo]}>
         <Icon name={"business-outline"} size={16}/>
         <Text style={styles.address}> {trip.route.originAddress}</Text>
-      </View>
-      <View style={{display:'flex', flexDirection:'row', gap:5}}>
+        </View>
+        <View style={[{ display: 'flex', flexDirection: 'row', gap: 5, marginBottom: 10 }, styles.addressInfo]}>
         <Icon name={"flag-outline"} size={16}/>
         <Text style={styles.address}> {trip.route.destinationAddress}</Text>
-      </View>
-        <View style={{display:'flex', flexDirection:'row', justifyContent:'space-around', alignItems:'center', margin: 10}}>
+        </View>
+        <View style={[{}, styles.detailsContainer]}>
           <Text style={styles.detailText}>{routeTimeFormatted} trip</Text>
           <Text style={styles.detailText}>{trip.category}</Text>
           <Text style={styles.detailText}>{trip.stops.length} Passengers</Text>
@@ -123,13 +123,24 @@ import CustomButton from './CustomButton';
     },
     tripDetails: {
       marginBottom: 20,
-      width: '93%',
+      width: '90%',
       //backgroundColor: 'green',
-      height: 'fit'
+      height: 'fit',
+    },
+    detailsContainer:{
+      justifyContent: 'space-between',
+      width: '97%',
+      //backgroundColor: 'gray',
+      display:'flex', 
+      flexDirection:'row', 
+      alignItems:'center',
+      marginTop: 30
     },
     detailText: {
       fontSize: 16,
       marginBottom: 5,
+      fontWeight: 'bold',
+      width: 'fill'
     },
     applyButton: {
       backgroundColor: '#007bff',
@@ -154,8 +165,18 @@ import CustomButton from './CustomButton';
         fontFamily:'Poppins-Black',
         padding:16,
     },
-    address: {
-        margin:5,
+    address:{
+      width: '93%',
+      //backgroundColor:'pink'
+    },
+    addressInfo:{
+      marginTop: 5,
+      marginBottom: 5, 
+      //marginLeft: 5
+      height: 'fit',
+      width: '90%',
+      //backgroundColor: 'cyan',
+      justifyContent: 'flex-start'
     },
     arrowContainer:{
       //backgroundColor: 'cyan',
