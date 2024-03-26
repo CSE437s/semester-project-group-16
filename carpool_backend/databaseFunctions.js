@@ -181,8 +181,37 @@ async function getRidingTripsWithUserId(userId, findAll) {
 }
 
 async function getRideRequestsWithUserId(userId) {
-    const outgoingQuery = 'SELECT * FROM RIDEREQUEST WHERE outgoing_user_id = ?';
-    const incomingQuery = 'SELECT * FROM RIDEREQUEST WHERE incoming_user_id = ?';
+    const outgoingQuery = `
+    SELECT 
+        rr.*,  
+        u.full_name AS user_full_name,  
+        u.email AS user_email,  
+        t.*  
+    FROM 
+        RIDEREQUEST rr
+    JOIN 
+        USER u ON rr.outgoing_user_id = u.user_id  
+    JOIN 
+        TRIP t ON rr.trip_id = t.trip_id  
+    WHERE
+        rr.outgoing_user_id = ?;
+`;
+
+const incomingQuery = `
+    SELECT 
+        rr.*,  
+        u.full_name AS user_full_name,   
+        u.email AS user_email,  
+        t.*  
+    FROM 
+        RIDEREQUEST rr
+    JOIN 
+        USER u ON rr.outgoing_user_id = u.user_id
+    JOIN 
+        TRIP t ON rr.trip_id = t.trip_id  
+    WHERE
+        rr.incoming_user_id = ?;
+`;
   
     try {
       const [outgoingRequests] = await pool.execute(outgoingQuery, [userId]);

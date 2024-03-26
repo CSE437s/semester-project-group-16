@@ -10,32 +10,22 @@ const ManageCarpool = ({ userRides, onClose }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Normalize today's date to remove the time part
+    const markedDatesFromTrips = userRides.reduce((acc, trip) => {
+      const dateKey = timestampToDate(trip.timestamp);
 
-    const newMarkedDates = userRides.reduce((acc, ride) => {
-      const dateKey = timestampToDate(ride.timestamp);
-      const rideDate = new Date(ride.timestamp);
-      rideDate.setHours(0, 0, 0, 0); // Normalize ride's date to remove the time part
+      // Determine the color based on whether the trip is past
+      const color = trip.isPast() ? '#d3d3d3' : '#022940';
 
-      if (rideDate < today) {
-        // Mark past dates with grey
-        acc[dateKey] = {
-          marked: true,
-          dotColor: '#d3d3d3',
-          selectedColor: '#d3d3d3',
-        };
-      } else {
-        // Future dates get the blue color
-        acc[dateKey] = {
-          marked: true,
-          selected: true,
-          selectedColor: '#022940',
-        };
-      }
+      acc[dateKey] = {
+        marked: true,
+        selected: true,
+        selectedColor: color,
+      };
+
       return acc;
     }, {});
-    setMarkedDates(newMarkedDates);
+
+    setMarkedDates(markedDatesFromTrips);
   }, [userRides]);
 
   const onDayPress = (day) => {
