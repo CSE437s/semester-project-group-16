@@ -1,48 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-} from 'react-native';
-import { Calendar } from 'react-native-calendars';
-import { getUserRides, timestampToDate } from '../Utils'; // Ensure this is correctly imported
+import React, { useState, useCallback } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { getUserRides } from '../Utils'; // Ensure this is correctly imported
 import ManageCarpool from '../components/ManageCarpool';
 
 const ScheduleScreen = () => {
   const [scheduledRides, setScheduledRides] = useState([]);
-  const [markedDates, setMarkedDates] = useState({});
-  const [selectedDate, setSelectedDate] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchAndMarkRides = async () => {
-      try {
-        const rides = await getUserRides(false);
-        const newMarkedDates = {};
+  useFocusEffect(
+    useCallback(() => {
+      const fetchRides = async () => {
+        try {
+          const rides = await getUserRides(false); // Assuming false fetches the correct data
+          setScheduledRides(rides);
+        } catch (error) {
+          console.error('Failed to fetch scheduled rides:', error);
+        }
+      };
 
-        rides.forEach((ride) => {
-          const dateStr = timestampToDate(ride.timestamp);
-          if (dateStr) {
-            newMarkedDates[dateStr] = {
-              marked: true,
-              dots: [{ color: 'blue' }],
-            };
-          }
-          console.log(ride);
-        });
+      fetchRides();
+    }, [])
+  );
 
-        setMarkedDates(newMarkedDates);
-        setScheduledRides(rides);
-      } catch (error) {
-        console.error('Failed to fetch and mark scheduled rides:', error);
-      }
-    };
-
-    fetchAndMarkRides();
-  }, []);
   return <ManageCarpool userRides={scheduledRides} />;
 };
 

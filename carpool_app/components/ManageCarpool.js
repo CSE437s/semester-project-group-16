@@ -3,30 +3,30 @@ import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 import { timestampToDate } from '../Utils';
 import Post from './Post';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ManageCarpool = ({ userRides, onClose }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [markedDates, setMarkedDates] = useState({});
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  useEffect(() => {
-    const markedDatesFromTrips = userRides.reduce((acc, trip) => {
-      const dateKey = timestampToDate(trip.timestamp);
-
-      // Determine the color based on whether the trip is past
-      const color = trip.isPast() ? '#d3d3d3' : '#022940';
-
-      acc[dateKey] = {
-        marked: true,
-        selected: true,
-        selectedColor: color,
-      };
-
-      return acc;
-    }, {});
-
-    setMarkedDates(markedDatesFromTrips);
-  }, [userRides]);
+  useFocusEffect(
+    useCallback(() => {
+      const markedDatesFromTrips = userRides.reduce((acc, trip) => {
+        const dateKey = timestampToDate(trip.timestamp);
+        const color = trip.isPast() ? '#d3d3d3' : '#022940';
+  
+        acc[dateKey] = {
+          marked: true,
+          selected: true,
+          selectedColor: color,
+        };
+        return acc;
+      }, {});
+  
+      setMarkedDates(markedDatesFromTrips);
+    }, [userRides])
+  );
 
   const onDayPress = (day) => {
     setSelectedDate(day.dateString);
