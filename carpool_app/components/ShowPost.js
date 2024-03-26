@@ -134,7 +134,7 @@ import CustomButton from './CustomButton';
       display:'flex', 
       flexDirection:'row', 
       alignItems:'center',
-      marginTop: 30
+      marginTop: 20
     },
     detailText: {
       fontSize: 16,

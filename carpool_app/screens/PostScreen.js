@@ -40,18 +40,22 @@ const PostScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <CustomButton title="New Driving Event" onPress={openPostCreation} style={[{}, styles.customBtn]} />
+
+      <View style={styles.customBtnContainer}>
+        <CustomButton title="New Ride" onPress={openPostCreation} style={[{}, styles.customBtn]} />
         <Modal visible={showPostCreation} animationType="slide">
           <PostCreation onClose={closePostCreation} />
         </Modal>
       </View>
   
-      <ScrollView style={{ marginTop: 10 }}>
+      <ScrollView style={{ marginTop: 5 }}>
         {trips.map((trip, index) => (
           <Post key={index} trip={trip} />
         ))}
       </ScrollView>
+
+
+
     </View>
   );
   
@@ -70,9 +74,13 @@ const styles = StyleSheet.create({
       alignItems: 'center', 
       justifyContent: 'center',
   },
+  customBtnContainer:{
+    marginTop: -25,
+    //backgroundColor: '#022940',
+    height: 'fit'
+  },
   customBtn:{
-    borderRadius: 0,
-    height: 100
+    padding: 30
   },
 });
 

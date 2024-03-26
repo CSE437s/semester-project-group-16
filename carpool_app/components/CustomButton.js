@@ -15,6 +15,7 @@ const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: '#022940',
     padding: 10,
+    height: 45,
     display:'flex',
     flexDirection:'row',
     justifyContent:'center',
@@ -35,6 +36,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 16
     },
 });
 

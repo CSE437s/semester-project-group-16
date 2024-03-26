@@ -48,6 +48,7 @@ function NavigationBar() {
           name="Schedule"
           component={ScheduleScreen}
           options={{
+            headerShown: false,
             tabBarLabel: 'Schedule',
             tabBarIcon: ({ color, size }) => (
               <Icon name="calendar-outline" color={color} size={size} />

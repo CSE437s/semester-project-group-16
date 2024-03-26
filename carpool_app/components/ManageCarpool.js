@@ -90,16 +90,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   topView: {
-    marginTop: 30, // Move marginTop from container to here for better spacing control
+    marginTop: 50, // Move marginTop from container to here for better spacing control
     marginBottom: 10,
   },
   infoText: {
     alignSelf: 'center',
     fontSize: 18,
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: 'Poppins-Black',
+    marginBottom: 10,
+    marginTop: -5
   },
   container: {
-    backgroundColor: 'white',
     marginTop: 10,
     flex: 1,
   },
