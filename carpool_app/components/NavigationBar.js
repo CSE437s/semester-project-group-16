@@ -1,10 +1,10 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import HomeScreen from '../screens/HomeScreen';
-import PostScreen from '../screens/PostScreen';
-import ProfileScreen from '../screens/ProfileScreen';
-import ScheduleScreen from '../screens/ScheduleScreen';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";
+import HomeScreen from "../screens/HomeScreen";
+import PostScreen from "../screens/PostScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import ScheduleScreen from "../screens/ScheduleScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -15,20 +15,20 @@ function NavigationBar() {
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-            if (route.name === 'Home') {
-              iconName = 'home-outline';
-            } else if (route.name === 'Posts') {
-              iconName = 'grid-outline';
-            } else if (route.name === 'Profile') {
-              iconName = 'person-outline';
+            if (route.name === "Home") {
+              iconName = "home-outline";
+            } else if (route.name === "Posts") {
+              iconName = "grid-outline";
+            } else if (route.name === "Profile") {
+              iconName = "person-outline";
             }
             return <Icon name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: '#022940',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: "#022940",
+          tabBarInactiveTintColor: "gray",
           tabBarStyle: [
             {
-              display: 'flex',
+              display: "flex",
             },
             null,
           ],
@@ -44,7 +44,7 @@ function NavigationBar() {
           component={ScheduleScreen}
           options={{
             headerShown: false,
-            tabBarLabel: 'Schedule',
+            tabBarLabel: "Schedule",
             tabBarIcon: ({ color, size }) => (
               <Icon name="calendar-outline" color={color} size={size} />
             ),

@@ -1,7 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, TextInput, StyleSheet } from "react-native";
 
-const CarInfoForm = ({ onVehicleInfoChange, make='', model='', year='', license='', seat=''}) => {
+const CarInfoForm = ({
+  onVehicleInfoChange,
+  make = "",
+  model = "",
+  year = "",
+  license = "",
+  seat = "",
+}) => {
   const [vehicleInfo, setVehicleInfo] = useState({
     make,
     model,
@@ -15,7 +22,7 @@ const CarInfoForm = ({ onVehicleInfoChange, make='', model='', year='', license=
   }, [vehicleInfo]);
 
   const handleInputChange = (name, value) => {
-    setVehicleInfo(prevInfo => ({
+    setVehicleInfo((prevInfo) => ({
       ...prevInfo,
       [name]: value,
     }));
@@ -27,37 +34,47 @@ const CarInfoForm = ({ onVehicleInfoChange, make='', model='', year='', license=
         testID="vehicleMakeInput"
         placeholder="Vehicle Make"
         value={vehicleInfo.make}
-        onChangeText={(text) => { handleInputChange("make", text)}}
+        onChangeText={(text) => {
+          handleInputChange("make", text);
+        }}
         style={styles.input}
       />
       <TextInput
         testID="vehicleModelInput"
         placeholder="Vehicle Model"
         value={vehicleInfo.model}
-        onChangeText={(text) => { handleInputChange("model", text)}}
+        onChangeText={(text) => {
+          handleInputChange("model", text);
+        }}
         style={styles.input}
       />
       <TextInput
         testID="vehicleYearInput"
         placeholder="Vehicle Year"
         value={vehicleInfo.year}
-        onChangeText={(text) => {handleInputChange("year", text)}}
+        onChangeText={(text) => {
+          handleInputChange("year", text);
+        }}
         style={styles.input}
       />
       <TextInput
         testID="vehicleLicensePlateInput"
         placeholder="Vehicle License Plate"
         value={vehicleInfo.license}
-        onChangeText={(text) => { handleInputChange("license", text)}}
+        onChangeText={(text) => {
+          handleInputChange("license", text);
+        }}
         style={styles.input}
       />
-    <TextInput
+      <TextInput
         testID="vehicleSeatInput"
         placeholder="Seat Capacity"
         value={vehicleInfo.seat}
-        onChangeText={(text) => {handleInputChange("seat", text)}}
+        onChangeText={(text) => {
+          handleInputChange("seat", text);
+        }}
         style={styles.input}
-    />
+      />
     </View>
   );
 };

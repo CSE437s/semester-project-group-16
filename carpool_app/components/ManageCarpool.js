@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { Calendar } from 'react-native-calendars';
-import { timestampToDate } from '../Utils';
-import Post from './Post';
-import { useFocusEffect } from '@react-navigation/native';
+import React, { useEffect, useState, useCallback } from "react";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { Calendar } from "react-native-calendars";
+import { timestampToDate } from "../Utils";
+import Post from "./Post";
+import { useFocusEffect } from "@react-navigation/native";
 
 const ManageCarpool = ({ userRides, onClose }) => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -14,8 +14,8 @@ const ManageCarpool = ({ userRides, onClose }) => {
     useCallback(() => {
       const markedDatesFromTrips = userRides.reduce((acc, trip) => {
         const dateKey = timestampToDate(trip.timestamp);
-        const color = trip.isPast() ? '#d3d3d3' : '#022940';
-  
+        const color = trip.isPast() ? "#d3d3d3" : "#022940";
+
         acc[dateKey] = {
           marked: true,
           selected: true,
@@ -23,7 +23,7 @@ const ManageCarpool = ({ userRides, onClose }) => {
         };
         return acc;
       }, {});
-  
+
       setMarkedDates(markedDatesFromTrips);
     }, [userRides])
   );
@@ -40,10 +40,10 @@ const ManageCarpool = ({ userRides, onClose }) => {
   const formattedSelectedDate = (selectedDate) => {
     const date = new Date(selectedDate);
     date.setDate(date.getDate() + 1); // Add one day to fix calendar one-off error
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -55,20 +55,20 @@ const ManageCarpool = ({ userRides, onClose }) => {
       <View style={styles.calendarContainer}>
         <Calendar
           theme={{
-            backgroundColor: '#ffffff',
-            calendarBackground: '#ffffff',
-            textSectionTitleColor: '#b6c1cd',
-            selectedDayBackgroundColor: '#00adf5',
-            selectedDayTextColor: '#ffffff',
-            todayTextColor: '#00adf5',
-            dayTextColor: '#2d4150',
+            backgroundColor: "#ffffff",
+            calendarBackground: "#ffffff",
+            textSectionTitleColor: "#b6c1cd",
+            selectedDayBackgroundColor: "#00adf5",
+            selectedDayTextColor: "#ffffff",
+            todayTextColor: "#00adf5",
+            dayTextColor: "#2d4150",
           }}
           markedDates={markedDates}
           onDayPress={onDayPress}
         />
       </View>
       <Text style={styles.infoText}>
-        {formattedSelectedDate(selectedDate)}{' '}
+        {formattedSelectedDate(selectedDate)}{" "}
       </Text>
       <ScrollView>
         {getRidesForSelectedDate().length == 0 && (
@@ -85,38 +85,38 @@ const ManageCarpool = ({ userRides, onClose }) => {
 
 const styles = StyleSheet.create({
   headerText: {
-    textAlign: 'center',
-    fontFamily: 'Poppins-Black',
+    textAlign: "center",
+    fontFamily: "Poppins-Black",
     fontSize: 20,
   },
   topView: {
-    marginTop: 50, 
+    marginTop: 50,
     marginBottom: 0,
   },
   infoText: {
-    alignSelf: 'center',
+    alignSelf: "center",
     fontSize: 16,
-    fontFamily: 'Poppins-SemiBold',
-    marginBottom: 10,
-    marginTop: -5
-  },
-  infoText2: {
-    alignSelf: 'center',
-    fontSize: 16,
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: "Poppins-SemiBold",
     marginBottom: 10,
     marginTop: -5,
-    color: 'gray',
+  },
+  infoText2: {
+    alignSelf: "center",
+    fontSize: 16,
+    fontFamily: "Poppins-SemiBold",
+    marginBottom: 10,
+    marginTop: -5,
+    color: "gray",
   },
   container: {
     marginTop: 0,
     paddingTop: 10,
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: "white",
   },
   calendarContainer: {
-    width: '80%',
-    alignSelf: 'center',
+    width: "80%",
+    alignSelf: "center",
     marginBottom: 30,
   },
 });
