@@ -3,6 +3,8 @@ import { View, StyleSheet, Platform } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import Icon from 'react-native-vector-icons/Ionicons'; 
 
+//Parent should pass in items
+//Again, testing that state is managed and that component displays
 const CustomPicker = ({ category, setCategory }) => {
   return (
     <View>

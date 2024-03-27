@@ -38,9 +38,7 @@ import { useNavigation } from '@react-navigation/native';
 
     const handleDeletePost = async() => {
       try {
-        console.log("2")
         await deleteTrip(trip.tripId);
-        console.log("Deleted trip was successful!")
         onClose();
       } catch(error) {
         console.error(error)
@@ -48,11 +46,9 @@ import { useNavigation } from '@react-navigation/native';
     }
     const handleDeleteStop = async() => {
       try {
-        console.log("1")
         const user = checkUserExists();
         const stopId = trip.getStopIdWithUserId(user.uid);
         await deleteStop(stopId);
-        console.log("Deleted stop was successful!")
         onClose();
       } catch(error) {
         console.error(error)

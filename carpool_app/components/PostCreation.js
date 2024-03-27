@@ -38,7 +38,8 @@ const PostCreation = ({ onClose }) => {
         category: category,
         completed: false,
       };
-  
+
+      //Define function in Utils
       const response = await axios.post(`${REACT_APP_REMOTE_SERVER}/trips`, postData, {
         headers: {
           'Content-Type': 'application/json',
@@ -79,7 +80,8 @@ const PostCreation = ({ onClose }) => {
           <Icon name={"alarm-outline"} size={20}/>
           <Text style={styles.headerText}>Time of Arrival</Text>
         </View>
-        <ChooseDate setSelectedDate={setDate} />
+
+        <ChooseDate date={date} setDate={setDate}/>
 
         <View style={{display:'flex', alignItems: 'center', flexDirection:'row', gap:5}}>
           <Icon name={"map-outline"} size={20}/>

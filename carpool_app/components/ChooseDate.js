@@ -2,8 +2,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-const ChooseDate = ({ setSelectedDate }) => {
-  const [date, setDate] = useState(new Date());
+const ChooseDate = ({ date, setDate}) => {
 
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
@@ -17,7 +16,6 @@ const ChooseDate = ({ setSelectedDate }) => {
       updatedDateTime.setHours(selectedTime.getHours());
       updatedDateTime.setMinutes(selectedTime.getMinutes());
       setDate(updatedDateTime);
-      setSelectedDate(updatedDateTime);
     }
   };
 

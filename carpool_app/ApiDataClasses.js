@@ -33,6 +33,7 @@ class TripClass {
     }
     return -1;
   }
+  //Timestamp conversion functions here instead
 }
 
 class RouteClass {

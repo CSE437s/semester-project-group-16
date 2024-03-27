@@ -116,6 +116,8 @@ export const userHasSufficientInfo = (dbUserObject) => {
   return true
 }
 
+
+
 export const createNewTrip = async (
   userId,
   originAddress,

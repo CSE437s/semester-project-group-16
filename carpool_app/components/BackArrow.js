@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 
 const BackArrow = ({ onClose }) => {
     return (
-        <TouchableOpacity style={styles.backButton} onPress={onClose}>
+        <TouchableOpacity testID="BackArrow" style={styles.backButton} onPress={onClose}>
             <Icon name="arrow-back" size={32} color="black" />
         </TouchableOpacity>
     );

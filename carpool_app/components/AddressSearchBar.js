@@ -5,9 +5,8 @@ import {REACT_APP_MAPBOX_API_KEY} from '@env';
 import { v4 as uuidv4 } from 'uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+//Test that api is called, that form updates, that session is managed
 const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
-  console.log('defaultText:', defaultText); // Debugging line
-
 
     const [input, setInput] = useState(defaultText);
     const [address, setAddress] = useState(defaultText);
@@ -61,10 +60,8 @@ const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
         }
     };
 
+    
     useEffect(() => {
-      console.log(input.length)
-      console.log(prevInputLength)
-      
       if (input.length > 5 && prevInputLength < input.length && input != defaultText) {
           fetchAddressSuggestions().then(setSuggestions).catch(console.error);
       } else {
@@ -74,12 +71,10 @@ const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
 
     const handleInputChange = (userInput) => {
         setPrevInputLength(input.length);
-        console.log(`setting input: ${userInput}`)
         setInput(userInput);
     }
 
     const handleAddressPress = (item) => {
-       console.log(`hap setting input: ${displayNameAndAddress(item)}`)
         setInput(displayNameAndAddress(item));
         handleTextChange(item.full_address); 
         setPrevInputLength(1000); //So that it no longer calls the autofill
@@ -89,6 +84,7 @@ const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
     return (
         <View style={styles.container}>
           <TextInput
+            testID="addressTextInput"
             value={input}
             onChangeText={handleInputChange}
             placeholder="Start typing an address..."
@@ -109,9 +105,6 @@ const AddressSearchBar = ({handleTextChange, defaultText=''}) => {
     };
     
     const styles = StyleSheet.create({
-      container: {
-        // Add padding or any other styles for the container if needed
-      },
       textInput: {
         fontSize: 16, 
         padding: 10, 
