@@ -58,7 +58,8 @@ const PostScreen = () => {
             key={category}
             title={category}
             onPress={() => setSelectedCategory(category)}
-            color={selectedCategory === category ? 'blue' : 'gray'} // Highlight the selected category
+            color={selectedCategory === category ? 'blue' : 'gray'}
+            style={styles.filterButton}
           />
         ))}
       </View>
@@ -82,26 +83,35 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 60,
   },
+  filterButton:{
+    backgroundColor: 'pink',
+    fontFamily: 'Poppins-Black',
+  },
   newRideContainer: {
     paddingHorizontal: 10,
   },
   newRideButton: {
-    marginBottom: 10, // Adjust as needed
+    marginBottom: 10, 
   },
   filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    paddingVertical: 10,
-    flexWrap: 'wrap', // Ensure filters wrap if screen width is too narrow
+    flexWrap: 'wrap', 
+    paddingTop: 3,
+    fontFamily: 'Poppins-SemiBold',
   },
   filterTitle: {
-    marginRight: 10, // Adjust as needed
-    fontSize: 16, // Adjust as needed
+    marginRight: 10,
+    fontSize: 16, 
     alignSelf: 'center',
+    fontFamily: 'Poppins-SemiBold',
   },
   postsContainer: {
     marginTop: 5,
   },
+  newRideContainer:{
+    marginTop: 10
+  }
 });
 
 export default PostScreen;
