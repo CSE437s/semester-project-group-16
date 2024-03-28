@@ -4,9 +4,15 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 const CustomButton = ({ onPress, title, iconName = "" }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={styles.buttonStyle}>
+    <TouchableOpacity
+      testID="customButtonOpacity"
+      onPress={onPress}
+      style={styles.buttonStyle}
+    >
       {iconName != "" && <Icon name={iconName} color={"white"} size={22} />}
-      <Text style={styles.buttonTextStyle}>{title}</Text>
+      <Text testID="customButtonText" style={styles.buttonTextStyle}>
+        {title}
+      </Text>
     </TouchableOpacity>
   );
 };

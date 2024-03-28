@@ -1,25 +1,3 @@
-/*
-What data to collect for new users
------------------------------------
-
-Full name
-
-Age, DOB
-
-Student ID
-
-Phone number
-
-Profile photo?
---would have to have path to image on EC2
-
-Vehicle Make, Model, year
-Seat capacity/preference (shouldn't display posts if ride is full)
-
-Home address
-
-
-*/
 import React, { useState, useEffect } from "react";
 import {
   View,

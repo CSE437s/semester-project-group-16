@@ -18,7 +18,8 @@ const CarInfoForm = ({
   });
 
   useEffect(() => {
-    onVehicleInfoChange(vehicleInfo);
+    const { make, model, year, license: lp, seat: seats } = vehicleInfo;
+    onVehicleInfoChange(make, model, year, lp, seats);
   }, [vehicleInfo]);
 
   const handleInputChange = (name, value) => {
