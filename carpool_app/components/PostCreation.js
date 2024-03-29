@@ -128,7 +128,15 @@ const PostCreation = ({ onClose }) => {
         <Icon name={"map-outline"} size={20} />
         <Text style={styles.headerText}>Category</Text>
       </View>
-      <CustomPicker category={category} setCategory={setCategory} />
+      <CustomPicker
+        category={category}
+        setCategory={setCategory}
+        items={[
+          { label: "Campus", value: "Campus" },
+          { label: "Groceries", value: "Groceries" },
+          { label: "Misc", value: "Misc" },
+        ]}
+      />
       <CustomButton title="Submit" onPress={handleSubmit} />
     </View>
   );

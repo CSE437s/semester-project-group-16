@@ -71,6 +71,7 @@
     "@react-native-community/cli-platform-ios": "^12.3.6",
     "@testing-library/react-native": "^12.4.4",
     "babel-jest": "^29.7.0",
+    "detox": "^20.19.4",
     "expo-cli": "^6.3.10",
     "react-native-dotenv": "^3.4.10"
   },

@@ -12,21 +12,18 @@ import { fetchRideRequests } from "../Utils";
 import MessageThread from "./MessageThread";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import Icon from "react-native-vector-icons/Ionicons";
+import InboxItem from "./InboxItem";
 
 const Inbox = ({ onClose }) => {
   const [incomingMessages, setIncomingMessages] = useState([]);
   const [outgoingMessages, setOutgoingMessages] = useState([]);
   const [isIncomingSelected, setIsIncomingSelected] = useState(true);
-  const [selectedRequest, setSelectedRequest] = useState({});
 
-  const [numMessages, setNumMessages] = useState(0);
-
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
 
   useEffect(() => {
     const getMessages = async () => {
       const response = await fetchRideRequests();
-      console.log(`response: ${response}`);
       setIncomingMessages(response.incomingRequests);
       setOutgoingMessages(response.outgoingRequests);
     };
@@ -34,72 +31,49 @@ const Inbox = ({ onClose }) => {
   }, []);
 
   const onCloseMessageThread = () => {
-    setSelectedRequest({});
+    setSelectedIndex(-1);
+  };
+
+  const getSelectedRequest = () => {
+    if (selectedIndex == -1) {
+      return {};
+    }
+    if (isIncomingSelected) {
+      return incomingMessages[selectedIndex];
+    } else {
+      return outgoingMessages[selectedIndex];
+    }
   };
 
   // Views the conversation
-  if (Object.keys(selectedRequest).length !== 0) {
+  if (selectedIndex != -1) {
     return (
       <MessageThread
         onClose={onCloseMessageThread}
-        rideRequest={selectedRequest}
+        rideRequest={getSelectedRequest()}
       />
     );
   }
-
-  const renderItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.item}
-      onPress={() => setSelectedRequest(item)}
-    >
-      <Text style={styles.itemText}>Request sent by {item.userFullName}</Text>
-      <View
-        style={[
-          {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            gap: 5,
-          },
-          styles.addressInfo,
-        ]}
-      >
-        <Icon name={"business-outline"} size={16} />
-        <Text style={styles.itemText}>{item.originAddress}</Text>
-      </View>
-      <View
-        style={[
-          {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "row",
-            gap: 5,
-            marginBottom: 10,
-          },
-          styles.addressInfo,
-        ]}
-      >
-        <Icon name={"flag-outline"} size={16} />
-        <Text style={styles.itemText}>{item.destinationAddress}</Text>
-      </View>
-    </TouchableOpacity>
-  );
 
   return (
     <View style={styles.container}>
       <BackArrow onClose={onClose} />
       <SegmentedControl
         values={["Join Requests", "My Requests"]}
-        selectedIndex={selectedIndex}
+        selectedIndex={isIncomingSelected ? 0 : 1}
         onChange={(event) => {
-          setSelectedIndex(event.nativeEvent.selectedSegmentIndex);
+          setIsIncomingSelected(event.nativeEvent.selectedSegmentIndex == 0);
         }}
       />
       <FlatList
-        data={selectedIndex == 0 ? incomingMessages : outgoingMessages}
-        renderItem={renderItem}
+        data={isIncomingSelected ? incomingMessages : outgoingMessages}
+        renderItem={({ item, index }) => (
+          <InboxItem
+            item={item}
+            index={index}
+            setSelectedIndex={setSelectedIndex}
+          />
+        )}
         keyExtractor={(item) => item.rideRequestId.toString()}
       />
     </View>
@@ -116,19 +90,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDDDDD",
     padding: 10,
     marginVertical: 20,
-  },
-  item: {
-    padding: 10,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 10,
-    backgroundColor: "white",
-  },
-  itemText: {
-    fontFamily: "Poppins-SemiBold",
-    alignSelf: "center",
   },
 });
 
