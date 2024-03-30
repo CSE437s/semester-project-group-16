@@ -21,7 +21,6 @@ import CustomPicker from "./CustomPicker";
 import CustomButton from "./CustomButton";
 
 const PostCreation = ({ onClose }) => {
-  // Simplified state hooks for addresses
   const [startAddress, setStartAddress] = useState("");
   const [targetAddress, setTargetAddress] = useState("");
   const [date, setDate] = useState(new Date());

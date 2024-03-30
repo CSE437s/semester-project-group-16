@@ -110,8 +110,6 @@ const styles = StyleSheet.create({
   },
   email: {
     fontFamily: "Poppins-SemiBold",
-    //marginBottom: 10,
-    //backgroundColor:'pink',
     height: "fit",
     marginTop: 3,
     color: "gray",
@@ -119,8 +117,6 @@ const styles = StyleSheet.create({
   },
   completed: {
     fontFamily: "Poppins-SemiBold",
-    //marginBottom: 10,
-    //backgroundColor:'pink',
     height: "fit",
     marginTop: 0,
     color: "gray",
@@ -132,7 +128,6 @@ const styles = StyleSheet.create({
     color: "gray",
   },
   addressContainer: {
-    //backgroundColor: 'pink',
     marginBottom: 6,
   },
   timestamp: {
@@ -142,7 +137,6 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins-Black",
     color: "black",
     fontSize: 18,
-    //backgroundColor:'pink'
   },
   headerContainer: {
     flexDirection: "row",
@@ -154,7 +148,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     marginBottom: 10,
   },
-  // Add other styles here
 });
 
 export default Post;

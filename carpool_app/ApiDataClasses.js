@@ -26,7 +26,6 @@ class TripClass {
 
   getStopIdWithUserId(userId) {
     for (const stop of this.stops) {
-      console.log(stop.userId);
       if (stop.userId === userId) {
         return stop.stopId;
       }

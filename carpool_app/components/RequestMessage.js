@@ -16,8 +16,6 @@ import {
 import CustomButton from "./CustomButton.js";
 
 const RequestMessage = ({ onClose, rideRequest, isYourRequest }) => {
-  console.log(JSON.stringify(rideRequest));
-
   const onPressAccept = async () => {
     try {
       await acceptRideRequest(rideRequest);
@@ -41,8 +39,7 @@ const RequestMessage = ({ onClose, rideRequest, isYourRequest }) => {
         <Text style={styles.messageText}> You want to join this ride! </Text>
       ) : (
         <Text style={styles.messageText}>
-          {" "}
-          {rideRequest.userFullName} wants to join your ride!{" "}
+          {rideRequest.userFullName} wants to join your ride!
         </Text>
       )}
       <View style={styles.requestButtons}>

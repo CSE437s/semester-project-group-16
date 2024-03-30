@@ -12,10 +12,9 @@ import RequestMessage from "./RequestMessage";
 
 const MessageThread = ({ onClose, rideRequest }) => {
   const user = checkUserExists();
-  console.log(`messagethread: ${JSON.stringify(rideRequest)}`);
 
   return (
-    <View style={styles.container}>
+    <View testID="messageThreadView" style={styles.container}>
       <BackArrow onClose={onClose} />
       <RequestMessage
         onClose={onClose}

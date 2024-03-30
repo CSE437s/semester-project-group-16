@@ -34,8 +34,6 @@ const StopCreation = ({ onClose, trip }) => {
         }
       );
 
-      console.log("Response:", response);
-
       if (response.status === 200) {
         console.log("Post created successfully!");
         onClose();
@@ -72,7 +70,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     marginBottom: 10,
-    //backgroundColor: 'green',
+
     width: "fit",
     height: "fit",
     justifyContent: "center",
@@ -87,18 +85,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
-    //backgroundColor: 'pink'
   },
   arrowContainer: {
-    //backgroundColor: 'cyan',
     width: "90%",
-    //marginTop: 50,
     flexDirection: "row",
     justifyContent: "flex-start",
     marginLeft: -20,
   },
   textContainer: {
-    //backgroundColor: 'cyan',
     width: "fit",
     flexDirection: "column",
     justifyContent: "center",
@@ -108,15 +102,12 @@ const styles = StyleSheet.create({
     height: "90%",
     justifyContent: "flex-start",
     alignItems: "center",
-    //backgroundColor:'blue',
   },
   buttonContainer: {
     width: "90%",
     marginTop: -30,
-    //backgroundColor: 'pink',
   },
   searchBarContainer: {
-    //backgroundColor: 'purple',
     width: "90%",
     margin: 10,
     height: "fit",

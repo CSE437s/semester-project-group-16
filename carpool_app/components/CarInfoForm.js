@@ -12,9 +12,9 @@ const CarInfoForm = ({
   const [vehicleInfo, setVehicleInfo] = useState({
     make,
     model,
-    year,
+    year: year.toString(),
     license,
-    seat,
+    seat: seat.toString(),
   });
 
   useEffect(() => {

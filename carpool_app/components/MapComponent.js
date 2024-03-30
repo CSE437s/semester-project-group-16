@@ -35,7 +35,7 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
 
   if (!ride) {
     return (
-      <View style={styles.map}>
+      <View testID="mapView" style={styles.map}>
         <MapView
           style={{ flex: 1 }}
           initialRegion={currentLocation}
@@ -63,7 +63,7 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
   const polylinePoints = decodePolyline(encodedPolyline);
 
   return (
-    <View style={[styles.map, { height: mapHeight }]}>
+    <View testID="mapView" style={[styles.map, { height: mapHeight }]}>
       <MapView
         style={{ flex: 1, borderColor: "black", borderRadius: 10 }}
         initialRegion={currentLocation}
@@ -97,7 +97,7 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
   );
 };
 
-async function getLocation() {
+export async function getLocation() {
   const { status } = await Location.requestForegroundPermissionsAsync();
   if (status !== "granted") {
     alert("Permission to access location was denied");
@@ -107,17 +107,17 @@ async function getLocation() {
   return location.coords;
 }
 
-const isYourStop = async (stop) => {
-  const user = await checkUserExists();
-  return stop.userId == user.uid;
-};
-
 //Centers map display.
-function getMidpointCoordinate(ride) {
-  if (!ride) {
-    return {};
+export function getMidpointCoordinate(ride) {
+  if (
+    !ride ||
+    !ride.route ||
+    Object.keys(ride.route).length === 0 ||
+    !ride.route.originCoordinates ||
+    !ride.route.destinationCoordinates
+  ) {
+    return { latitude: 0, longitude: 0 };
   }
-  console.log(`user ride: ${ride}`);
   const allCoordinatesList = [
     {
       latitude: ride.route.originCoordinates.latitude,
@@ -147,9 +147,15 @@ function getMidpointCoordinate(ride) {
 }
 
 //Finds zoomDeltas to fit entire map on load.
-function getZoomDeltas(ride) {
-  if (!ride) {
-    return {};
+export function getZoomDeltas(ride, zoomMargin = 0.08) {
+  if (
+    !ride ||
+    !ride.route ||
+    Object.keys(ride.route).length === 0 ||
+    !ride.route.originCoordinates ||
+    !ride.route.destinationCoordinates
+  ) {
+    return { latitudeDelta: 0, longitudeDelta: 0 };
   }
   let allCoordinatesList = [
     {
@@ -180,14 +186,13 @@ function getZoomDeltas(ride) {
   const latitudeDelta = maxLat - minLat;
   const longitudeDelta = maxLng - minLng;
 
-  const margin = 0.08;
   return {
-    latitudeDelta: latitudeDelta + 10 * margin * latitudeDelta,
-    longitudeDelta: longitudeDelta + 10 * margin * longitudeDelta,
+    latitudeDelta: latitudeDelta + 10 * zoomMargin * latitudeDelta,
+    longitudeDelta: longitudeDelta + 10 * zoomMargin * longitudeDelta,
   };
 }
 
-const decodePolyline = (encodedPolyline) => {
+export const decodePolyline = (encodedPolyline) => {
   return polyline.decode(encodedPolyline).map((array) => ({
     latitude: array[0],
     longitude: array[1],
