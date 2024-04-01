@@ -26,13 +26,13 @@ class TripClass {
 
   getStopIdWithUserId(userId) {
     for (const stop of this.stops) {
-      console.log(stop.userId);
       if (stop.userId === userId) {
         return stop.stopId;
       }
     }
     return -1;
   }
+  //Timestamp conversion functions here instead
 }
 
 class RouteClass {
@@ -76,17 +76,28 @@ class StopClass {
 }
 
 class RideRequestClass {
-    constructor(rideRequestId, incomingUserId, outgoingUserId, stopId, tripId, outgoing_full_name, outgoing_user_email, origin_address, destination_address, timestamp) {
-        this.rideRequestId = rideRequestId;
-        this.incomingUserId = incomingUserId;
-        this.outgoingUserId = outgoingUserId;
-        this.stopId = stopId;
-        this.tripId = tripId;
-        this.userFullName = outgoing_full_name;
-        this.userEmail = outgoing_user_email;
-        this.originAddress = origin_address;
-        this.destinationAddress = destination_address;
-        this.timestamp = timestamp;
-    }
+  constructor(
+    rideRequestId,
+    incomingUserId,
+    outgoingUserId,
+    stopId,
+    tripId,
+    outgoing_full_name,
+    outgoing_user_email,
+    origin_address,
+    destination_address,
+    timestamp
+  ) {
+    this.rideRequestId = rideRequestId;
+    this.incomingUserId = incomingUserId;
+    this.outgoingUserId = outgoingUserId;
+    this.stopId = stopId;
+    this.tripId = tripId;
+    this.userFullName = outgoing_full_name;
+    this.userEmail = outgoing_user_email;
+    this.originAddress = origin_address;
+    this.destinationAddress = destination_address;
+    this.timestamp = timestamp;
+  }
 }
 export { TripClass, RouteClass, CoordinateClass, StopClass, RideRequestClass };

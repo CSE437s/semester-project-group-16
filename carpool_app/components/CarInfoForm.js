@@ -1,60 +1,81 @@
-import React, { useState, useEffect } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from "react";
+import { View, TextInput, StyleSheet } from "react-native";
 
-const CarInfoForm = ({ onVehicleInfoChange, make='', model='', year='', license='', seat=''}) => {
-  const [vehicleMake, setVehicleMake] = useState(make);
-  const [vehicleModel, setVehicleModel] = useState(model);
-  const [vehicleYear, setVehicleYear] = useState(String(year));
-  const [seatCapacity, setSeatCapacity] = useState(String(seat));
-  const [vehicleLicensePlate, setVehicleLicensePlate] = useState(license);
-  console.log(`make: ${vehicleMake} model: ${vehicleModel}, year: ${vehicleYear} plate: ${vehicleLicensePlate} capacity: ${seatCapacity}`)
+const CarInfoForm = ({
+  onVehicleInfoChange,
+  make = "",
+  model = "",
+  year = "",
+  license = "",
+  seat = "",
+}) => {
+  const [vehicleInfo, setVehicleInfo] = useState({
+    make,
+    model,
+    year: year.toString(),
+    license,
+    seat: seat.toString(),
+  });
 
   useEffect(() => {
-    updateVehicleInfo();
-  }, [vehicleMake, vehicleModel, vehicleYear, seatCapacity, vehicleLicensePlate])
+    const { make, model, year, license: lp, seat: seats } = vehicleInfo;
+    onVehicleInfoChange(make, model, year, lp, seats);
+  }, [vehicleInfo]);
 
-  const updateVehicleInfo = () => {
-    onVehicleInfoChange(
-      vehicleMake,
-      vehicleModel,
-      vehicleYear,
-      vehicleLicensePlate,
-      seatCapacity
-    );
+  const handleInputChange = (name, value) => {
+    setVehicleInfo((prevInfo) => ({
+      ...prevInfo,
+      [name]: value,
+    }));
   };
 
   return (
     <View>
       <TextInput
+        testID="vehicleMakeInput"
         placeholder="Vehicle Make"
-        value={vehicleMake}
-        onChangeText={(text) => { setVehicleMake(text)}}
+        value={vehicleInfo.make}
+        onChangeText={(text) => {
+          handleInputChange("make", text);
+        }}
         style={styles.input}
       />
       <TextInput
+        testID="vehicleModelInput"
         placeholder="Vehicle Model"
-        value={vehicleModel}
-        onChangeText={(text) => { setVehicleModel(text)}}
+        value={vehicleInfo.model}
+        onChangeText={(text) => {
+          handleInputChange("model", text);
+        }}
         style={styles.input}
       />
       <TextInput
+        testID="vehicleYearInput"
         placeholder="Vehicle Year"
-        value={vehicleYear}
-        onChangeText={(text) => { setVehicleYear(text)}}
+        value={vehicleInfo.year}
+        onChangeText={(text) => {
+          handleInputChange("year", text);
+        }}
         style={styles.input}
       />
       <TextInput
+        testID="vehicleLicensePlateInput"
         placeholder="Vehicle License Plate"
-        value={vehicleLicensePlate}
-        onChangeText={(text) => { setVehicleLicensePlate(text)}}
+        value={vehicleInfo.license}
+        onChangeText={(text) => {
+          handleInputChange("license", text);
+        }}
         style={styles.input}
       />
-    <TextInput
+      <TextInput
+        testID="vehicleSeatInput"
         placeholder="Seat Capacity"
-        value={seatCapacity}
-        onChangeText={setSeatCapacity}
+        value={vehicleInfo.seat}
+        onChangeText={(text) => {
+          handleInputChange("seat", text);
+        }}
         style={styles.input}
-    />
+      />
     </View>
   );
 };

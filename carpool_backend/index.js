@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 //Database connecton
-//db.query('<SQL>'), db.execute('<SQL>') for read, insert 
-const pool = require('./database');
-const cors = require('cors');
-const {authenticate} = require("./middleware");
+//db.query('<SQL>'), db.execute('<SQL>') for read, insert
+const pool = require("./database");
+const cors = require("cors");
+const { authenticate } = require("./middleware");
 const { FIREBASE_ADMIN } = require("./firebase");
 const {
   createRoute,
@@ -25,9 +25,8 @@ const {
   deleteStopWithStopId,
   deleteTripWithTripId,
   getTripAndRouteIdByStopId,
-
 } = require("./databaseFunctions");
-const {getRoutes, getCoordinatesOfAddress} = require('./utils');
+const { getRoutes, getCoordinatesOfAddress } = require("./utils");
 const app = express();
 
 const PORT = 3000;
@@ -37,46 +36,51 @@ app.use(express.json());
 app.use(cors());
 
 // Check database connection on server startup
-pool.query('SELECT 1')
+pool
+  .query("SELECT 1")
   .then(() => {
-    console.log('Connected to the database!');
+    console.log("Connected to the database!");
   })
   .catch((err) => {
-    console.error('Failed to connect to the database:', err);
+    console.error("Failed to connect to the database:", err);
   });
 
 //Tests connection to db with query to 'test' table
 //Expected res: [{"name":"Alice"},{"name":"Bob"}]
-app.get('/', async (req, res) => {
-  res.json({message:"Hello world!"})
+app.get("/", async (req, res) => {
+  res.json({ message: "Hello world!" });
 });
 
 //Setting up api endpoints
-app.get('/posts/', authenticate, (req, res) => {
-  res.json({user: "antonryoung02@gmail.com", title:"First Post"});
+app.get("/posts/", authenticate, (req, res) => {
+  res.json({ user: "antonryoung02@gmail.com", title: "First Post" });
 });
 
 // posts test
-app.get('/postsTest', async (req, res) => {
+app.get("/postsTest", async (req, res) => {
   try {
-    const [results, fields] = await pool.query('SELECT * FROM posts');
+    const [results, fields] = await pool.query("SELECT * FROM posts");
     res.json(results);
   } catch (error) {
-    console.error('Error fetching data from the database:', error);
-    res.status(500).json({ error: 'An error occurred while fetching data from the database', message: error.message });
+    console.error("Error fetching data from the database:", error);
+    res
+      .status(500)
+      .json({
+        error: "An error occurred while fetching data from the database",
+        message: error.message,
+      });
   }
 });
 
-// test end point for submitting post. 
-app.post('/submitPost', (req, res) => {
+// test end point for submitting post.
+app.post("/submitPost", (req, res) => {
   const postData = req.body;
-  console.log('Received data:', postData);
-  res.json({ message: 'Data received successfully' });
+  console.log("Received data:", postData);
+  res.json({ message: "Data received successfully" });
 });
 
-
 //Change this to /users/:userId to get info about specific user
-app.post('/users', authenticate, async(req, res) => {
+app.post("/users", authenticate, async (req, res) => {
   console.log("INSIDE /USERS");
   const user_id = req.body.userId;
   const email = req.body.email;
@@ -85,58 +89,74 @@ app.post('/users', authenticate, async(req, res) => {
     const query = "INSERT INTO USER (user_id, email) VALUES (?, ?)";
     const [result] = await pool.execute(query, [user_id, email]);
     console.log(result);
-    return res.status(200).json({message: "User successfully inserted"});
+    return res.status(200).json({ message: "User successfully inserted" });
   } catch (error) {
-    console.error('Error inserting user:', error.message);
-    return res.status(500).json({message: "Failed to insert user"});
+    console.error("Error inserting user:", error.message);
+    return res.status(500).json({ message: "Failed to insert user" });
   }
 });
 
-app.post('/users/info', authenticate, async(req, res) => {
+app.post("/users/info", authenticate, async (req, res) => {
   console.log(`Got users/info data ${JSON.stringify(req.body)}`);
-  await updateUserDetails(req.body.userId, req.body.fullName, req.body.studentId, req.body.dob, req.body.phoneNumber, req.body.vehicleInfo.make, req.body.vehicleInfo.model, req.body.vehicleInfo.year, req.body.vehicleInfo.licensePlate, req.body.vehicleInfo.seatCapacity, req.body.homeAddress);
-  return res.status(200).json({})
+  await updateUserDetails(
+    req.body.userId,
+    req.body.fullName,
+    req.body.studentId,
+    req.body.dob,
+    req.body.phoneNumber,
+    req.body.vehicleInfo.make,
+    req.body.vehicleInfo.model,
+    req.body.vehicleInfo.year,
+    req.body.vehicleInfo.licensePlate,
+    req.body.vehicleInfo.seatCapacity,
+    req.body.homeAddress
+  );
+  return res.status(200).json({});
 });
 
-app.get('/users/:userId', authenticate, async(req, res) => {
+app.get("/users/:userId", authenticate, async (req, res) => {
   const userId = req.params.userId;
-  
+
   try {
-    const [rows, fields] = await pool.query('SELECT * FROM USER WHERE user_id = ?', [userId]);
+    const [rows, fields] = await pool.query(
+      "SELECT * FROM USER WHERE user_id = ?",
+      [userId]
+    );
     if (rows.length > 0) {
       res.json(rows[0]);
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     }
   } catch (err) {
     console.error(err);
-    res.status(500).send('An error occurred');
+    res.status(500).send("An error occurred");
   }
-  
 });
 
-app.post('/routes', authenticate, async(req, res) => {
+app.post("/routes", authenticate, async (req, res) => {
   // const user_id = req.body.userId;
   // const originAddress = req.body.originAddress;
   // const destinationAddress = req.body.destinationAddress;
   // try {
   //   const result = await createRoute(originAddress, destinationAddress, user_id);
   //   console.log(result);
-  //   return res.status(200).json({message: "New Route successfully inserted"}); 
+  //   return res.status(200).json({message: "New Route successfully inserted"});
   // } catch (error) {
   //   console.error('Error inserting Route:', error.message);
   //   return res.status(500).json({message: "Failed to insert Route"});
-  // } 
-  console.log("This endpoint likely isn't necessary... Only need to create a trip or a stop")
+  // }
+  console.log(
+    "This endpoint likely isn't necessary... Only need to create a trip or a stop"
+  );
 });
 
-app.post('/stops', authenticate, async(req, res) => {
+app.post("/stops", authenticate, async (req, res) => {
   const stopAddress = req.body.stopAddress;
   const outgoingUserId = req.body.userId;
   const routeId = req.body.routeId;
   const tripId = req.body.tripId;
   const incomingUserId = req.body.incomingUserId;
-  console.log("Here")
+  console.log("Here");
 
   //console.log(req.body);
 
@@ -144,18 +164,30 @@ app.post('/stops', authenticate, async(req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
   try {
-      const result = await createStop(stopAddress, outgoingUserId, tripId, routeId);
-      const stopId = result.insertId;
-      
-      const requestResult = await createRideRequest(incomingUserId, outgoingUserId, tripId, stopId);
-      res.status(200).json({ message: "Stop created successfully", stopId: result.insertId });
+    const result = await createStop(
+      stopAddress,
+      outgoingUserId,
+      tripId,
+      routeId
+    );
+    const stopId = result.insertId;
+
+    const requestResult = await createRideRequest(
+      incomingUserId,
+      outgoingUserId,
+      tripId,
+      stopId
+    );
+    res
+      .status(200)
+      .json({ message: "Stop created successfully", stopId: result.insertId });
   } catch (error) {
-      console.error('Error creating Stop or ride request:', error);
-      res.status(500).json({ error: "Internal server error" });
+    console.error("Error creating Stop or ride request:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
 
-app.post('/trips', authenticate, async(req, res) => {
+app.post("/trips", authenticate, async (req, res) => {
   const user_id = req.body.userId;
   const originAddress = req.body.originAddress;
   const destinationAddress = req.body.destinationAddress;
@@ -168,17 +200,23 @@ app.post('/trips', authenticate, async(req, res) => {
   try {
     const route = await createRoute(originAddress, destinationAddress, user_id);
     const route_id = route.insertId;
-    const result = await createTrip(route_id, user_id, category, completed, timestamp);
-    return res.status(200).json({message: "New Trip successfully inserted"}); 
+    const result = await createTrip(
+      route_id,
+      user_id,
+      category,
+      completed,
+      timestamp
+    );
+    return res.status(200).json({ message: "New Trip successfully inserted" });
   } catch (error) {
-    console.error('Error inserting Trip:', error.message);
-    return res.status(500).json({message: "Failed to insert Trip"});
+    console.error("Error inserting Trip:", error.message);
+    return res.status(500).json({ message: "Failed to insert Trip" });
   }
 });
 
 //SHOULD BE trips/:userId
 //Gets all trips of userId (driving AND riding) and returns them
-app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
+app.get("/rides/:userId/:findAll", authenticate, async (req, res) => {
   try {
     const userId = req.params.userId;
     const findAll = req.params.findAll;
@@ -187,11 +225,10 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
     let riding_trips = await getRidingTripsWithUserId(userId, findAll);
     let combinedTrips = [...driving_trips, ...riding_trips];
     //Filter out duplicates just in case.
-    let trips = combinedTrips.filter((trip, index, self) =>
-    index === self.findIndex((t) => (
-        t.trip_id === trip.trip_id
-    ))
-);
+    let trips = combinedTrips.filter(
+      (trip, index, self) =>
+        index === self.findIndex((t) => t.trip_id === trip.trip_id)
+    );
 
     trips.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     let allUserTrips = [];
@@ -199,7 +236,7 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
     for (let trip of trips) {
       // const tripDate = new Date(trip.timestamp);
       // console.log(tripDate);
-    
+
       // if (tripDate <= new Date()) {
       //     continue;
       // }
@@ -208,28 +245,31 @@ app.get('/rides/:userId/:findAll', authenticate, async(req, res) => {
       const origin = {
         latitude: trip_route[0].origin_latitude,
         longitude: trip_route[0].origin_longitude,
-    };
-    const destination = {
+      };
+      const destination = {
         latitude: trip_route[0].destination_latitude,
         longitude: trip_route[0].destination_longitude,
-    };
+      };
 
-    const addresses = {
+      const addresses = {
         origin_address: trip_route[0].origin_address,
-        destination_address: trip_route[0].destination_address
-    }
+        destination_address: trip_route[0].destination_address,
+      };
       const created_user_email = await getEmailFromUserId(trip.user_id);
-      
+
       let trip_stops = await getStopsWithTripId(trip.trip_id);
 
-
-
-      allUserTrips.push({route:trip_route[0], stops: trip_stops, email: created_user_email[0].email, trip:trip});
-    };
+      allUserTrips.push({
+        route: trip_route[0],
+        stops: trip_stops,
+        email: created_user_email[0].email,
+        trip: trip,
+      });
+    }
     res.status(200).json(allUserTrips);
   } catch (error) {
-    console.error('Error fetching user rides:', error);
-    res.status(500).json({message: 'Failed to fetch user rides'});
+    console.error("Error fetching user rides:", error);
+    res.status(500).json({ message: "Failed to fetch user rides" });
   }
 });
 
@@ -239,24 +279,24 @@ Return user of the outgoing_user_id because they are making the request
 
 Join on trip, so that you can see extra info.
 */
-app.get('/riderequests/:userId', authenticate, async(req, res) => {
+app.get("/riderequests/:userId", authenticate, async (req, res) => {
   const user_id = req.params.userId;
   console.log("Making get riderequests request");
 
   try {
-    const { outgoingRequests, incomingRequests } = await getRideRequestsWithUserId(user_id);
+    const { outgoingRequests, incomingRequests } =
+      await getRideRequestsWithUserId(user_id);
     res.json({
       outgoingRequests,
-      incomingRequests
+      incomingRequests,
     });
   } catch (error) {
     console.log(`error: ${error}`);
-    res.status(500).send({ message: 'Error fetching ride requests' });
+    res.status(500).send({ message: "Error fetching ride requests" });
   }
-
 });
 
-app.delete('/riderequests/:rideRequestId', authenticate, async (req, res) => {
+app.delete("/riderequests/:rideRequestId", authenticate, async (req, res) => {
   const rideRequestId = req.params.rideRequestId;
   console.log("Making delete rideRequests request");
 
@@ -264,44 +304,49 @@ app.delete('/riderequests/:rideRequestId', authenticate, async (req, res) => {
     const result = await deleteRideRequestsWithRideRequestId(rideRequestId);
 
     if (result.affectedRows > 0) {
-      res.send({ message: 'Ride request deleted successfully' });
+      res.send({ message: "Ride request deleted successfully" });
     } else {
       console.log("No request found");
-      res.status(404).send({ message: 'No ride request found for the provided ID' });
+      res
+        .status(404)
+        .send({ message: "No ride request found for the provided ID" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).send({ message: 'Error deleting ride request' });
+    res.status(500).send({ message: "Error deleting ride request" });
   }
 });
 
-app.patch('/riderequests', authenticate, async(req, res) => {
+app.patch("/riderequests", authenticate, async (req, res) => {
   const { rideRequestId, stopId, tripId } = req.body;
 
   try {
-    console.log(`stopId: ${stopId} tripId: ${tripId}`)
+    console.log(`stopId: ${stopId} tripId: ${tripId}`);
     const updateResult = await updateStopTripId(stopId, tripId);
 
-    const deleteResult = await deleteRideRequestsWithRideRequestId(rideRequestId);
+    const deleteResult = await deleteRideRequestsWithRideRequestId(
+      rideRequestId
+    );
 
     const trip = await getTripsWithTripId(tripId);
     const routeId = trip[0].route_id;
-    
+
     const result = await recomputeRoute(routeId, tripId);
 
-
     if (deleteResult.affectedRows > 0) {
-      res.send({ message: 'Ride request accepted and deleted successfully' });
+      res.send({ message: "Ride request accepted and deleted successfully" });
     } else {
-      res.status(404).send({ message: 'No ride requests found for the provided ID' });
+      res
+        .status(404)
+        .send({ message: "No ride requests found for the provided ID" });
     }
   } catch (error) {
-    console.error('Error processing the request:', error);
-    res.status(500).send({ message: 'Error accepting ride request' });
+    console.error("Error processing the request:", error);
+    res.status(500).send({ message: "Error accepting ride request" });
   }
 });
 
-app.delete('/stops/:stopId', authenticate, async(req, res) => {
+app.delete("/stops/:stopId", authenticate, async (req, res) => {
   const { stopId } = req.params; // Extracting stopId from the route parameters
   console.log(`stopId: ${stopId}`);
 
@@ -311,34 +356,31 @@ app.delete('/stops/:stopId', authenticate, async(req, res) => {
 
     await recomputeRoute(trip_id, route_id);
 
-    console.log("After recompute route")
+    console.log("After recompute route");
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Stop not found' });
+      return res.status(404).json({ message: "Stop not found" });
     }
-    res.status(200).json({ message: 'Stop deleted successfully' });
+    res.status(200).json({ message: "Stop deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: `Failed to delete the stop: ${error}` });
   }
-
 });
 
-app.delete('/trips/:tripId', authenticate, async(req, res) => {
+app.delete("/trips/:tripId", authenticate, async (req, res) => {
   const { tripId } = req.params;
 
   try {
     const result = await deleteTripWithTripId(tripId);
     if (result.affectedRows === 0) {
-      return res.status(404).json({ message: 'Trip not found' });
+      return res.status(404).json({ message: "Trip not found" });
     }
 
-    res.status(200).json({ message: 'Trip deleted successfully' });
+    res.status(200).json({ message: "Trip deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Failed to delete the trip' });
+    res.status(500).json({ message: "Failed to delete the trip" });
   }
-
 });
-
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

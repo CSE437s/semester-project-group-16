@@ -1,10 +1,8 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import DateTimePicker from "@react-native-community/datetimepicker";
+import React, { useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-const ChooseDate = ({ setSelectedDate }) => {
-  const [date, setDate] = useState(new Date());
-
+const ChooseDate = ({ date, setDate }) => {
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
       setDate(selectedDate);
@@ -17,13 +15,11 @@ const ChooseDate = ({ setSelectedDate }) => {
       updatedDateTime.setHours(selectedTime.getHours());
       updatedDateTime.setMinutes(selectedTime.getMinutes());
       setDate(updatedDateTime);
-      setSelectedDate(updatedDateTime);
     }
   };
 
   return (
     <View style={styles.container}>
-    
       <DateTimePicker
         testID="datePicker"
         value={date}
@@ -48,13 +44,13 @@ const ChooseDate = ({ setSelectedDate }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    justifyContent: 'left', 
-    alignItems: 'center', 
+    flexDirection: "row",
+    justifyContent: "left",
+    alignItems: "center",
   },
   label: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 5,
   },
 });
