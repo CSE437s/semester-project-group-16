@@ -1,7 +1,13 @@
 //Contains API call functions
 import { FIREBASE_AUTH } from './components/FirebaseConfig';
 import { REACT_APP_LOCAL_SERVER, REACT_APP_REMOTE_SERVER } from '@env';
-import {TripClass, RideClass, StopClass, CoordinateClass, RideRequestClass} from './ApiDataClasses';
+import {
+  TripClass,
+  RideClass,
+  StopClass,
+  CoordinateClass,
+  RideRequestClass,
+} from './ApiDataClasses';
 
 export const getUserRides = async (getAll) => {
   try {
@@ -16,18 +22,18 @@ export const getUserRides = async (getAll) => {
         'Content-Type': 'application/json',
         Authorization: `${idToken}`,
         userid: userId,
-      }
+      },
     });
 
     if (!response.ok) {
       throw new Error('Failed to fetch from protected endpoint');
     }
     const responseData = await response.json();
-    let trips = []
+    let trips = [];
     responseData.forEach((trip) => {
       trips.push(new TripClass(trip));
-    })
-    console.log(`Trips: ${JSON.stringify(trips)}`)
+    });
+    console.log(`Trips: ${JSON.stringify(trips)}`);
     return trips;
   } catch (error) {
     console.error('Error making API call:', error);
@@ -86,13 +92,13 @@ export async function getUserWithUserId(userId) {
       'Content-Type': 'application/json',
       Authorization: `${idToken}`,
       userid: user.uid,
-    }
+    },
   });
 
   if (!response.ok) {
     throw new Error('Failed to fetch from protected endpoint');
   }
-  const responseData = await response.json(); 
+  const responseData = await response.json();
   console.log(JSON.stringify(responseData));
   return responseData;
 }
@@ -106,15 +112,25 @@ export const checkUserIsVerified = () => {
 };
 
 export const userHasSufficientInfo = (dbUserObject) => {
-  if (!dbUserObject.full_name || !dbUserObject.student_id || !dbUserObject.dob || !dbUserObject.phone_number) {
-    return false
-  } 
-  if (dbUserObject.full_name.length == 0 || dbUserObject.student_id.length == 0 || dbUserObject.dob.length == 0 || dbUserObject.phone_number.length != 10) {
-    return false
-  } 
+  if (
+    !dbUserObject.full_name ||
+    !dbUserObject.student_id ||
+    !dbUserObject.dob ||
+    !dbUserObject.phone_number
+  ) {
+    return false;
+  }
+  if (
+    dbUserObject.full_name.length == 0 ||
+    dbUserObject.student_id.length == 0 ||
+    dbUserObject.dob.length == 0 ||
+    dbUserObject.phone_number.length != 10
+  ) {
+    return false;
+  }
 
-  return true
-}
+  return true;
+};
 
 export const createNewTrip = async (
   userId,
@@ -134,8 +150,7 @@ export const createNewTrip = async (
       headers: {
         'Content-Type': 'application/json',
         Authorization: `${idToken}`,
-        userId: user.uid, 
-
+        userId: user.uid,
       },
       body: JSON.stringify({
         userId: userId,
@@ -172,36 +187,44 @@ export const timestampToDate = (timestamp) => {
 
 export const timestampToWrittenDate = (timestamp) => {
   const date = new Date(timestamp);
-  
+
   const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
-  const formattedDate = new Intl.DateTimeFormat('en-US', dateOptions).format(date);
-  
+  const formattedDate = new Intl.DateTimeFormat('en-US', dateOptions).format(
+    date
+  );
+
   const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
-  const formattedTime = new Intl.DateTimeFormat('en-US', timeOptions).format(date);
-  
+  const formattedTime = new Intl.DateTimeFormat('en-US', timeOptions).format(
+    date
+  );
+
   return `${formattedDate}, ${formattedTime}`;
 };
 
-
-export const deleteRideRequest = async(rideRequest) => {
+export const deleteRideRequest = async (rideRequest) => {
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);
-  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/riderequests/${rideRequest.rideRequestId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `${idToken}`,
-      userid: user.uid,
-    },
-  });
+  const response = await fetch(
+    `${REACT_APP_REMOTE_SERVER}/riderequests/${rideRequest.rideRequestId}`,
+    {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${idToken}`,
+        userid: user.uid,
+      },
+    }
+  );
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Failed to delete ride request: ${response.status} ${error}`);
+    throw new Error(
+      `Failed to delete ride request: ${response.status} ${error}`
+    );
   }
 
   return await response.json();
-}
+};
 
 export const deleteStop = async (stopId) => {
   const user = checkUserExists();
@@ -223,24 +246,67 @@ export const deleteStop = async (stopId) => {
   return await response.json();
 };
 
-export const deleteTrip = async (tripId) => {
-  const user = checkUserExists();
-  const idToken = await user.getIdToken(true);
-  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/trips/${tripId}`, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `${idToken}`,
-      userid: user.uid,
-    },
-  });
+export const deleteTrip = async (tripObject) => {
+  try {
+    // Ensure the trip object and its stops are correctly defined
+    if (!tripObject || !Array.isArray(tripObject.stops)) {
+      throw new Error('Invalid trip object or stops are undefined.');
+    }
 
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Failed to delete trip: ${response.status} ${error}`);
+    const user = checkUserExists();
+    const idToken = await user.getIdToken(true);
+
+    // Iterate over the stops array and delete each stop
+    for (const stop of tripObject.stops) {
+      // Make sure each stop has a valid stopId
+      if (!stop.stopId) {
+        console.warn('Stop ID is undefined, skipping deletion for this stop.');
+        continue; // Skip this stop
+      }
+
+      const deleteStopResponse = await fetch(
+        `${REACT_APP_REMOTE_SERVER}/stops/${stop.stopId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `${idToken}`,
+            userid: user.uid,
+          },
+        }
+      );
+
+      if (!deleteStopResponse.ok) {
+        throw new Error(`Failed to delete stop with ID ${stop.stopId}`);
+      }
+    }
+
+    // After successfully deleting all stops, delete the trip
+    const tripId = tripObject.tripId;
+    const deleteTripResponse = await fetch(
+      `${REACT_APP_REMOTE_SERVER}/trips/${tripId}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `${idToken}`,
+          userid: user.uid,
+        },
+      }
+    );
+
+    if (!deleteTripResponse.ok) {
+      const errorText = await deleteTripResponse.text();
+      throw new Error(
+        `Failed to delete trip: ${deleteTripResponse.status} ${errorText}`
+      );
+    }
+
+    return await deleteTripResponse.json();
+  } catch (error) {
+    console.error('Error during the trip and stops deletion process:', error);
+    throw error;
   }
-
-  return await response.json();
 };
 
 export async function acceptRideRequest(rideRequest) {
@@ -262,35 +328,69 @@ export async function acceptRideRequest(rideRequest) {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Failed to accept ride request: ${response.status} ${error}`);
+    throw new Error(
+      `Failed to accept ride request: ${response.status} ${error}`
+    );
   }
 
   return await response.json();
 }
 
-
 export async function fetchRideRequests() {
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);
-  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/riderequests/${user.uid}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `${idToken}`,
-      userid: user.uid,
-    },
-  });
+  const response = await fetch(
+    `${REACT_APP_REMOTE_SERVER}/riderequests/${user.uid}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `${idToken}`,
+        userid: user.uid,
+      },
+    }
+  );
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`Failed to fetch ride requests: ${response.status} ${error}`);
+    throw new Error(
+      `Failed to fetch ride requests: ${response.status} ${error}`
+    );
   }
 
   const data = await response.json();
   console.log(`We successfully got data!${JSON.stringify(data)}`);
-  
-  const outgoingRequests = data.outgoingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id, req.user_full_name, req.user_email, req.origin_address, req.destination_address, req.timestamp));
-  const incomingRequests = data.incomingRequests.map(req => new RideRequestClass(req.request_id, req.incoming_user_id, req.outgoing_user_id, req.stop_id, req.trip_id, req.user_full_name, req.user_email, req.origin_address, req.destination_address, req.timestamp));
+
+  const outgoingRequests = data.outgoingRequests.map(
+    (req) =>
+      new RideRequestClass(
+        req.request_id,
+        req.incoming_user_id,
+        req.outgoing_user_id,
+        req.stop_id,
+        req.trip_id,
+        req.user_full_name,
+        req.user_email,
+        req.origin_address,
+        req.destination_address,
+        req.timestamp
+      )
+  );
+  const incomingRequests = data.incomingRequests.map(
+    (req) =>
+      new RideRequestClass(
+        req.request_id,
+        req.incoming_user_id,
+        req.outgoing_user_id,
+        req.stop_id,
+        req.trip_id,
+        req.user_full_name,
+        req.user_email,
+        req.origin_address,
+        req.destination_address,
+        req.timestamp
+      )
+  );
 
   return { outgoingRequests, incomingRequests };
 }
