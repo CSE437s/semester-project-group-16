@@ -30,17 +30,17 @@ const MessageThread = ({ onClose, rideRequest }) => {
   }, [rideRequest.rideRequestId]);
 
   function convertMessagesForGiftedChat(messages) {
-    return messages.map((msg) => ({
-      _id: msg.message_id,
-      text: msg.text,
-      createdAt: new Date(msg.timestamp),
-      user: {
-        _id: msg.user_id,
-        name: msg.full_name,
-        // Since no avatar is required, we don't include it. If needed, just uncomment the next line.
-        // avatar: 'https://placeimg.com/140/140/any',
-      },
-    }));
+    return messages
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+      .map((msg) => ({
+        _id: msg.message_id,
+        text: msg.text,
+        createdAt: new Date(msg.timestamp),
+        user: {
+          _id: msg.user_id,
+          name: msg.full_name,
+        },
+      }));
   }
 
   const onSend = useCallback(
