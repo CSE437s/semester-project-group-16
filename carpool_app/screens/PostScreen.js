@@ -10,12 +10,24 @@ import {
 import Post from '../components/Post';
 import PostCreation from '../components/PostCreation';
 import CustomButton from '../components/CustomButton';
-import { getUserRides } from '../Utils';
+import { getUserRides, haversineDistance } from '../Utils';
+import Slider from '@react-native-community/slider';
+import { getLocation } from '../components/MapComponent';
 
 // Categories for filtering
 const categories = ['All', 'Campus', 'Groceries', 'Misc'];
 
 const PostScreen = () => {
+  useEffect(() => {
+    (async () => {
+      const location = await getLocation();
+      setUserLocation(location);
+    })();
+  }, []);
+
+  const maxDistance = 50;
+  const [userLocation, setUserLocation] = useState(null);
+  const [distanceFilter, setDistanceFilter] = useState(10);
   const [trips, setTrips] = useState([]);
   const [showPostCreation, setShowPostCreation] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All'); // State for selected category
@@ -23,16 +35,28 @@ const PostScreen = () => {
   const fetchTrips = async () => {
     try {
       const userTrips = await getUserRides('true');
-      //console.log("GETTING USER RIDES----------");
-      console.log(userTrips);
-      // Filter trips based on selected category
-      const upcomingTrips = userTrips.filter((trip) => !trip.isPast());
-      const filteredTrips =
-        selectedCategory === 'All'
-          ? upcomingTrips
-          : upcomingTrips.filter((trip) => trip.category === selectedCategory);
-      console.log(filteredTrips);
-      console.log('success');
+      const now = new Date();
+
+      // Filter based on selected category, distance, and whether the trip is in the past
+      const filteredTrips = userTrips.filter((trip) => {
+        const isFutureTrip = !trip.isPast();
+        // Calculate the distance from the user's location to the trip's destination
+        const distance =
+          userLocation && trip.route.destinationCoordinates
+            ? haversineDistance(
+                userLocation,
+                trip.route.destinationCoordinates,
+                true
+              )
+            : Infinity;
+
+        return (
+          isFutureTrip &&
+          (selectedCategory === 'All' || trip.category === selectedCategory) &&
+          distance <= distanceFilter
+        );
+      });
+
       setTrips(filteredTrips);
     } catch (error) {
       console.error('Error fetching user rides:', error);
@@ -40,8 +64,8 @@ const PostScreen = () => {
   };
 
   useEffect(() => {
-    fetchTrips(); // Fetch trips whenever the selected category changes
-  }, [selectedCategory]);
+    fetchTrips();
+  }, [selectedCategory, userLocation, distanceFilter]);
 
   return (
     <View style={styles.container}>
@@ -66,6 +90,28 @@ const PostScreen = () => {
             style={styles.filterButton}
           />
         ))}
+      </View>
+
+      <View style={styles.filterContainer}>
+        <Text
+          style={{
+            fontFamily: 'Poppins-SemiBold',
+            fontSize: 16,
+            alignSelf: 'center',
+          }}
+        >
+          Distance filter: {Math.round(distanceFilter)} miles
+        </Text>
+        <Slider
+          style={{ width: '100%', height: 40 }}
+          minimumValue={1}
+          maximumValue={maxDistance}
+          value={distanceFilter}
+          onValueChange={(value) => setDistanceFilter(value)}
+          minimumTrackTintColor="#007bff"
+          maximumTrackTintColor="#d3d3d3"
+          thumbTintColor="#007bff"
+        />
       </View>
 
       <ScrollView style={styles.postsContainer}>
@@ -103,6 +149,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingTop: 3,
     fontFamily: 'Poppins-SemiBold',
+    marginLeft: 20,
+    marginRight: 20,
   },
   filterTitle: {
     marginRight: 10,
@@ -115,6 +163,8 @@ const styles = StyleSheet.create({
   },
   newRideContainer: {
     marginTop: 10,
+    marginLeft: 15,
+    marginRight: 15,
   },
 });
 
