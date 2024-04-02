@@ -95,7 +95,9 @@ const HomeScreen = () => {
     });
 
     let url='';
-    if (Platform.OS === 'ios') {
+    let platform = Platform.OS;
+    //platform = 'android';
+    if (platform === 'ios') {
       url = `http://maps.apple.com/?saddr=${start}&daddr=${destination}`;
 
       stopCoords.forEach((stop, index) => {
@@ -106,11 +108,11 @@ const HomeScreen = () => {
         }
     });
       } else {
-      url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${destination}`;
+        url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${destination}`;
 
-      stopCoords.forEach(stop => {
-        url += `&waypoints=${stop.lat},${stop.lng}`;
-      });
+        stopCoords.forEach(stop => {
+            url += `&waypoints=${stop.lat},${stop.lng}`;
+        });
   }
     console.log(url);
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
