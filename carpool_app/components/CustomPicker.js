@@ -5,12 +5,12 @@ import Icon from "react-native-vector-icons/Ionicons";
 
 //Parent should pass in items
 //Again, testing that state is managed and that component displays
-const CustomPicker = ({ category, setCategory, categoryItems }) => {
+const CustomPicker = ({ category, setCategory, items }) => {
   return (
     <View testID="customPickerView">
       <RNPickerSelect
         onValueChange={(value) => setCategory(value)}
-        items={categoryItems}
+        items={items}
         style={pickerSelectStyles}
         value={category}
         useNativeAndroidPickerStyle={false}

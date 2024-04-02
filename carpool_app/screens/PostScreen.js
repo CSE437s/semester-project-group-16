@@ -23,6 +23,8 @@ const PostScreen = () => {
   const fetchTrips = async () => {
     try {
       const userTrips = await getUserRides('true');
+      //console.log("GETTING USER RIDES----------");
+      console.log(userTrips);
       // Filter trips based on selected category
       const upcomingTrips = userTrips.filter(trip => !trip.isPast());
       const filteredTrips =
