@@ -118,6 +118,7 @@ const ShowPost = ({ trip, onClose, fromManageCarpools = false }) => {
             <CustomButton
               onPress={() => handleDeletePost()}
               title="Delete post"
+              buttonStyle={{backgroundColor: "#fc5159", width: '90%'}}
             />
           ) : (
             <CustomButton

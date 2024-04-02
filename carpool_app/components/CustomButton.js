@@ -2,12 +2,12 @@ import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
-const CustomButton = ({ onPress, title, iconName = "" }) => {
+const CustomButton = ({ onPress, title, iconName = "", buttonStyle }) => {
   return (
     <TouchableOpacity
       testID="customButtonOpacity"
       onPress={onPress}
-      style={styles.buttonStyle}
+      style={[styles.buttonStyle, buttonStyle]}
     >
       {iconName != "" && <Icon name={iconName} color={"white"} size={22} />}
       <Text testID="customButtonText" style={styles.buttonTextStyle}>

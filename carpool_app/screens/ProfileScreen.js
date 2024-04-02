@@ -24,8 +24,6 @@ const ProfileScreen = () => {
     console.log("updated!");
   }
 
-
-
   const logout = () => {
     signOut(FIREBASE_AUTH).then(() => {
       console.log("User signed out successfully");
@@ -36,8 +34,10 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <CustomButton title="Log out" onPress={logout} /> 
-      <UserInfoForm onClose={onClose}/>
+      <UserInfoForm onClose={onClose} bottomHeight={50}/>
+      <View style={styles.container2}>
+      <CustomButton title="Log out" onPress={logout} buttonStyle={{ backgroundColor: "#fc5159", borderRadius: 0}}/> 
+      </View>
     </View>
   );
 };
@@ -46,6 +46,11 @@ const styles = StyleSheet.create({
   container: {
     display:'flex',
     marginTop: 60,
+    height: 'fit-content',
+    marginBottom: 11
+  },
+  container2:{
+    marginTop: -60,
   }
 })
 
