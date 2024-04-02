@@ -6,6 +6,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
+  Linking,
+  Platform
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomButton from "../components/CustomButton";
@@ -74,6 +76,36 @@ const HomeScreen = () => {
 
   const toggleShowUserInfoForm = () => {
     setShowUserInfoForm(!showUserInfoForm);
+  };
+
+  const startRide = () => {
+    let start = userRides[selectedIndex].route.originAddress;
+    let destination = userRides[selectedIndex].route.destinationAddress;
+    let stops = [];
+    //const stops = ["Stop 1 Address", "Stop 2 Address", "Stop 3 Address"];
+    let url = '';
+
+    if (Platform.OS === 'ios') {
+      url = `http://maps.apple.com/?saddr=${start}&daddr=${destination}`;
+
+      stops.forEach(stop => {
+          url += `&dirflg=d&waypoints=${stop}`;
+      });
+    } else {
+      url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${destination}`;
+
+      stops.forEach(stop => {
+          url += `&waypoints=${stop}`;
+      });
+  }
+
+
+    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+
+    //console.log('starting ride');
+    //console.log(userRides[selectedIndex]);
+    //console.log('stops:');
+    //console.log(userRides[selectedIndex].stops);
   };
 
   const onInboxPress = () => {
@@ -196,7 +228,8 @@ const HomeScreen = () => {
             </Text>
           </View>
 
-          <MapComponent ride={userRides[selectedIndex]} />
+          <MapComponent ride={userRides[selectedIndex]} mapHeight={535} />
+          <CustomButton title="Start Ride" onPress={startRide} buttonStyle={{borderRadius: 0, width: '100%', marginTop: 0}}></CustomButton>
           {/* <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/> */}
 
           {/* <ManageCarpool userRides={userRides}/> */}
