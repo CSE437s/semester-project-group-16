@@ -81,31 +81,39 @@ const HomeScreen = () => {
   const startRide = () => {
     let start = userRides[selectedIndex].route.originAddress;
     let destination = userRides[selectedIndex].route.destinationAddress;
-    let stops = [];
-    //const stops = ["Stop 1 Address", "Stop 2 Address", "Stop 3 Address"];
-    let url = '';
+    let stops = userRides[selectedIndex].stops;
 
+    console.log('Stops:', stops);
+    let stopCoords = [];
+    stops.forEach(stop => {
+        const latitude = stop.stopCoordinates.latitude;
+        const longitude = stop.stopCoordinates.longitude;
+
+        stopCoords.push({ lat: latitude, lng: longitude });
+    
+        console.log('Stop Coordinates:', latitude, longitude);
+    });
+
+    let url='';
     if (Platform.OS === 'ios') {
       url = `http://maps.apple.com/?saddr=${start}&daddr=${destination}`;
 
-      stops.forEach(stop => {
-          url += `&dirflg=d&waypoints=${stop}`;
-      });
-    } else {
+      stopCoords.forEach((stop, index) => {
+        if (index === 0) {
+            url += `&daddr=${stop.lat},${stop.lng}`;
+        } else {
+            url += `+to:${stop.lat},${stop.lng}`; 
+        }
+    });
+      } else {
       url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${destination}`;
 
-      stops.forEach(stop => {
-          url += `&waypoints=${stop}`;
+      stopCoords.forEach(stop => {
+        url += `&waypoints=${stop.lat},${stop.lng}`;
       });
   }
-
-
+    console.log(url);
     Linking.openURL(url).catch(err => console.error('An error occurred', err));
-
-    //console.log('starting ride');
-    //console.log(userRides[selectedIndex]);
-    //console.log('stops:');
-    //console.log(userRides[selectedIndex].stops);
   };
 
   const onInboxPress = () => {
