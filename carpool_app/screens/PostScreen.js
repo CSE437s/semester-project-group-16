@@ -24,11 +24,13 @@ const PostScreen = () => {
     try {
       const userTrips = await getUserRides('true');
       // Filter trips based on selected category
-      const upcomingTrips = userTrips.filter(trip => !trip.isPast());
+      const upcomingTrips = userTrips.filter((trip) => !trip.isPast());
       const filteredTrips =
         selectedCategory === 'All'
           ? upcomingTrips
           : upcomingTrips.filter((trip) => trip.category === selectedCategory);
+      console.log(filteredTrips);
+      console.log('success');
       setTrips(filteredTrips);
     } catch (error) {
       console.error('Error fetching user rides:', error);
@@ -83,7 +85,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 60,
   },
-  filterButton:{
+  filterButton: {
     backgroundColor: 'pink',
     fontFamily: 'Poppins-Black',
   },
@@ -91,27 +93,27 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   newRideButton: {
-    marginBottom: 10, 
+    marginBottom: 10,
   },
   filterContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    flexWrap: 'wrap', 
+    flexWrap: 'wrap',
     paddingTop: 3,
     fontFamily: 'Poppins-SemiBold',
   },
   filterTitle: {
     marginRight: 10,
-    fontSize: 16, 
+    fontSize: 16,
     alignSelf: 'center',
     fontFamily: 'Poppins-SemiBold',
   },
   postsContainer: {
     marginTop: 5,
   },
-  newRideContainer:{
-    marginTop: 10
-  }
+  newRideContainer: {
+    marginTop: 10,
+  },
 });
 
 export default PostScreen;

@@ -247,7 +247,8 @@ export const deleteStop = async (stopId) => {
 };
 
 export const deleteTrip = async (tripId) => {
-  const user = checkUserExists();
+  try {
+    const user = checkUserExists();
   const idToken = await user.getIdToken(true);
   const response = await fetch(`${REACT_APP_REMOTE_SERVER}/trips/${tripId}`, {
     method: "DELETE",
