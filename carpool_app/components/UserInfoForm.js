@@ -17,7 +17,7 @@ import { checkUserExists, getUserWithUserId } from "../Utils";
 import { REACT_APP_REMOTE_SERVER } from "@env";
 import CustomAlert from "./CustomAlert";
 
-const NewUserForm = ({ onClose }) => {
+const NewUserForm = ({ onClose, bottomHeight }) => {
   const [fullName, setFullName] = useState("");
   const [studentId, setStudentId] = useState("");
   const [dob, setDob] = useState(new Date());
@@ -97,7 +97,7 @@ const NewUserForm = ({ onClose }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={{ paddingBottom: 500, marginBottom: 100 }}>
+      <ScrollView style={{ paddingBottom: 500, marginBottom: 0 }}>
         <TextInput
           placeholder="Full Name"
           value={fullName}
@@ -182,7 +182,7 @@ const NewUserForm = ({ onClose }) => {
         )}
         <CustomButton title="Submit" onPress={handleSubmit} />
 
-        <View style={{ height: 20 }}></View>
+        <View style={{ height: bottomHeight }}></View>
       </ScrollView>
     </View>
   );

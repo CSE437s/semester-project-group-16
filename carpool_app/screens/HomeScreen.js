@@ -140,7 +140,7 @@ const HomeScreen = () => {
             </Text>
           </View>
         </View>
-        <UserInfoForm onClose={toggleShowUserInfoForm} />
+        <UserInfoForm onClose={toggleShowUserInfoForm} bottomHeight={115}/>
       </View>
     );
   }
