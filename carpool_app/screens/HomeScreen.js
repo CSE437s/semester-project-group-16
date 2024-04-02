@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Linking,
-  Platform
+  Platform,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomButton from "../components/CustomButton";
@@ -39,13 +39,13 @@ const HomeScreen = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(true);
+  const user = checkUserExists();
 
   useFocusEffect(
     useCallback(() => {
       setDataLoaded(false);
       const fetchData = async () => {
         try {
-          const user = checkUserExists();
           const userFromDb = await getUserWithUserId(user.uid);
           setShowUserInfoForm(!userHasSufficientInfo(userFromDb));
 
@@ -180,7 +180,7 @@ const HomeScreen = () => {
             </Text>
           </View>
         </View>
-        <UserInfoForm onClose={toggleShowUserInfoForm} bottomHeight={115}/>
+        <UserInfoForm onClose={toggleShowUserInfoForm} bottomHeight={115} />
       </View>
     );
   }
@@ -237,7 +237,13 @@ const HomeScreen = () => {
           </View>
 
           <MapComponent ride={userRides[selectedIndex]} mapHeight={535} />
-          <CustomButton title="Start Ride" onPress={startRide} buttonStyle={{borderRadius: 0, width: '100%', marginTop: 0}}></CustomButton>
+          {userRides[selectedIndex].tripUserId == user.uid && (
+            <CustomButton
+              title="Start Ride"
+              onPress={startRide}
+              buttonStyle={{ borderRadius: 0, width: "100%", marginTop: 0 }}
+            ></CustomButton>
+          )}
           {/* <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/> */}
 
           {/* <ManageCarpool userRides={userRides}/> */}
