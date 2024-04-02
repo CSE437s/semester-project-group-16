@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Linking,
-  Platform
+  Platform,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomButton from "../components/CustomButton";
@@ -39,13 +39,13 @@ const HomeScreen = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(true);
+  const user = checkUserExists();
 
   useFocusEffect(
     useCallback(() => {
       setDataLoaded(false);
       const fetchData = async () => {
         try {
-          const user = checkUserExists();
           const userFromDb = await getUserWithUserId(user.uid);
           setShowUserInfoForm(!userHasSufficientInfo(userFromDb));
 
@@ -83,24 +83,25 @@ const HomeScreen = () => {
     let destination = userRides[selectedIndex].route.destinationAddress;
     let stops = [];
     //const stops = ["Stop 1 Address", "Stop 2 Address", "Stop 3 Address"];
-    let url = '';
+    let url = "";
 
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
       url = `http://maps.apple.com/?saddr=${start}&daddr=${destination}`;
 
-      stops.forEach(stop => {
-          url += `&dirflg=d&waypoints=${stop}`;
+      stops.forEach((stop) => {
+        url += `&dirflg=d&waypoints=${stop}`;
       });
     } else {
       url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${destination}`;
 
-      stops.forEach(stop => {
-          url += `&waypoints=${stop}`;
+      stops.forEach((stop) => {
+        url += `&waypoints=${stop}`;
       });
-  }
+    }
 
-
-    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+    Linking.openURL(url).catch((err) =>
+      console.error("An error occurred", err)
+    );
 
     //console.log('starting ride');
     //console.log(userRides[selectedIndex]);
@@ -172,7 +173,7 @@ const HomeScreen = () => {
             </Text>
           </View>
         </View>
-        <UserInfoForm onClose={toggleShowUserInfoForm} bottomHeight={115}/>
+        <UserInfoForm onClose={toggleShowUserInfoForm} bottomHeight={115} />
       </View>
     );
   }
@@ -229,7 +230,13 @@ const HomeScreen = () => {
           </View>
 
           <MapComponent ride={userRides[selectedIndex]} mapHeight={535} />
-          <CustomButton title="Start Ride" onPress={startRide} buttonStyle={{borderRadius: 0, width: '100%', marginTop: 0}}></CustomButton>
+          {userRides[selectedIndex].tripUserId == user.uid && (
+            <CustomButton
+              title="Start Ride"
+              onPress={startRide}
+              buttonStyle={{ borderRadius: 0, width: "100%", marginTop: 0 }}
+            ></CustomButton>
+          )}
           {/* <CustomButton onPress={onManageCarpoolsPress} title={"My Carpools"} iconName={"car-outline"}/> */}
 
           {/* <ManageCarpool userRides={userRides}/> */}

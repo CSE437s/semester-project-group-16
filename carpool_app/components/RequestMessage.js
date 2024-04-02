@@ -57,10 +57,10 @@ const RequestMessage = ({ onClose, rideRequest, isYourRequest }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 60,
-    padding: 20,
-    width: "80%",
+    width: "100%",
     height: "fit",
+    paddingTop: 20,
+    paddingBottom: 20,
     borderColor: "black",
     borderRadius: 10,
     borderWidth: 1,
