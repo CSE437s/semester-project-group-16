@@ -69,7 +69,7 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
   return (
     <View testID="mapView" style={[styles.map, { height: mapHeight }]}>
       <MapView
-        style={{ flex: 1, borderColor: "black", borderRadius: 10 }}
+        style={{ flex: 1, borderColor: "black", borderRadius: 0 }}
         initialRegion={currentLocation}
         region={currentLocation}
         followsUserLocation={true}
