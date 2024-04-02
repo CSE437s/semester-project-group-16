@@ -285,14 +285,17 @@ export const deleteTrip = async (tripId) => {
   try {
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
-    const response = await fetch(`${REACT_APP_REMOTE_SERVER}/trips/${tripId}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `${idToken}`,
-        userid: user.uid,
-      },
-    });
+    const deleteTripResponse = await fetch(
+      `${REACT_APP_REMOTE_SERVER}/trips/${tripId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `${idToken}`,
+          userid: user.uid,
+        },
+      }
+    );
 
     if (!deleteTripResponse.ok) {
       const errorText = await deleteTripResponse.text();
