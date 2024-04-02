@@ -11,9 +11,12 @@ import {
 
 export const getUserRides = async (getAll) => {
   try {
+    console.log('getting user rides');
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/${getAll}`;
+    console.log('url');
+    console.log(apiUrl);
     const userId = user.uid;
 
     const response = await fetch(apiUrl, {
@@ -24,6 +27,8 @@ export const getUserRides = async (getAll) => {
         userid: userId,
       },
     });
+
+    console.log()
 
     if (!response.ok) {
       throw new Error("Failed to fetch from protected endpoint");
@@ -247,8 +252,8 @@ export const deleteStop = async (stopId) => {
 };
 
 export const deleteTrip = async (tripId) => {
-  try {
-    const user = checkUserExists();
+  try{
+  const user = checkUserExists();
   const idToken = await user.getIdToken(true);
   const response = await fetch(`${REACT_APP_REMOTE_SERVER}/trips/${tripId}`, {
     method: "DELETE",
