@@ -82,6 +82,46 @@ async function createTrip(routeId, userId, category, completed, timestamp) {
   }
 }
 
+async function createMessage(requestId, senderUserId, text) {
+  try {
+    // Prepare the SQL query to insert a new message
+    const query = `INSERT INTO MESSAGE (request_id, sender_user_id, text) VALUES (?, ?, ?)`;
+
+    // Execute the query with the provided parameters
+    const [result] = await pool.execute(query, [requestId, senderUserId, text]);
+
+    // Return the result of the query execution
+    return result;
+  } catch (error) {
+    console.error("Error inserting Message:", error);
+    throw error;
+  }
+}
+
+async function getMessagesByRequestId(requestId) {
+  try {
+    // Prepare the SQL query to fetch messages joined with all user information based on request_id
+    const query = `
+      SELECT 
+        M.message_id, M.request_id, M.text, M.timestamp, M.sender_user_id,
+        U.*
+      FROM MESSAGE M
+      JOIN USER U ON M.sender_user_id = U.user_id
+      WHERE M.request_id = ?
+      ORDER BY M.timestamp ASC;
+    `;
+
+    // Execute the query with the provided request_id
+    const [rows] = await pool.execute(query, [requestId]);
+
+    // Return the rows from the query result
+    return rows;
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    throw error;
+  }
+}
+
 async function updateUserDetails(
   user_id,
   full_name,
@@ -451,4 +491,6 @@ module.exports = {
   deleteStopWithStopId,
   deleteTripWithTripId,
   getTripAndRouteIdByStopId,
+  createMessage,
+  getMessagesByRequestId,
 };

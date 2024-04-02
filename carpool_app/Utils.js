@@ -11,11 +11,11 @@ import {
 
 export const getUserRides = async (getAll) => {
   try {
-    console.log('getting user rides');
+    console.log("getting user rides");
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/${getAll}`;
-    console.log('url');
+    console.log("url");
     console.log(apiUrl);
     const userId = user.uid;
 
@@ -28,7 +28,7 @@ export const getUserRides = async (getAll) => {
       },
     });
 
-    console.log()
+    console.log();
 
     if (!response.ok) {
       throw new Error("Failed to fetch from protected endpoint");
@@ -200,8 +200,10 @@ export const haversineDistance = (coords1, coords2, isMiles = false) => {
   const dLon = toRad(x2);
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   let d = R * c;
 
@@ -280,17 +282,17 @@ export const deleteStop = async (stopId) => {
 };
 
 export const deleteTrip = async (tripId) => {
-  try{
-  const user = checkUserExists();
-  const idToken = await user.getIdToken(true);
-  const response = await fetch(`${REACT_APP_REMOTE_SERVER}/trips/${tripId}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `${idToken}`,
-      userid: user.uid,
-    },
-  });
+  try {
+    const user = checkUserExists();
+    const idToken = await user.getIdToken(true);
+    const response = await fetch(`${REACT_APP_REMOTE_SERVER}/trips/${tripId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${idToken}`,
+        userid: user.uid,
+      },
+    });
 
     if (!deleteTripResponse.ok) {
       const errorText = await deleteTripResponse.text();
@@ -301,7 +303,7 @@ export const deleteTrip = async (tripId) => {
 
     return await deleteTripResponse.json();
   } catch (error) {
-    console.error('Error during the trip and stops deletion process:', error);
+    console.error("Error during the trip and stops deletion process:", error);
     throw error;
   }
 };
@@ -331,6 +333,70 @@ export async function acceptRideRequest(rideRequest) {
   }
 
   return await response.json();
+}
+
+export async function createMessage(requestId, senderUserId, text) {
+  try {
+    const user = checkUserExists();
+    const idToken = await user.getIdToken(true);
+    const apiUrl = `${REACT_APP_REMOTE_SERVER}/messages`;
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${idToken}`,
+        userId: user.uid,
+      },
+      body: JSON.stringify({
+        requestId: requestId,
+        senderUserId: senderUserId,
+        text: text,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("Message created successfully:", result);
+      return result;
+    } else {
+      console.error("Failed to create message:", result.message);
+      throw new Error(result.message);
+    }
+  } catch (error) {
+    console.error("Error creating new message:", error);
+    throw error;
+  }
+}
+
+export async function getMessagesByRequestId(requestId) {
+  try {
+    const user = checkUserExists();
+    const idToken = await user.getIdToken(true);
+    const apiUrl = `${REACT_APP_REMOTE_SERVER}/messages/${requestId}`;
+
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `${idToken}`,
+        userId: user.uid,
+      },
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      console.log("Messages fetched successfully:", result);
+      return result;
+    } else {
+      console.error("Failed to fetch messages:", result.message);
+      throw new Error(result.message);
+    }
+  } catch (error) {
+    console.error("Error fetching messages:", error);
+    throw error;
+  }
 }
 
 export async function fetchRideRequests() {

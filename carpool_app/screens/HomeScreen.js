@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Modal,
   View,
@@ -6,11 +6,11 @@ import {
   StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
-} from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import CustomButton from '../components/CustomButton';
-import MapComponent from '../components/MapComponent';
-import ManageCarpool from '../components/ManageCarpool';
+} from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import CustomButton from "../components/CustomButton";
+import MapComponent from "../components/MapComponent";
+import ManageCarpool from "../components/ManageCarpool";
 import {
   getUserRides,
   timestampToDate,
@@ -18,19 +18,19 @@ import {
   getUserWithUserId,
   checkUserExists,
   userHasSufficientInfo,
-} from '../Utils';
-import { FIREBASE_AUTH } from '../components/FirebaseConfig';
-import { Divider } from '@rneui/themed';
-import LinearGradient from 'react-native-linear-gradient';
-import UserInfoForm from '../components/UserInfoForm';
-import BackArrow from '../components/BackArrow';
-import Inbox from '../components/Inbox';
-import Icon from 'react-native-vector-icons/Ionicons';
-import { color } from '@rneui/themed/dist/config';
+} from "../Utils";
+import { FIREBASE_AUTH } from "../components/FirebaseConfig";
+import { Divider } from "@rneui/themed";
+import LinearGradient from "react-native-linear-gradient";
+import UserInfoForm from "../components/UserInfoForm";
+import BackArrow from "../components/BackArrow";
+import Inbox from "../components/Inbox";
+import Icon from "react-native-vector-icons/Ionicons";
+import LoadingHomeScreen from "../components/LoadingHomeScreen";
 
 const HomeScreen = () => {
   const [userRides, setUserRides] = useState([]);
-  const [mapLoaded, setMapLoaded] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
   const [showInbox, setShowInbox] = useState(false);
   const [myCarpoolsVisible, setMyCarpoolsVisible] = useState(false);
 
@@ -40,6 +40,7 @@ const HomeScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      setDataLoaded(false);
       const fetchData = async () => {
         try {
           const user = checkUserExists();
@@ -47,7 +48,7 @@ const HomeScreen = () => {
           setShowUserInfoForm(!userHasSufficientInfo(userFromDb));
 
           // Use let if you plan to reassign rides. Otherwise, directly chain the methods without reassignment.
-          let rides = await getUserRides('false'); // Fetch rides, assuming this returns an array of TripClass instances
+          let rides = await getUserRides("false"); // Fetch rides, assuming this returns an array of TripClass instances
 
           // Directly filter and sort without reassigning to rides
           rides = rides
@@ -60,6 +61,7 @@ const HomeScreen = () => {
         } catch (error) {
           console.error(error);
         }
+        setDataLoaded(true);
       };
       fetchData();
     }, [])
@@ -67,7 +69,7 @@ const HomeScreen = () => {
 
   //TODO you can view an upcoming map from this, else remove
   const onDatePress = () => {
-    console.log('Date is pressed!');
+    console.log("Date is pressed!");
   };
 
   const toggleShowUserInfoForm = () => {
@@ -98,14 +100,19 @@ const HomeScreen = () => {
       new Date(timestampStr).getTime() - routeTimeInMilliseconds
     );
     return departureTimestamp.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: true,
     });
   }
 
   // if(myCarpoolsVisible == true) {
   //   return (<ManageCarpool userRides={userRides} onClose={onManageCarpoolsClose}/>);
+  // }
+
+  // if (!dataLoaded) {
+  //   // return <LoadingHomeScreen />;
+  //   return null;
   // }
 
   if (showInbox) {
@@ -124,12 +131,12 @@ const HomeScreen = () => {
           <View style={styles.tripInfoTextContainer}>
             <Text
               style={styles.tripInfoText}
-              width={'92%'}
+              width={"92%"}
               marginLeft={-25}
               marginTop={8}
             >
               Welcome to Ride Along! To use our services we need to know more
-              about you.{' '}
+              about you.{" "}
             </Text>
           </View>
         </View>
@@ -146,7 +153,7 @@ const HomeScreen = () => {
             <View style={[{}, styles.tripInfo]}>
               <Text
                 style={[
-                  { fontSize: 14, color: 'gray' },
+                  { fontSize: 14, color: "gray" },
                   styles.tripInfoText,
                   styles.tripInfoText2,
                 ]}
@@ -170,18 +177,18 @@ const HomeScreen = () => {
               onPress={onInboxPress}
               style={[{}, (style = styles.planeIcon)]}
             >
-              <Icon name={'paper-plane-outline'} size={32} />
+              <Icon name={"paper-plane-outline"} size={32} />
             </TouchableOpacity>
           </View>
 
-          <Divider color={'black'} width={1} style={styles.divider} />
+          <Divider color={"black"} width={1} style={styles.divider} />
 
           <View style={styles.moreTripInfo}>
-            <Icon name={'people-circle-outline'} size={22} />
+            <Icon name={"people-circle-outline"} size={22} />
             <Text>{userRides[selectedIndex].stops.length} Stops </Text>
-            <Icon name={'time-outline'} size={22} />
+            <Icon name={"time-outline"} size={22} />
             <Text>
-              Driver Leaves By{' '}
+              Driver Leaves By{" "}
               {formatLeaveByTime(
                 userRides[selectedIndex].timestamp,
                 userRides[selectedIndex].route.routeTime
@@ -205,15 +212,15 @@ const HomeScreen = () => {
             >
               <View style={[{}, styles.tripInfo]}>
                 <Text style={[{ fontSize: 20 }, styles.tripInfoText3]}>
-                  {' '}
-                  You have no upcoming trips!{' '}
+                  {" "}
+                  You have no upcoming trips!{" "}
                 </Text>
               </View>
               <TouchableOpacity
                 onPress={onInboxPress}
                 style={[{}, (style = styles.planeIcon2)]}
               >
-                <Icon name={'paper-plane-outline'} size={32} />
+                <Icon name={"paper-plane-outline"} size={32} />
               </TouchableOpacity>
             </View>
           </View>
@@ -227,55 +234,55 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   container: {
-    height: '100%',
-    backgroundColor: 'white',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+    height: "100%",
+    backgroundColor: "white",
+    alignItems: "center",
+    justifyContent: "space-around",
     paddingTop: 80,
   },
   moreTripInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginRight: '10%',
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "row",
+    marginRight: "10%",
     gap: 10,
     marginBottom: 15,
     marginTop: 5,
     marginLeft: -18,
   },
   homeHeader: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'center',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "center",
     //backgroundColor: 'blue',
   },
   userInfoContainer: {
     paddingTop: 80,
   },
   divider: {
-    alignSelf: 'left',
-    marginLeft: '5%',
+    alignSelf: "left",
+    marginLeft: "5%",
     borderRadius: 5,
     margin: 10,
-    width: '80%',
+    width: "80%",
   },
   tripInfo: {
-    alignSelf: 'left',
+    alignSelf: "left",
     //marginLeft:'5%',
-    flexDirection: 'column',
+    flexDirection: "column",
     //alignItems:'left',
-    justifyContent: 'flex-start',
-    width: '80%',
+    justifyContent: "flex-start",
+    width: "80%",
   },
   centeredView: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   tripInfoText: {
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: "Poppins-SemiBold",
     height: 50,
-    width: '100%',
+    width: "100%",
     marginLeft: -10,
   },
   tripInfoText2: {
@@ -283,37 +290,37 @@ const styles = StyleSheet.create({
     marginBottom: -25,
   },
   tripInfoText3: {
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: "Poppins-SemiBold",
     fontSize: 18,
-    height: 'fit',
-    width: '100%',
+    height: "fit",
+    width: "100%",
     marginLeft: 15,
     marginBottom: -10,
-    },
+  },
   planeIcon: {
     //backgroundColor: 'red',
-    justifyContent: 'center',
-    width: 'auto',
+    justifyContent: "center",
+    width: "auto",
   },
   planeIcon2: {
     //backgroundColor: 'aqua',
-    justifyContent: 'center',
-    width: 'auto',
+    justifyContent: "center",
+    width: "auto",
     marginLeft: 20,
     marginBottom: 5,
   },
   tripInfoTextContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
   },
   userInfoFlexContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   tripInfoTextContainer2: {
     //backgroundColor: 'pink',
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    width: "100%",
   },
 });
 

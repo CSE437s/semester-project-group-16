@@ -25,6 +25,8 @@ const {
   deleteStopWithStopId,
   deleteTripWithTripId,
   getTripAndRouteIdByStopId,
+  createMessage,
+  getMessagesByRequestId,
 } = require("./databaseFunctions");
 const { getRoutes, getCoordinatesOfAddress } = require("./utils");
 const app = express();
@@ -63,12 +65,10 @@ app.get("/postsTest", async (req, res) => {
     res.json(results);
   } catch (error) {
     console.error("Error fetching data from the database:", error);
-    res
-      .status(500)
-      .json({
-        error: "An error occurred while fetching data from the database",
-        message: error.message,
-      });
+    res.status(500).json({
+      error: "An error occurred while fetching data from the database",
+      message: error.message,
+    });
   }
 });
 
@@ -148,6 +148,43 @@ app.post("/routes", authenticate, async (req, res) => {
   console.log(
     "This endpoint likely isn't necessary... Only need to create a trip or a stop"
   );
+});
+
+app.post("/messages", authenticate, async (req, res) => {
+  const { text, senderUserId, requestId } = req.body;
+  console.log(
+    `MESSAGES/POST: text: ${text}, senderUserId:${senderUserId}, requestId:${requestId}`
+  );
+
+  try {
+    // Insert the new message into the database
+    const result = await createMessage(requestId, senderUserId, text);
+
+    // Respond with success and the inserted message ID
+    res
+      .status(201)
+      .json({ message: "Message created successfully", id: result.insertId });
+  } catch (error) {
+    // Handle any errors that occurred during the message creation
+    console.error("Failed to create message:", error);
+    res.status(500).json({ error: "Failed to create message" });
+  }
+});
+
+app.get("/messages/:requestId", authenticate, async (req, res) => {
+  const { requestId } = req.params;
+
+  try {
+    // Retrieve messages and their sender's details by request_id
+    const messages = await getMessagesByRequestId(requestId);
+
+    // Respond with the fetched messages
+    res.status(200).json({ messages });
+  } catch (error) {
+    // Handle any errors that occurred during fetching the messages
+    console.error("Failed to retrieve messages:", error);
+    res.status(500).json({ error: "Failed to retrieve messages" });
+  }
 });
 
 app.post("/stops", authenticate, async (req, res) => {

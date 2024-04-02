@@ -8,7 +8,10 @@ import * as Location from "expo-location";
 
 const MapComponent = ({ ride, mapHeight = 565 }) => {
   const [currentLocation, setCurrentLocation] = useState({});
+  const [isLoaded, setIsLoaded] = useState(false);
+
   useEffect(() => {
+    setIsLoaded(false);
     const fetchLocation = async () => {
       const location = await getLocation();
       const initialRegion = {
@@ -18,6 +21,7 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
       setCurrentLocation(initialRegion);
     };
     fetchLocation();
+    setIsLoaded(true);
   }, []);
 
   const styles = StyleSheet.create({
@@ -33,7 +37,7 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
     },
   });
 
-  if (!ride) {
+  if (!ride || !isLoaded) {
     return (
       <View testID="mapView" style={styles.map}>
         <MapView
