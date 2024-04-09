@@ -23,6 +23,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: Change directory and run build
+    - name: Build carpool_app
       working-directory: ./carpool_app
+      run: npm run build --if-present
+    - name: Build carpool_backend
+      working-directory: ./carpool_backend
       run: npm run build --if-present
