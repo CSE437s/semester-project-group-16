@@ -182,7 +182,7 @@ export const createNewTrip = async (
   }
 };
 
-export const haversineDistance = (coords1, coords2, isMiles = false) => {
+export const haversineDistance = (coords1, coords2, isMiles = true) => {
   function toRad(x) {
     return (x * Math.PI) / 180;
   }

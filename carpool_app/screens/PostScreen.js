@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Modal,
@@ -6,16 +6,17 @@ import {
   Button,
   StyleSheet,
   Text,
-} from 'react-native';
-import Post from '../components/Post';
-import PostCreation from '../components/PostCreation';
-import CustomButton from '../components/CustomButton';
-import { getUserRides, haversineDistance } from '../Utils';
-import Slider from '@react-native-community/slider';
-import { getLocation } from '../components/MapComponent';
+} from "react-native";
+import Post from "../components/Post";
+import PostCreation from "../components/PostCreation";
+import CustomButton from "../components/CustomButton";
+import { getUserRides, haversineDistance } from "../Utils";
+import Slider from "@react-native-community/slider";
+import { getLocation } from "../components/MapComponent";
+import PostFilters from "../components/PostFilters";
 
 // Categories for filtering
-const categories = ['All', 'Campus', 'Groceries', 'Misc'];
+const categories = ["All", "Campus", "Groceries", "Misc"];
 
 const PostScreen = () => {
   useEffect(() => {
@@ -30,11 +31,11 @@ const PostScreen = () => {
   const [distanceFilter, setDistanceFilter] = useState(10);
   const [trips, setTrips] = useState([]);
   const [showPostCreation, setShowPostCreation] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All'); // State for selected category
+  const [selectedCategory, setSelectedCategory] = useState("All"); // State for selected category
 
   const fetchTrips = async () => {
     try {
-      const userTrips = await getUserRides('true');
+      const userTrips = await getUserRides("true");
       const now = new Date();
 
       // Filter based on selected category, distance, and whether the trip is in the past
@@ -52,14 +53,14 @@ const PostScreen = () => {
 
         return (
           isFutureTrip &&
-          (selectedCategory === 'All' || trip.category === selectedCategory) &&
+          (selectedCategory === "All" || trip.category === selectedCategory) &&
           distance <= distanceFilter
         );
       });
 
       setTrips(filteredTrips);
     } catch (error) {
-      console.error('Error fetching user rides:', error);
+      console.error("Error fetching user rides:", error);
     }
   };
 
@@ -86,7 +87,7 @@ const PostScreen = () => {
             key={category}
             title={category}
             onPress={() => setSelectedCategory(category)}
-            color={selectedCategory === category ? 'blue' : 'gray'}
+            color={selectedCategory === category ? "blue" : "gray"}
             style={styles.filterButton}
           />
         ))}
@@ -95,15 +96,15 @@ const PostScreen = () => {
       <View style={styles.filterContainer}>
         <Text
           style={{
-            fontFamily: 'Poppins-SemiBold',
+            fontFamily: "Poppins-SemiBold",
             fontSize: 16,
-            alignSelf: 'center',
+            alignSelf: "center",
           }}
         >
           Distance filter: {Math.round(distanceFilter)} miles
         </Text>
         <Slider
-          style={{ width: '100%', height: 40 }}
+          style={{ width: "100%", height: 40 }}
           minimumValue={1}
           maximumValue={maxDistance}
           value={distanceFilter}
@@ -134,8 +135,8 @@ const styles = StyleSheet.create({
     marginTop: 60,
   },
   filterButton: {
-    backgroundColor: 'pink',
-    fontFamily: 'Poppins-Black',
+    backgroundColor: "pink",
+    fontFamily: "Poppins-Black",
   },
   newRideContainer: {
     paddingHorizontal: 10,
@@ -144,19 +145,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   filterContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    justifyContent: "center",
+    flexWrap: "wrap",
     paddingTop: 3,
-    fontFamily: 'Poppins-SemiBold',
+    fontFamily: "Poppins-SemiBold",
     marginLeft: 20,
     marginRight: 20,
   },
   filterTitle: {
     marginRight: 10,
     fontSize: 16,
-    alignSelf: 'center',
-    fontFamily: 'Poppins-SemiBold',
+    alignSelf: "center",
+    fontFamily: "Poppins-SemiBold",
   },
   postsContainer: {
     marginTop: 5,
