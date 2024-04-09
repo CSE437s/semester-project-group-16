@@ -84,32 +84,32 @@ const HomeScreen = () => {
     let stops = userRides[selectedIndex].stops;
 
     console.log('Stops:', stops);
-    let stopCoords = [];
-    stops.forEach(stop => {
-        const latitude = stop.stopCoordinates.latitude;
-        const longitude = stop.stopCoordinates.longitude;
+    //let stopCoords = [];
+    // stops.forEach(stop => {
+    //     const latitude = stop.stopCoordinates.latitude;
+    //     const longitude = stop.stopCoordinates.longitude;
 
-        stopCoords.push({ lat: latitude, lng: longitude });
+    //     stopCoords.push({ lat: latitude, lng: longitude });
     
-        console.log('Stop Coordinates:', latitude, longitude);
-    });
+    //     console.log('Stop Coordinates:', latitude, longitude);
+    // });
+
+    let stopCoords = stops.map(stop => ({
+      lat: stop.stopCoordinates.latitude,
+      lng: stop.stopCoordinates.longitude
+  }));
 
     let url='';
     let platform = Platform.OS;
     //platform = 'android';
     if (platform === 'ios') {
-      url = `http://maps.apple.com/?saddr=${start}&daddr=${destination}`;
-
-      stopCoords.forEach((stop, index) => {
-        if (index === 0) {
-            url += `&daddr=${stop.lat},${stop.lng}`;
-        } else {
-            url += `+to:${stop.lat},${stop.lng}`; 
-        }
-    });
-      } else {
+      url = `http://maps.apple.com/?saddr=${start}`;
+      let waypoints = stopCoords.map(stop => `${stop.lat},${stop.lng}`).join('+to:');
+      url += `&daddr=${waypoints}`;
+      url += `&daddr=${destination}`;
+  }
+   else {
         url = `https://www.google.com/maps/dir/?api=1&origin=${start}&destination=${destination}`;
-
         stopCoords.forEach(stop => {
             url += `&waypoints=${stop.lat},${stop.lng}`;
         });
