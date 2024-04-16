@@ -18,19 +18,19 @@ import { getLocation } from '../components/MapComponent';
 const categories = ['All', 'Campus', 'Groceries', 'Misc'];
 
 const PostScreen = () => {
-  useEffect(() => {
-    (async () => {
-      const location = await getLocation();
-      setUserLocation(location);
-    })();
-  }, []);
-
   const maxDistance = 50;
   const [userLocation, setUserLocation] = useState(null);
   const [distanceFilter, setDistanceFilter] = useState(10);
   const [trips, setTrips] = useState([]);
   const [showPostCreation, setShowPostCreation] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All'); // State for selected category
+
+  useEffect(() => {
+    (async () => {
+      const location = await getLocation();
+      setUserLocation(location);
+    })();
+  }, []);
 
   const fetchTrips = async () => {
     try {
@@ -64,7 +64,10 @@ const PostScreen = () => {
   };
 
   useEffect(() => {
-    fetchTrips();
+    const timer = setTimeout(() => {
+      fetchTrips();
+    }, 500);
+    return () => clearTimeout(timer);
   }, [selectedCategory, userLocation, distanceFilter]);
 
   return (
