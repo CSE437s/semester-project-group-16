@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,34 +8,38 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import AddressSearchBar from './AddressSearchBar';
-import { REACT_APP_REMOTE_SERVER } from '@env';
-import axios from 'axios';
-import { checkUserExists } from '../Utils';
-import ChooseDate from './ChooseDate';
-import BackArrow from './BackArrow';
-import Icon from 'react-native-vector-icons/Ionicons';
-import CustomPicker from './CustomPicker';
-import CustomButton from './CustomButton';
+} from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import AddressSearchBar from "./AddressSearchBar";
+import { REACT_APP_REMOTE_SERVER } from "@env";
+import axios from "axios";
+import { checkUserExists } from "../Utils";
+import ChooseDate from "./ChooseDate";
+import BackArrow from "./BackArrow";
+import Icon from "react-native-vector-icons/Ionicons";
+import CustomPicker from "./CustomPicker";
+import CustomButton from "./CustomButton";
 
 const PostCreation = ({ onClose }) => {
-  const [startAddress, setStartAddress] = useState('');
-  const [targetAddress, setTargetAddress] = useState('');
+  const [startAddress, setStartAddress] = useState("");
+  const [targetAddress, setTargetAddress] = useState("");
   const [date, setDate] = useState(new Date());
-  const [category, setCategory] = useState('Campus');
+  const [category, setCategory] = useState("Campus");
   const [isPickerVisible, setIsPickerVisible] = useState(false);
 
   const togglePickerVisibility = () => {
     setIsPickerVisible(!isPickerVisible);
   };
 
+  const handleAddressChange = (item) => {
+    setStartAddress(item.full_address);
+  };
+
   const handleSubmit = async () => {
     try {
       const user = checkUserExists();
 
-      const timestamp = date.toISOString().slice(0, 19).replace('T', ' '); //Correct format for db entry
+      const timestamp = date.toISOString().slice(0, 19).replace("T", " "); //Correct format for db entry
       const idToken = await user.getIdToken(true);
 
       const postData = {
@@ -53,7 +57,7 @@ const PostCreation = ({ onClose }) => {
         postData,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: idToken,
             userid: user.uid,
           },
@@ -61,15 +65,15 @@ const PostCreation = ({ onClose }) => {
       );
 
       if (response.status === 200) {
-        console.log('Post created successfully!');
-        console.log('Starting Address: ' + startAddress);
-        console.log('Destination Address: ' + targetAddress);
+        console.log("Post created successfully!");
+        console.log("Starting Address: " + startAddress);
+        console.log("Destination Address: " + targetAddress);
         onClose();
       } else {
-        console.error('Failed to submit post:', response.data);
+        console.error("Failed to submit post:", response.data);
       }
     } catch (error) {
-      console.error('Error submitting post:', error);
+      console.error("Error submitting post:", error);
     }
   };
 
@@ -79,13 +83,13 @@ const PostCreation = ({ onClose }) => {
 
       <View
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "row",
           gap: 5,
         }}
       >
-        <Icon name={'business-outline'} size={20} />
+        <Icon name={"business-outline"} size={20} />
         <Text style={styles.headerText}>Starting Address</Text>
       </View>
 
@@ -93,26 +97,26 @@ const PostCreation = ({ onClose }) => {
 
       <View
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "row",
           gap: 5,
         }}
       >
-        <Icon name={'flag-outline'} size={20} />
+        <Icon name={"flag-outline"} size={20} />
         <Text style={styles.headerText}>Destination Address</Text>
       </View>
-      <AddressSearchBar handleTextChange={setTargetAddress} />
+      <AddressSearchBar handleTextChange={handleDestinationAddressChange} />
 
       <View
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "row",
           gap: 5,
         }}
       >
-        <Icon name={'alarm-outline'} size={20} />
+        <Icon name={"alarm-outline"} size={20} />
         <Text style={styles.headerText}>Time of Arrival</Text>
       </View>
 
@@ -120,22 +124,22 @@ const PostCreation = ({ onClose }) => {
 
       <View
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'row',
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "row",
           gap: 5,
         }}
       >
-        <Icon name={'map-outline'} size={20} />
+        <Icon name={"map-outline"} size={20} />
         <Text style={styles.headerText}>Category</Text>
       </View>
       <CustomPicker
         category={category}
         setCategory={setCategory}
         items={[
-          { label: 'Campus', value: 'Campus' },
-          { label: 'Groceries', value: 'Groceries' },
-          { label: 'Misc', value: 'Misc' },
+          { label: "Campus", value: "Campus" },
+          { label: "Groceries", value: "Groceries" },
+          { label: "Misc", value: "Misc" },
         ]}
       />
       <CustomButton title="Submit" onPress={handleSubmit} />
@@ -154,41 +158,41 @@ const styles = StyleSheet.create({
     padding: 60,
   },
   topContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
+    flexDirection: "row",
+    justifyContent: "flex-end",
     paddingTop: 10,
   },
   headerText: {
     fontSize: 18,
-    fontFamily: 'Poppins-Black',
+    fontFamily: "Poppins-Black",
     paddingTop: 10,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     marginBottom: 20,
   },
   pickerStyle: {
     borderWidth: 1,
-    borderColor: '#CCCCCC',
+    borderColor: "#CCCCCC",
     borderRadius: 5,
     padding: 10,
     fontSize: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     marginBottom: 20,
   },
   buttonStyle: {
-    backgroundColor: '#007BFF',
-    color: '#FFFFFF',
+    backgroundColor: "#007BFF",
+    color: "#FFFFFF",
     padding: 10,
     borderRadius: 5,
     fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
     marginBottom: 20,
   },
 });
