@@ -36,8 +36,8 @@ function PostFilters({
     filters.distanceFilterAddress
   );
 
-  const maxDistance = 25;
-  const stepSize = maxDistance <= 1 ? 0.1 : 1;
+  const maxDistance = 10;
+  const stepSize = 0.25;
   const categories = ["All", "Campus", "Groceries", "Misc"];
 
   useEffect(() => {
@@ -73,14 +73,14 @@ function PostFilters({
   }
 
   function handleClearFilters() {
-    setDistanceFilter(10);
+    setDistanceFilter(5);
     setSelectedCategory("All");
     setDateFilter(null);
     setUserLocation(actualLocation);
     setDistanceFilterAddress("");
     setFilters({
       selectedCategory: "All",
-      distanceFilter: 10,
+      distanceFilter: 5,
       dateFilter: null,
       distanceFilterAddress: "",
       userLocation: actualLocation,
@@ -134,7 +134,7 @@ function PostFilters({
 
           <View style={styles.filterContainer}>
             <Text style={styles.filterLabel}>
-              Distance filter: {distanceFilter.toFixed(1)} miles
+              Distance filter: {distanceFilter.toFixed(2)} miles
             </Text>
             <AddressSearchBar
               handleTextChange={extractCoordinatesFromAddress}
@@ -142,7 +142,7 @@ function PostFilters({
             />
             <Slider
               style={{ width: "100%", height: 40 }}
-              minimumValue={1}
+              minimumValue={0.25}
               maximumValue={maxDistance}
               step={stepSize}
               value={distanceFilter}

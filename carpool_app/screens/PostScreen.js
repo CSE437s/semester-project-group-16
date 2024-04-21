@@ -38,7 +38,7 @@ const PostScreen = () => {
 
   const [filters, setFilters] = useState({
     selectedCategory: "All",
-    distanceFilter: 10,
+    distanceFilter: 5,
     dateFilter: null,
     distanceFilterAddress,
   });
