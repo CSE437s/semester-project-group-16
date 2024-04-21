@@ -97,7 +97,9 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
             description={stop.userEmail}
             anchor={{ x: 0.5, y: 1 }}
           >
-            <Icon name="location" size={30} color="#D00000" />
+            <View style={styles.iconBackground}>
+              <Icon name="location" size={20} color="#fc5159" />
+            </View>
           </Marker>
         ))}
 
