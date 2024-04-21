@@ -52,6 +52,7 @@ const PostScreen = () => {
     filters.dateFilter,
     trips,
     userLocation,
+    filters.distanceFilterAddress,
   ]); // Dependencies array includes all filter triggers
 
   function applyFilters() {

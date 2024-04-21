@@ -29,6 +29,7 @@ function PostFilters({
   const [selectedCategory, setSelectedCategory] = useState(
     filters.selectedCategory
   );
+  const [actualLocation, setActualLocation] = useState(null);
   const [distanceFilter, setDistanceFilter] = useState(filters.distanceFilter);
   const [dateFilter, setDateFilter] = useState(filters.dateFilter);
   const [distanceFilterAddress, setDistanceFilterAddress] = useState(
@@ -48,6 +49,12 @@ function PostFilters({
     distanceFilterAddress,
     userLocation,
   ]);
+  useEffect(() => {
+    (async () => {
+      const location = await getLocation();
+      setActualLocation(location);
+    })();
+  }, []);
 
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
@@ -62,6 +69,21 @@ function PostFilters({
       dateFilter,
       distanceFilterAddress,
       userLocation,
+    });
+  }
+
+  function handleClearFilters() {
+    setDistanceFilter(10);
+    setSelectedCategory("All");
+    setDateFilter(null);
+    setUserLocation(actualLocation);
+    setDistanceFilterAddress("");
+    setFilters({
+      selectedCategory: "All",
+      distanceFilter: 10,
+      dateFilter: null,
+      distanceFilterAddress: "",
+      userLocation: actualLocation,
     });
   }
 
@@ -140,6 +162,7 @@ function PostFilters({
               style={styles.datePicker}
             />
           </View>
+          <CustomButton title="Clear Filters" onPress={handleClearFilters} />
         </View>
       </Pressable>
     </Modal>
