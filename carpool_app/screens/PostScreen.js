@@ -15,22 +15,95 @@ import { getUserRides, haversineDistance } from "../Utils";
 import { getLocation } from "../components/MapComponent";
 import PostFilters from "../components/PostFilters";
 
-// Categories for filtering
-const categories = ["All", "Campus", "Groceries", "Misc"];
-
 const PostScreen = () => {
   useEffect(() => {
     (async () => {
       const userTrips = await getUserRides("true");
       setTrips(userTrips);
+      console.log("da useeffect");
+      const location = await getLocation();
+      setUserLocation(location);
     })();
   }, []);
+
+  const [userLocation, setUserLocation] = useState(null);
 
   const [trips, setTrips] = useState([]);
   const [filteredTrips, setFilteredTrips] = useState([]);
   const [showPostCreation, setShowPostCreation] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [distanceFilterAddress, setDistanceFilterAddress] = useState("");
+  const categories = ["All", "Campus", "Groceries", "Misc"];
+
+  const [filters, setFilters] = useState({
+    selectedCategory: "All",
+    distanceFilter: 10,
+    dateFilter: null,
+    distanceFilterAddress,
+  });
+
+  useEffect(() => {
+    applyFilters();
+  }, [
+    filters.selectedCategory,
+    userLocation,
+    filters.distanceFilter,
+    filters.dateFilter,
+    trips,
+    userLocation,
+  ]); // Dependencies array includes all filter triggers
+
+  function applyFilters() {
+    let filtered = trips;
+    const selectedCategory = filters.selectedCategory;
+    const distanceFilter = filters.distanceFilter;
+    const dateFilter = filters.dateFilter;
+    console.log(`coordinates are  ${JSON.stringify(userLocation)}`);
+    console.log(`address is ${filters.distanceFilterAddress}`);
+    if (selectedCategory !== "All") {
+      filtered = filterByCategory(filtered, selectedCategory);
+    }
+    if (userLocation && distanceFilter) {
+      filtered = filterByDistance(filtered, userLocation, distanceFilter);
+    }
+    if (dateFilter) {
+      filtered = filterByDate(filtered, dateFilter);
+    }
+    filtered = filterByHasPast(filtered);
+    setFilteredTrips(filtered);
+  }
+
+  function filterByCategory(trips, category) {
+    return trips.filter((trip) => trip.category === category);
+  }
+
+  function filterByHasPast(trips) {
+    return trips.filter((trip) => !trip.isPast());
+  }
+
+  function filterByDate(trips, dateFilter) {
+    return trips.filter((trip) => {
+      const tripDate = new Date(trip.timestamp);
+
+      return (
+        tripDate.getFullYear() === dateFilter.getFullYear() &&
+        tripDate.getMonth() === dateFilter.getMonth() &&
+        tripDate.getDate() === dateFilter.getDate()
+      );
+    });
+  }
+
+  function filterByDistance(trips, coordinate, distance) {
+    return trips.filter(
+      (trip) =>
+        haversineDistance(
+          trip.route.destinationCoordinates,
+          coordinate,
+          true
+        ) <= distance
+    );
+  }
 
   const onRefresh = async () => {
     try {
@@ -79,6 +152,10 @@ const PostScreen = () => {
           onClose={() => setShowFilters(false)}
           trips={trips}
           setFilteredTrips={setFilteredTrips}
+          filters={filters}
+          setFilters={setFilters}
+          userLocation={userLocation}
+          setUserLocation={setUserLocation}
         />
       ) : (
         <CustomButton title="Filter" onPress={() => setShowFilters(true)} />
