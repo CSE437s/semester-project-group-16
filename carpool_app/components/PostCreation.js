@@ -106,7 +106,7 @@ const PostCreation = ({ onClose }) => {
         <Icon name={"flag-outline"} size={20} />
         <Text style={styles.headerText}>Destination Address</Text>
       </View>
-      <AddressSearchBar handleTextChange={handleDestinationAddressChange} />
+      <AddressSearchBar handleTextChange={setTargetAddress} />
 
       <View
         style={{
