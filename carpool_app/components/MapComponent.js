@@ -35,6 +35,16 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
       height: mapHeight,
       alignSelf: "center",
     },
+    iconBackground: {
+      backgroundColor: "white",
+      borderRadius: 15,
+      width: 30,
+      height: 30,
+      alignItems: "center",
+      justifyContent: "center",
+      borderWidth: 1,
+      borderColor: "red",
+    },
   });
 
   if (!ride || !isLoaded) {
@@ -90,6 +100,21 @@ const MapComponent = ({ ride, mapHeight = 565 }) => {
             <Icon name="location" size={30} color="#D00000" />
           </Marker>
         ))}
+
+        <Marker coordinate={ride.route.originCoordinates} title="Origin">
+          <View style={styles.iconBackground}>
+            <Icon name="business" size={20} color="#fc5159" />
+          </View>
+        </Marker>
+
+        <Marker
+          coordinate={ride.route.destinationCoordinates}
+          title="Destination"
+        >
+          <View style={styles.iconBackground}>
+            <Icon name="flag" size={20} color="#fc5159" />
+          </View>
+        </Marker>
 
         <Polyline
           coordinates={polylinePoints}

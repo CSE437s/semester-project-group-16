@@ -14,9 +14,10 @@ import {
   getMessagesByRequestId,
 } from "../Utils";
 import RequestMessage from "./RequestMessage";
-import { GiftedChat } from "react-native-gifted-chat";
+import { GiftedChat, Bubble } from "react-native-gifted-chat";
 
 const MessageThread = ({ onClose, rideRequest }) => {
+  console.log(JSON.stringify(rideRequest));
   const [messages, setMessages] = useState([]);
   const user = checkUserExists();
 
@@ -41,6 +42,30 @@ const MessageThread = ({ onClose, rideRequest }) => {
           name: msg.full_name,
         },
       }));
+  }
+
+  function renderBubble(props) {
+    return (
+      <Bubble
+        {...props}
+        wrapperStyle={{
+          left: {
+            backgroundColor: "#ffffff",
+          },
+          right: {
+            backgroundColor: "#022940",
+          },
+        }}
+        textStyle={{
+          left: {
+            color: "black",
+          },
+          right: {
+            color: "white",
+          },
+        }}
+      />
+    );
   }
 
   const onSend = useCallback(
@@ -77,7 +102,7 @@ const MessageThread = ({ onClose, rideRequest }) => {
       <GiftedChat
         messages={messages}
         onSend={(messages) => onSend(messages)}
-        //User obj?
+        renderBubble={renderBubble}
         user={{
           _id: user.uid,
         }}

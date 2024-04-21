@@ -12,7 +12,9 @@ import {
   checkUserExists,
   acceptRideRequest,
   deleteRideRequest,
+  timestampToWrittenDate,
 } from "../Utils";
+import Icon from "react-native-vector-icons/Ionicons";
 import CustomButton from "./CustomButton.js";
 
 const RequestMessage = ({ onClose, rideRequest, isYourRequest }) => {
@@ -42,6 +44,54 @@ const RequestMessage = ({ onClose, rideRequest, isYourRequest }) => {
           {rideRequest.userFullName} wants to join your ride!
         </Text>
       )}
+      <View
+        style={[
+          {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: 5,
+          },
+          styles.addressInfo,
+        ]}
+      >
+        <Icon name={"alarm-outline"} size={16} />
+        <Text style={styles.itemText}>
+          {timestampToWrittenDate(rideRequest.timestamp)}
+        </Text>
+      </View>
+      <View
+        style={[
+          {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: 5,
+          },
+          styles.addressInfo,
+        ]}
+      >
+        <Icon name={"business-outline"} size={16} />
+        <Text style={styles.itemText}>{rideRequest.originAddress}</Text>
+      </View>
+      <View
+        style={[
+          {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: 5,
+            marginBottom: 10,
+          },
+          styles.addressInfo,
+        ]}
+      >
+        <Icon name={"flag-outline"} size={16} />
+        <Text style={styles.itemText}>{rideRequest.destinationAddress}</Text>
+      </View>
       <View style={styles.requestButtons}>
         {!isYourRequest && (
           <CustomButton title="Accept" onPress={onPressAccept} />
@@ -49,6 +99,7 @@ const RequestMessage = ({ onClose, rideRequest, isYourRequest }) => {
         <CustomButton
           title={!isYourRequest ? "Deny Request" : "Cancel Request"}
           onPress={onPressDeny}
+          buttonStyle={{ backgroundColor: "#fc5159", width: "90%" }}
         />
       </View>
     </View>
@@ -72,10 +123,23 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: "auto",
-    gap: 20,
   },
   messageText: {
+    alignSelf: "center",
     fontFamily: "Poppins-SemiBold",
+  },
+  item: {
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderWidth: 1,
+    borderColor: "black",
+    borderRadius: 10,
+    backgroundColor: "white",
+  },
+  itemText: {
+    padding: 4,
+    width: "80%",
+    alignSelf: "center",
   },
 });
 
