@@ -38,8 +38,8 @@ const ProfileScreen = () => {
 
   return (
     <View style={styles.container}>
-      <UserInfoForm onClose={onClose} bottomHeight={50} />
-      <View style={styles.container2}>
+      <UserInfoForm onClose={onClose} bottomHeight={50} logout={logout} />
+      {/* <View style={styles.container2}>
         <CustomButton
           title="Log out"
           onPress={logout}
@@ -49,7 +49,7 @@ const ProfileScreen = () => {
             alignSelf: "center",
           }}
         />
-      </View>
+      </View> */}
     </View>
   );
 };

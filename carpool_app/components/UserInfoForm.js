@@ -19,7 +19,7 @@ import CustomAlert from "./CustomAlert";
 import UploadPFP from '../components/UploadPFP';
 
 
-const NewUserForm = ({ onClose, bottomHeight }) => {
+const NewUserForm = ({ onClose, bottomHeight, logout}) => {
   const [fullName, setFullName] = useState("");
   const [studentId, setStudentId] = useState("");
   const [dob, setDob] = useState(new Date());
@@ -185,9 +185,22 @@ const NewUserForm = ({ onClose, bottomHeight }) => {
             seat={seatCapacity}
           />
         )}
-        <CustomButton title="Submit" onPress={handleSubmit} />
+        <CustomButton title="Save Changes" onPress={handleSubmit} />
 
         <View style={{ height: bottomHeight }}></View>
+
+        <View style={styles.container2}>
+        <CustomButton
+          title="Log out"
+          onPress={logout}
+          buttonStyle={{
+            backgroundColor: "#fc5159",
+            width: "100%",
+            alignSelf: "center",
+          }}
+        />
+      </View>
+
       </ScrollView>
     </View>
   );
@@ -244,6 +257,9 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#fff",
     marginBottom: 15,
+  },
+  container2: {
+    marginTop: -60,
   },
 });
 
