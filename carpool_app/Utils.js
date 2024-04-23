@@ -466,6 +466,7 @@ export async function fetchCoordinatesFromAddress(address) {
 export async function fetchRideRequests() {
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);
+  const currentTimestamp = new Date();
   const response = await fetch(
     `${REACT_APP_REMOTE_SERVER}/riderequests/${user.uid}`,
     {
@@ -486,38 +487,41 @@ export async function fetchRideRequests() {
   }
 
   const data = await response.json();
-  console.log(`We successfully got data!${JSON.stringify(data)}`);
+  const outgoingRequests = data.outgoingRequests
+    .filter((req) => new Date(req.timestamp) > currentTimestamp) // Filter to include only future dates
+    .map(
+      (req) =>
+        new RideRequestClass(
+          req.request_id,
+          req.incoming_user_id,
+          req.outgoing_user_id,
+          req.stop_id,
+          req.trip_id,
+          req.user_full_name,
+          req.user_email,
+          req.origin_address,
+          req.destination_address,
+          req.timestamp
+        )
+    );
 
-  const outgoingRequests = data.outgoingRequests.map(
-    (req) =>
-      new RideRequestClass(
-        req.request_id,
-        req.incoming_user_id,
-        req.outgoing_user_id,
-        req.stop_id,
-        req.trip_id,
-        req.user_full_name,
-        req.user_email,
-        req.origin_address,
-        req.destination_address,
-        req.timestamp
-      )
-  );
-  const incomingRequests = data.incomingRequests.map(
-    (req) =>
-      new RideRequestClass(
-        req.request_id,
-        req.incoming_user_id,
-        req.outgoing_user_id,
-        req.stop_id,
-        req.trip_id,
-        req.user_full_name,
-        req.user_email,
-        req.origin_address,
-        req.destination_address,
-        req.timestamp
-      )
-  );
+  const incomingRequests = data.incomingRequests
+    .filter((req) => new Date(req.timestamp) > currentTimestamp) // Filter to include only future dates
+    .map(
+      (req) =>
+        new RideRequestClass(
+          req.request_id,
+          req.incoming_user_id,
+          req.outgoing_user_id,
+          req.stop_id,
+          req.trip_id,
+          req.user_full_name,
+          req.user_email,
+          req.origin_address,
+          req.destination_address,
+          req.timestamp
+        )
+    );
 
   return { outgoingRequests, incomingRequests };
 }

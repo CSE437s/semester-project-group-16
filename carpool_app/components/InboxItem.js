@@ -8,14 +8,34 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import { timestampToWrittenDate } from "../Utils";
 
 const InboxItem = ({ item, index, setSelectedIndex }) => {
+  console.log("ITEM");
+  console.log(JSON.stringify(item));
   return (
     <TouchableOpacity
       style={styles.item}
       onPress={() => setSelectedIndex(index)}
     >
       <Text style={styles.itemText}>Request sent by {item.userFullName}</Text>
+      <View
+        style={[
+          {
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "row",
+            gap: 5,
+          },
+          styles.addressInfo,
+        ]}
+      >
+        <Icon name={"alarm-outline"} size={16} />
+        <Text style={styles.itemText}>
+          {timestampToWrittenDate(item.timestamp)}
+        </Text>
+      </View>
       <View
         style={[
           {

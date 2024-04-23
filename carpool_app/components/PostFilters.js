@@ -17,60 +17,44 @@ import { haversineDistance, fetchCoordinatesFromAddress } from "../Utils";
 import CustomButton from "./CustomButton";
 import AddressSearchBar from "./AddressSearchBar";
 
-function PostFilters({ trips, setFilteredTrips, onClose }) {
-  const categories = ["All", "Campus", "Groceries", "Misc"];
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const maxDistance = 25; // Replace this with your maximum value
-  const stepSize = maxDistance <= 1 ? 0.1 : 1;
-  const [userLocation, setUserLocation] = useState(null);
-  const [distanceFilter, setDistanceFilter] = useState(10);
-  const [dateFilter, setDateFilter] = useState(new Date());
+function PostFilters({
+  trips,
+  setFilteredTrips,
+  filters,
+  setFilters,
+  onClose,
+  userLocation,
+  setUserLocation,
+}) {
+  const [selectedCategory, setSelectedCategory] = useState(
+    filters.selectedCategory
+  );
+  const [actualLocation, setActualLocation] = useState(null);
+  const [distanceFilter, setDistanceFilter] = useState(filters.distanceFilter);
+  const [dateFilter, setDateFilter] = useState(filters.dateFilter);
+  const [distanceFilterAddress, setDistanceFilterAddress] = useState(
+    filters.distanceFilterAddress
+  );
 
+  const maxDistance = 10;
+  const stepSize = 0.25;
+  const categories = ["All", "Campus", "Groceries", "Misc"];
+
+  useEffect(() => {
+    handleFiltersChange();
+  }, [
+    selectedCategory,
+    distanceFilter,
+    dateFilter,
+    distanceFilterAddress,
+    userLocation,
+  ]);
   useEffect(() => {
     (async () => {
       const location = await getLocation();
-      setUserLocation(location);
+      setActualLocation(location);
     })();
   }, []);
-
-  useEffect(() => {
-    applyFilters();
-  }, [selectedCategory, userLocation, distanceFilter, dateFilter, trips]); // Dependencies array includes all filter triggers
-
-  function applyFilters() {
-    let filtered = trips;
-    if (selectedCategory !== "All") {
-      filtered = filterByCategory(filtered, selectedCategory);
-    }
-    if (userLocation && distanceFilter) {
-      filtered = filterByDistance(filtered, userLocation, distanceFilter);
-    }
-    if (dateFilter) {
-      filtered = filterByDate(filtered, dateFilter);
-    }
-    filtered = filterByHasPast(filtered);
-    setFilteredTrips(filtered);
-  }
-
-  function filterByCategory(trips, category) {
-    return trips.filter((trip) => trip.category === category);
-  }
-
-  function filterByHasPast(trips) {
-    return trips.filter((trip) => !trip.isPast());
-  }
-
-  function filterByDate(trips, dateFilter) {
-    return trips.filter((trip) => {
-      const tripDate = new Date(trip.timestamp);
-
-      return (
-        tripDate.getFullYear() === dateFilter.getFullYear() &&
-        tripDate.getMonth() === dateFilter.getMonth() &&
-        tripDate.getDate() === dateFilter.getDate()
-      );
-    });
-  }
 
   const onChangeDate = (event, selectedDate) => {
     if (selectedDate) {
@@ -78,15 +62,29 @@ function PostFilters({ trips, setFilteredTrips, onClose }) {
     }
   };
 
-  function filterByDistance(trips, coordinate, distance) {
-    return trips.filter(
-      (trip) =>
-        haversineDistance(
-          trip.route.destinationCoordinates,
-          coordinate,
-          true
-        ) <= distance
-    );
+  function handleFiltersChange() {
+    setFilters({
+      selectedCategory,
+      distanceFilter,
+      dateFilter,
+      distanceFilterAddress,
+      userLocation,
+    });
+  }
+
+  function handleClearFilters() {
+    setDistanceFilter(5);
+    setSelectedCategory("All");
+    setDateFilter(null);
+    setUserLocation(actualLocation);
+    setDistanceFilterAddress("");
+    setFilters({
+      selectedCategory: "All",
+      distanceFilter: 5,
+      dateFilter: null,
+      distanceFilterAddress: "",
+      userLocation: actualLocation,
+    });
   }
 
   // Handler functions can just update state
@@ -99,15 +97,17 @@ function PostFilters({ trips, setFilteredTrips, onClose }) {
   }
 
   async function extractCoordinatesFromAddress(address) {
+    setDistanceFilterAddress(address);
     const coordinateObject = await fetchCoordinatesFromAddress(address);
     setUserLocation(coordinateObject);
+    console.log("address  + coords should be changed");
   }
 
   return (
     <Modal
       visible={true}
       animationType="slide"
-      transparent={true} // Ensure this is set to true for styling to work
+      transparent={true}
       onRequestClose={onClose}
     >
       <Pressable
@@ -134,14 +134,15 @@ function PostFilters({ trips, setFilteredTrips, onClose }) {
 
           <View style={styles.filterContainer}>
             <Text style={styles.filterLabel}>
-              Distance filter: {distanceFilter.toFixed(1)} miles
+              Distance filter: {distanceFilter.toFixed(2)} miles
             </Text>
             <AddressSearchBar
               handleTextChange={extractCoordinatesFromAddress}
+              defaultText={distanceFilterAddress}
             />
             <Slider
               style={{ width: "100%", height: 40 }}
-              minimumValue={0}
+              minimumValue={0.25}
               maximumValue={maxDistance}
               step={stepSize}
               value={distanceFilter}
@@ -151,15 +152,17 @@ function PostFilters({ trips, setFilteredTrips, onClose }) {
               maximumTrackTintColor="#d3d3d3"
               thumbTintColor="#007bff"
             />
+
             <DateTimePicker
               testID="datePicker"
-              value={dateFilter}
+              value={dateFilter ? dateFilter : new Date()}
               mode="date"
               display="default"
               onChange={onChangeDate}
               style={styles.datePicker}
             />
           </View>
+          <CustomButton title="Clear Filters" onPress={handleClearFilters} />
         </View>
       </Pressable>
     </Modal>
