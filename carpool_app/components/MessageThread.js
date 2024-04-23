@@ -19,6 +19,7 @@ import { GiftedChat, Bubble } from "react-native-gifted-chat";
 const MessageThread = ({ onClose, rideRequest }) => {
   console.log(JSON.stringify(rideRequest));
   const [messages, setMessages] = useState([]);
+
   const user = checkUserExists();
 
   useEffect(() => {

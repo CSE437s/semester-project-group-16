@@ -32,6 +32,7 @@ const ShowPost = ({ trip, onClose, fromManageCarpools = false }) => {
 
   useEffect(() => {
     const checkIfUserCreatedPost = async () => {
+      console.log("CALL---------");
       const user = await checkUserExists();
       const result = user.uid === trip.tripUserId;
       console.log(user.uid);

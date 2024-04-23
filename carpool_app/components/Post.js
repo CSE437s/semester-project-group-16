@@ -22,6 +22,7 @@ const Post = ({ trip, fromManageCarpools = false }) => {
 
   const handleApply = () => {
     setShowPost(true);
+    
     const userObj = checkUserExists();
     const userId = userObj.uid;
   };

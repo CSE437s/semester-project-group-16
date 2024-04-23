@@ -19,8 +19,6 @@ export const getUserRides = async (getAll) => {
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/${getAll}`;
-    console.log("url");
-    console.log(apiUrl);
     const userId = user.uid;
 
     const response = await fetch(apiUrl, {
@@ -35,14 +33,14 @@ export const getUserRides = async (getAll) => {
     console.log();
 
     if (!response.ok) {
-      throw new Error("Failed to fetch from protected endpoint");
+      throw new Error("Failed to fetch from protected endpoint: GetUserRides");
     }
     const responseData = await response.json();
     let trips = [];
     responseData.forEach((trip) => {
       trips.push(new TripClass(trip));
     });
-    console.log(`Trips: ${JSON.stringify(trips)}`);
+    //console.log(`Trips: ${JSON.stringify(trips)}`);
     return trips;
   } catch (error) {
     console.error("Error making API call:", error);
@@ -71,7 +69,7 @@ export const createNewUser = async () => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch from protected endpoint");
+      throw new Error("Failed to fetch from protected endpoint: CreateNewUser");
     }
     const responseData = await response.json();
     console.log(`Got response data! ${JSON.stringify(responseData)}`);
@@ -83,7 +81,7 @@ export const createNewUser = async () => {
 
 export const checkUserExists = () => {
   const user = FIREBASE_AUTH.currentUser;
-  console.log(`user: ${user}`);
+  console.log(`checkUserExists() user: ${user}`);
   if (!user) {
     throw new Error("User is not logged in");
   }
@@ -91,9 +89,11 @@ export const checkUserExists = () => {
 };
 
 export async function getUserWithUserId(userId) {
+
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);
   const apiUrl = `${REACT_APP_REMOTE_SERVER}/users/${userId}`;
+
 
   const response = await fetch(apiUrl, {
     method: "GET",
@@ -104,8 +104,12 @@ export async function getUserWithUserId(userId) {
     },
   });
 
+
   if (!response.ok) {
-    throw new Error("Failed to fetch from protected endpoint");
+    console.log('err');
+
+    throw new Error("Failed to fetch from protected endpoint: GetUserWithUserID");
+
   }
   const responseData = await response.json();
   console.log(JSON.stringify(responseData));
@@ -394,6 +398,7 @@ export async function getMessagesByRequestId(requestId) {
   try {
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
+    console.log(REACT_APP_REMOTE_SERVER);
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/messages/${requestId}`;
 
     const response = await fetch(apiUrl, {

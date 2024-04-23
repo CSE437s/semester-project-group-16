@@ -39,14 +39,18 @@ const HomeScreen = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const [showUserInfoForm, setShowUserInfoForm] = useState(true);
+
   const user = checkUserExists();
+
 
   useFocusEffect(
     useCallback(() => {
       setDataLoaded(false);
       const fetchData = async () => {
         try {
+
           const userFromDb = await getUserWithUserId(user.uid);
+
           setShowUserInfoForm(!userHasSufficientInfo(userFromDb));
 
           // Use let if you plan to reassign rides. Otherwise, directly chain the methods without reassignment.
