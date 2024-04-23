@@ -34,6 +34,13 @@ const Inbox = ({ onClose }) => {
     setSelectedIndex(-1);
   };
 
+  const getNumSelectedMessages = () => {
+    if (isIncomingSelected) {
+      return incomingMessages.length;
+    }
+    return outgoingMessages.length;
+  };
+
   const getSelectedRequest = () => {
     if (selectedIndex == -1) {
       return {};
@@ -65,6 +72,9 @@ const Inbox = ({ onClose }) => {
           setIsIncomingSelected(event.nativeEvent.selectedSegmentIndex == 0);
         }}
       />
+      {getNumSelectedMessages() == 0 && (
+        <Text style={styles.noMessagesText}>No Messages Found!</Text>
+      )}
       <FlatList
         data={isIncomingSelected ? incomingMessages : outgoingMessages}
         renderItem={({ item, index }) => (
@@ -90,6 +100,13 @@ const styles = StyleSheet.create({
     backgroundColor: "#DDDDDD",
     padding: 10,
     marginVertical: 20,
+  },
+  noMessagesText: {
+    fontFamily: "Poppins-SemiBold",
+    height: "fit",
+    marginTop: 20,
+    alignSelf: "center",
+    color: "gray",
   },
 });
 

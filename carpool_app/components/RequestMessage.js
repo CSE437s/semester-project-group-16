@@ -99,7 +99,7 @@ const RequestMessage = ({ onClose, rideRequest, isYourRequest }) => {
         <CustomButton
           title={!isYourRequest ? "Deny Request" : "Cancel Request"}
           onPress={onPressDeny}
-          buttonStyle={{ backgroundColor: "#fc5159", width: "90%" }}
+          buttonStyle={{ backgroundColor: "#fc5159" }}
         />
       </View>
     </View>

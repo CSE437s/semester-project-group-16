@@ -16,6 +16,7 @@ import Slider from "@react-native-community/slider";
 import { haversineDistance, fetchCoordinatesFromAddress } from "../Utils";
 import CustomButton from "./CustomButton";
 import AddressSearchBar from "./AddressSearchBar";
+import Icon from "react-native-vector-icons/Ionicons";
 
 function PostFilters({
   trips,
@@ -39,6 +40,9 @@ function PostFilters({
   const maxDistance = 10;
   const stepSize = 0.25;
   const categories = ["All", "Campus", "Groceries", "Misc"];
+  const [showDistanceFilter, setShowDistanceFilter] = useState(false);
+  const [showDateFilter, setShowDateFilter] = useState(false);
+  const [displayDistance, setDisplayDistance] = useState(distanceFilter);
 
   useEffect(() => {
     handleFiltersChange();
@@ -73,6 +77,8 @@ function PostFilters({
   }
 
   function handleClearFilters() {
+    setShowDateFilter(false);
+    setShowDistanceFilter(false);
     setDistanceFilter(5);
     setSelectedCategory("All");
     setDateFilter(null);
@@ -89,7 +95,7 @@ function PostFilters({
 
   // Handler functions can just update state
   function handleDistanceChange(distance) {
-    setDistanceFilter(distance);
+    setDisplayDistance(distance);
   }
 
   function handleCategoryChange(category) {
@@ -120,7 +126,6 @@ function PostFilters({
       >
         <View style={styles.modalView}>
           <View style={styles.filterContainer}>
-            <Text style={styles.filterTitle}>Filter by:</Text>
             {categories.map((category) => (
               <Button
                 key={category}
@@ -131,36 +136,67 @@ function PostFilters({
               />
             ))}
           </View>
-
           <View style={styles.filterContainer}>
-            <Text style={styles.filterLabel}>
-              Distance filter: {distanceFilter.toFixed(2)} miles
-            </Text>
-            <AddressSearchBar
-              handleTextChange={extractCoordinatesFromAddress}
-              defaultText={distanceFilterAddress}
-            />
-            <Slider
-              style={{ width: "100%", height: 40 }}
-              minimumValue={0.25}
-              maximumValue={maxDistance}
-              step={stepSize}
-              value={distanceFilter}
-              onValueChange={(value) => setDistanceFilter(value)}
-              onSlidingComplete={(value) => handleDistanceChange(value)}
-              minimumTrackTintColor="#007bff"
-              maximumTrackTintColor="#d3d3d3"
-              thumbTintColor="#007bff"
-            />
+            <TouchableOpacity
+              style={styles.filterOpacity}
+              onPress={() => setShowDistanceFilter(!showDistanceFilter)}
+            >
+              <Text style={styles.filterTitle}>Filter by destination</Text>
+              {!showDistanceFilter ? (
+                <Icon name="chevron-down-outline" size={24} color="gray" />
+              ) : (
+                <Icon name="chevron-up-outline" size={24} color="gray" />
+              )}
+            </TouchableOpacity>
+            {showDistanceFilter && (
+              <View style={styles.distanceFilterContent}>
+                <AddressSearchBar
+                  handleTextChange={extractCoordinatesFromAddress}
+                  defaultText={distanceFilterAddress}
+                />
+                <Slider
+                  style={{ width: "100%", height: 40 }}
+                  minimumValue={0.25}
+                  maximumValue={maxDistance}
+                  step={stepSize}
+                  value={distanceFilter}
+                  onValueChange={(value) => handleDistanceChange(value)}
+                  onSlidingComplete={(value) => setDistanceFilter(value)}
+                  minimumTrackTintColor="#007bff"
+                  maximumTrackTintColor="#d3d3d3"
+                  thumbTintColor="#007bff"
+                />
+                <Text style={styles.filterLabel}>
+                  {displayDistance.toFixed(2)} miles from{" "}
+                  {(() =>
+                    distanceFilterAddress == ""
+                      ? "current location"
+                      : "custom location")()}
+                </Text>
+              </View>
+            )}
 
-            <DateTimePicker
-              testID="datePicker"
-              value={dateFilter ? dateFilter : new Date()}
-              mode="date"
-              display="default"
-              onChange={onChangeDate}
-              style={styles.datePicker}
-            />
+            <TouchableOpacity
+              style={styles.filterOpacity}
+              onPress={() => setShowDateFilter(!showDateFilter)}
+            >
+              <Text style={styles.filterTitle}>Filter by date</Text>
+              {!showDateFilter ? (
+                <Icon name="chevron-down-outline" size={24} color="gray" />
+              ) : (
+                <Icon name="chevron-up-outline" size={24} color="gray" />
+              )}
+            </TouchableOpacity>
+            {showDateFilter && (
+              <DateTimePicker
+                testID="datePicker"
+                value={dateFilter ? dateFilter : new Date()}
+                mode="date"
+                display="default"
+                onChange={onChangeDate}
+                style={styles.datePicker}
+              />
+            )}
           </View>
           <CustomButton title="Clear Filters" onPress={handleClearFilters} />
         </View>
@@ -193,6 +229,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     alignSelf: "center",
     fontFamily: "Poppins-SemiBold",
+  },
+  distanceFilterContent: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  filterOpacity: {
+    width: "100%",
+    height: 40,
+    backgroundColor: "#D3D3D3",
+    borderRadius: 8,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    margin: 10,
   },
   filterButton: {
     backgroundColor: "pink",
