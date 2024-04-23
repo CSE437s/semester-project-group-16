@@ -1,30 +1,47 @@
 //Contains API call functions
-import { FIREBASE_AUTH } from "./components/FirebaseConfig";
+import { FIREBASE_AUTH } from './components/FirebaseConfig';
 import {
   REACT_APP_LOCAL_SERVER,
   REACT_APP_REMOTE_SERVER,
   REACT_APP_MAPBOX_API_KEY,
-} from "@env";
+} from '@env';
 import {
   TripClass,
   RideClass,
   StopClass,
   CoordinateClass,
   RideRequestClass,
-} from "./ApiDataClasses";
+} from './ApiDataClasses';
+
+export async function reverseGeocode(latitude, longitude) {
+  const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${REACT_APP_MAPBOX_API_KEY}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    if (response.ok) {
+      return data.features.length > 0 ? data.features[0].place_name : null;
+    } else {
+      throw new Error('Failed to fetch address');
+    }
+  } catch (error) {
+    console.error('Error fetching address:', error);
+    return null;
+  }
+}
 
 export const getUserRides = async (getAll) => {
   try {
-    console.log("getting user rides");
+    console.log('getting user rides');
     const user = checkUserExists();
     const idToken = await user.getIdToken(true);
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/rides/${user.uid}/${getAll}`;
     const userId = user.uid;
 
     const response = await fetch(apiUrl, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `${idToken}`,
         userid: userId,
       },
@@ -43,7 +60,7 @@ export const getUserRides = async (getAll) => {
     //console.log(`Trips: ${JSON.stringify(trips)}`);
     return trips;
   } catch (error) {
-    console.error("Error making API call:", error);
+    console.error('Error making API call:', error);
   }
 };
 
@@ -59,9 +76,9 @@ export const createNewUser = async () => {
     const data = { userId: userId, email: email };
 
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `${idToken}`,
         userid: userId,
       },
@@ -75,7 +92,7 @@ export const createNewUser = async () => {
     console.log(`Got response data! ${JSON.stringify(responseData)}`);
     return responseData;
   } catch (error) {
-    console.error("Error making API call:", error);
+    console.error('Error making API call:', error);
   }
 };
 
@@ -83,7 +100,7 @@ export const checkUserExists = () => {
   const user = FIREBASE_AUTH.currentUser;
   console.log(`checkUserExists() user: ${user}`);
   if (!user) {
-    throw new Error("User is not logged in");
+    throw new Error('User is not logged in');
   }
   return user;
 };
@@ -96,9 +113,9 @@ export async function getUserWithUserId(userId) {
 
 
   const response = await fetch(apiUrl, {
-    method: "GET",
+    method: 'GET',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `${idToken}`,
       userid: user.uid,
     },
@@ -106,7 +123,7 @@ export async function getUserWithUserId(userId) {
 
 
   if (!response.ok) {
-    console.log('err');
+    //console.log('err');
 
     throw new Error("Failed to fetch from protected endpoint: GetUserWithUserID");
 
@@ -119,7 +136,7 @@ export async function getUserWithUserId(userId) {
 export const checkUserIsVerified = () => {
   const user = FIREBASE_AUTH.currentUser;
   if (!user || !user.emailVerified) {
-    throw new Error("User is not logged in");
+    throw new Error('User is not logged in');
   }
   return user;
 };
@@ -154,12 +171,12 @@ export const createNewTrip = async (
   timestamp
 ) => {
   const normalizeAddress = (address) =>
-    address.trim().toLowerCase().replace(/\s+/g, "");
+    address.trim().toLowerCase().replace(/\s+/g, '');
   if (
     normalizeAddress(originAddress) === normalizeAddress(destinationAddress)
   ) {
-    console.error("Origin and destination addresses cannot be the same.");
-    throw new Error("Origin and destination addresses cannot be the same.");
+    console.error('Origin and destination addresses cannot be the same.');
+    throw new Error('Origin and destination addresses cannot be the same.');
   }
 
   try {
@@ -168,9 +185,9 @@ export const createNewTrip = async (
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/trips`;
 
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `${idToken}`,
         userId: user.uid,
       },
@@ -187,18 +204,18 @@ export const createNewTrip = async (
     const result = await response.json();
 
     if (response.ok) {
-      console.log("Trip created successfully:", result);
+      console.log('Trip created successfully:', result);
       console.log(`Normalized origin: ${normalizeAddress(originAddress)}`);
       console.log(
         `Normalized destination: ${normalizeAddress(destinationAddress)}`
       );
       return result;
     } else {
-      console.error("Failed to create trip:", result.message);
+      console.error('Failed to create trip:', result.message);
       throw new Error(result.message);
     }
   } catch (error) {
-    console.error("Error creating new trip:", error);
+    console.error('Error creating new trip:', error);
     throw error;
   }
 };
@@ -237,20 +254,20 @@ export const timestampToDate = (timestamp) => {
   const date = new Date(timestamp);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
     2,
-    "0"
-  )}-${String(date.getDate()).padStart(2, "0")}`;
+    '0'
+  )}-${String(date.getDate()).padStart(2, '0')}`;
 };
 
 export const timestampToWrittenDate = (timestamp) => {
   const date = new Date(timestamp);
 
-  const dateOptions = { weekday: "long", month: "long", day: "numeric" };
-  const formattedDate = new Intl.DateTimeFormat("en-US", dateOptions).format(
+  const dateOptions = { weekday: 'long', month: 'long', day: 'numeric' };
+  const formattedDate = new Intl.DateTimeFormat('en-US', dateOptions).format(
     date
   );
 
-  const timeOptions = { hour: "numeric", minute: "numeric", hour12: true };
-  const formattedTime = new Intl.DateTimeFormat("en-US", timeOptions).format(
+  const timeOptions = { hour: 'numeric', minute: 'numeric', hour12: true };
+  const formattedTime = new Intl.DateTimeFormat('en-US', timeOptions).format(
     date
   );
 
@@ -263,9 +280,9 @@ export const deleteRideRequest = async (rideRequest) => {
   const response = await fetch(
     `${REACT_APP_REMOTE_SERVER}/riderequests/${rideRequest.rideRequestId}`,
     {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `${idToken}`,
         userid: user.uid,
       },
@@ -286,9 +303,9 @@ export const deleteStop = async (stopId) => {
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);
   const response = await fetch(`${REACT_APP_REMOTE_SERVER}/stops/${stopId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `${idToken}`,
       userid: user.uid,
     },
@@ -309,9 +326,9 @@ export const deleteTrip = async (tripId) => {
     const deleteTripResponse = await fetch(
       `${REACT_APP_REMOTE_SERVER}/trips/${tripId}`,
       {
-        method: "DELETE",
+        method: 'DELETE',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `${idToken}`,
           userid: user.uid,
         },
@@ -327,7 +344,7 @@ export const deleteTrip = async (tripId) => {
 
     return await deleteTripResponse.json();
   } catch (error) {
-    console.error("Error during the trip and stops deletion process:", error);
+    console.error('Error during the trip and stops deletion process:', error);
     throw error;
   }
 };
@@ -336,9 +353,9 @@ export async function acceptRideRequest(rideRequest) {
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);
   const response = await fetch(`${REACT_APP_REMOTE_SERVER}/riderequests`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `${idToken}`,
       userid: user.uid,
     },
@@ -366,9 +383,9 @@ export async function createMessage(requestId, senderUserId, text) {
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/messages`;
 
     const response = await fetch(apiUrl, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `${idToken}`,
         userId: user.uid,
       },
@@ -382,14 +399,14 @@ export async function createMessage(requestId, senderUserId, text) {
     const result = await response.json();
 
     if (response.ok) {
-      console.log("Message created successfully:", result);
+      console.log('Message created successfully:', result);
       return result;
     } else {
-      console.error("Failed to create message:", result.message);
+      console.error('Failed to create message:', result.message);
       throw new Error(result.message);
     }
   } catch (error) {
-    console.error("Error creating new message:", error);
+    console.error('Error creating new message:', error);
     throw error;
   }
 }
@@ -402,7 +419,7 @@ export async function getMessagesByRequestId(requestId) {
     const apiUrl = `${REACT_APP_REMOTE_SERVER}/messages/${requestId}`;
 
     const response = await fetch(apiUrl, {
-      method: "GET",
+      method: 'GET',
       headers: {
         Authorization: `${idToken}`,
         userId: user.uid,
@@ -412,14 +429,14 @@ export async function getMessagesByRequestId(requestId) {
     const result = await response.json();
 
     if (response.ok) {
-      console.log("Messages fetched successfully:", result);
+      console.log('Messages fetched successfully:', result);
       return result;
     } else {
-      console.error("Failed to fetch messages:", result.message);
+      console.error('Failed to fetch messages:', result.message);
       throw new Error(result.message);
     }
   } catch (error) {
-    console.error("Error fetching messages:", error);
+    console.error('Error fetching messages:', error);
     throw error;
   }
 }
@@ -433,20 +450,20 @@ export async function fetchCoordinatesFromAddress(address) {
     const response = await fetch(url);
     if (!response.ok) {
       console.error(
-        "Failed to fetch coordinates. Status:",
+        'Failed to fetch coordinates. Status:',
         response.status,
         response.statusText
       );
-      throw new Error("Failed to fetch coordinates");
+      throw new Error('Failed to fetch coordinates');
     }
     const data = await response.json();
-    console.log("Success:", data);
+    console.log('Success:', data);
     return new CoordinateClass(
       data.features[0].geometry.coordinates[1],
       data.features[0].geometry.coordinates[0]
     );
   } catch (error) {
-    console.error("Error fetching coordinates:", error);
+    console.error('Error fetching coordinates:', error);
     return null;
   }
 }
@@ -458,9 +475,9 @@ export async function fetchRideRequests() {
   const response = await fetch(
     `${REACT_APP_REMOTE_SERVER}/riderequests/${user.uid}`,
     {
-      method: "GET",
+      method: 'GET',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
         Authorization: `${idToken}`,
         userid: user.uid,
       },
