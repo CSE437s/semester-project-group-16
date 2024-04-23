@@ -159,7 +159,11 @@ const PostScreen = () => {
           setUserLocation={setUserLocation}
         />
       ) : (
-        <CustomButton title="Filter" onPress={() => setShowFilters(true)} />
+        <CustomButton
+          title="Filter Posts"
+          onPress={() => setShowFilters(true)}
+          buttonStyle={{ width: "90%", alignSelf: "center" }}
+        />
       )}
     </View>
   );
