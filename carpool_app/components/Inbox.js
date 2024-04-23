@@ -14,11 +14,13 @@ import MessageThread from "./MessageThread";
 import SegmentedControl from "@react-native-segmented-control/segmented-control";
 import Icon from "react-native-vector-icons/Ionicons";
 import InboxItem from "./InboxItem";
+import ViewProfile from "./ViewProfile";
 
 const Inbox = ({ onClose }) => {
   const [incomingMessages, setIncomingMessages] = useState([]);
   const [outgoingMessages, setOutgoingMessages] = useState([]);
   const [isIncomingSelected, setIsIncomingSelected] = useState(true);
+  const [profileUserId, setProfileUserId] = useState(null);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [refreshing, setRefreshing] = useState(false);
@@ -49,6 +51,16 @@ const Inbox = ({ onClose }) => {
     return outgoingMessages.length;
   };
 
+  const showUserProfile = (item_index) => {
+    if (isIncomingSelected) {
+      const profileUserId = incomingMessages[item_index].outgoingUserId;
+      setProfileUserId(profileUserId);
+    } else {
+      const profileUserId = outgoingMessages[item_index].incomingUserId;
+      setProfileUserId(profileUserId);
+    }
+  };
+
   const getSelectedRequest = () => {
     if (selectedIndex == -1) {
       return {};
@@ -66,6 +78,15 @@ const Inbox = ({ onClose }) => {
       <MessageThread
         onClose={onCloseMessageThread}
         rideRequest={getSelectedRequest()}
+      />
+    );
+  }
+
+  if (profileUserId != null) {
+    return (
+      <ViewProfile
+        userId={profileUserId}
+        onClose={() => setProfileUserId(null)}
       />
     );
   }
@@ -90,6 +111,7 @@ const Inbox = ({ onClose }) => {
             item={item}
             index={index}
             setSelectedIndex={setSelectedIndex}
+            showUserProfile={showUserProfile}
           />
         )}
         keyExtractor={(item) => item.rideRequestId.toString()}

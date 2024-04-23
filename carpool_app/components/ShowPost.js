@@ -17,6 +17,7 @@ import {
   deleteStop,
   deleteTrip,
 } from "../Utils";
+import ViewProfile from "./ViewProfile";
 import CustomButton from "./CustomButton";
 import { useNavigation } from "@react-navigation/native";
 
@@ -29,14 +30,12 @@ const ShowPost = ({ trip, onClose, fromManageCarpools = false }) => {
   console.log(JSON.stringify(trip));
   const [showApply, setShowApply] = useState(false);
   const [isYourPost, setIsYourPost] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     const checkIfUserCreatedPost = async () => {
-      console.log("CALL---------");
       const user = await checkUserExists();
       const result = user.uid === trip.tripUserId;
-      console.log(user.uid);
-      console.log(trip.tripUserId);
       setIsYourPost(result);
     };
     checkIfUserCreatedPost();
@@ -67,11 +66,23 @@ const ShowPost = ({ trip, onClose, fromManageCarpools = false }) => {
 
   const routeTimeFormatted = formatRouteTime(trip.route.routeTime);
 
+  if (showProfile) {
+    return (
+      <ViewProfile
+        userId={trip.tripUserId}
+        onClose={() => setShowProfile(false)}
+      />
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View style={[{}, styles.arrowContainer]}>
         <BackArrow onClose={onClose} />
-        <View style={[{}, styles.textContainer]}>
+        <TouchableOpacity
+          style={[{}, styles.textContainer]}
+          onPress={() => setShowProfile(true)}
+        >
           <Text
             adjustsFontSizeToFit
             numberOfLines={1}
@@ -79,7 +90,7 @@ const ShowPost = ({ trip, onClose, fromManageCarpools = false }) => {
           >
             {trip.tripUserEmail}'s Trip
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
 
       <MapComponent ride={trip} mapHeight={375} />

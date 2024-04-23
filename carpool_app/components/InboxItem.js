@@ -10,13 +10,21 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 import { timestampToWrittenDate } from "../Utils";
 
-const InboxItem = ({ item, index, setSelectedIndex }) => {
+const InboxItem = ({ item, index, setSelectedIndex, showUserProfile }) => {
   return (
     <TouchableOpacity
       style={styles.item}
       onPress={() => setSelectedIndex(index)}
     >
-      <Text style={styles.itemText}>Request sent by {item.userFullName}</Text>
+      <TouchableOpacity
+        onPress={(e) => {
+          e.stopPropagation(); // Prevents the onPress of the outer TouchableOpacity from firing
+          showUserProfile(index);
+        }}
+        style={styles.innerTouchable}
+      >
+        <Text style={styles.itemText}>Request sent by {item.userFullName}</Text>
+      </TouchableOpacity>
       <View
         style={[
           {
