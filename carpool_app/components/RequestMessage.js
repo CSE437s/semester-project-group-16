@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     marginTop: "auto",
+    gap: 10,
   },
   messageText: {
     alignSelf: "center",

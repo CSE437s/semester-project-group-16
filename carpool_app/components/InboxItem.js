@@ -11,8 +11,6 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { timestampToWrittenDate } from "../Utils";
 
 const InboxItem = ({ item, index, setSelectedIndex }) => {
-  console.log("ITEM");
-  console.log(JSON.stringify(item));
   return (
     <TouchableOpacity
       style={styles.item}
@@ -40,12 +38,12 @@ const InboxItem = ({ item, index, setSelectedIndex }) => {
         style={[
           {
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "left",
             alignItems: "center",
             flexDirection: "row",
             gap: 5,
+            margin: 8,
           },
-          styles.addressInfo,
         ]}
       >
         <Icon name={"business-outline"} size={16} />
@@ -55,13 +53,12 @@ const InboxItem = ({ item, index, setSelectedIndex }) => {
         style={[
           {
             display: "flex",
-            justifyContent: "center",
+            justifyContent: "left",
             alignItems: "center",
             flexDirection: "row",
             gap: 5,
-            marginBottom: 10,
+            margin: 8,
           },
-          styles.addressInfo,
         ]}
       >
         <Icon name={"flag-outline"} size={16} />
