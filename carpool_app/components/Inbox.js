@@ -6,6 +6,7 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  RefreshControl,
 } from "react-native";
 import BackArrow from "./BackArrow";
 import { fetchRideRequests } from "../Utils";
@@ -20,6 +21,8 @@ const Inbox = ({ onClose }) => {
   const [isIncomingSelected, setIsIncomingSelected] = useState(true);
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshCounter, setRefreshCounter] = useState(0);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -28,10 +31,15 @@ const Inbox = ({ onClose }) => {
       setOutgoingMessages(response.outgoingRequests);
     };
     getMessages();
-  }, []);
+    setRefreshing(false);
+  }, [refreshCounter]);
 
   const onCloseMessageThread = () => {
     setSelectedIndex(-1);
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+    setRefreshCounter((prev) => prev + 1); // Increment counter to trigger useEffect
   };
 
   const getNumSelectedMessages = () => {
@@ -69,10 +77,10 @@ const Inbox = ({ onClose }) => {
         values={["Join Requests", "My Requests"]}
         selectedIndex={isIncomingSelected ? 0 : 1}
         onChange={(event) => {
-          setIsIncomingSelected(event.nativeEvent.selectedSegmentIndex == 0);
+          setIsIncomingSelected(event.nativeEvent.selectedSegmentIndex === 0);
         }}
       />
-      {getNumSelectedMessages() == 0 && (
+      {getNumSelectedMessages() === 0 && (
         <Text style={styles.noMessagesText}>No Messages Found!</Text>
       )}
       <FlatList
@@ -85,6 +93,9 @@ const Inbox = ({ onClose }) => {
           />
         )}
         keyExtractor={(item) => item.rideRequestId.toString()}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
     </View>
   );

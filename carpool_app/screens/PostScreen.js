@@ -162,6 +162,7 @@ const PostScreen = () => {
         <CustomButton
           title="Filter Posts"
           onPress={() => setShowFilters(true)}
+          buttonStyle={{ width: "90%", alignSelf: "center" }}
         />
       )}
     </View>
