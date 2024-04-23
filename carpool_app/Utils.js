@@ -110,6 +110,7 @@ export async function getUserWithUserId(userId) {
   const user = checkUserExists();
   const idToken = await user.getIdToken(true);
   const apiUrl = `${REACT_APP_REMOTE_SERVER}/users/${userId}`;
+  console.log(apiUrl);
 
 
   const response = await fetch(apiUrl, {
@@ -140,6 +141,25 @@ export const checkUserIsVerified = () => {
   }
   return user;
 };
+
+export async function getImageWithPath(imagePath) {
+  try {
+    const apiUrl = `${process.env.REACT_APP_REMOTE_SERVER}${imagePath}`;
+    console.log(apiUrl);
+  
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Handle response here
+  } catch (error) {
+    console.error('Error making API call for Image:', error);
+  }
+}
+
 
 export const userHasSufficientInfo = (dbUserObject) => {
   if (
@@ -239,9 +259,9 @@ export const haversineDistance = (coords1, coords2, isMiles = true) => {
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(toRad(lat1)) *
-      Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
+    Math.cos(toRad(lat2)) *
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   let d = R * c;
 
@@ -530,3 +550,5 @@ export async function fetchRideRequests() {
 
   return { outgoingRequests, incomingRequests };
 }
+
+

@@ -5,6 +5,10 @@ import {FIREBASE_AUTH} from'../components/FirebaseConfig';
 import CustomButton from '../components/CustomButton';
 import {getUserWithUserId, checkUserExists} from '../Utils';
 import UserInfoForm from '../components/UserInfoForm';
+//import UploadPFP from '../components/UploadPFP';
+import {
+  REACT_APP_REMOTE_SERVER,
+} from '@env';
 
 const ProfileScreen = () => {
   const user = checkUserExists();
@@ -47,7 +51,7 @@ const styles = StyleSheet.create({
     display:'flex',
     marginTop: 60,
     height: 'fit-content',
-    marginBottom: 11
+    marginBottom: 11,
   },
   container2:{
     marginTop: -60,

@@ -64,6 +64,36 @@ async function createStop(stopAddress, userId, routeId = null) {
   }
 }
 
+async function addPFP(userId, path) {
+  try {
+    // Get the previous pfpPath
+    const selectQuery = `
+      SELECT pfpPath FROM USER WHERE user_id = '${userId}'
+    `;
+    const [selectResult] = await pool.execute(selectQuery);
+    const previousPfpPath = selectResult[0]?.pfpPath || null;
+
+    // Update the pfpPath
+    const updateQuery = `
+      UPDATE USER
+      SET pfpPath = '${path}'
+      WHERE user_id = '${userId}'
+    `;
+    const [updateResult] = await pool.execute(updateQuery);
+    console.log("Query executed successfully.");
+    console.log(updateResult);
+
+    // Return the previous pfpPath along with the update result
+    return { previousPfpPath, updateResult };
+  } catch (error) {
+    console.error("Error updating profile picture:", error);
+    throw error;
+  }
+}
+
+
+
+
 async function createTrip(routeId, userId, category, completed, timestamp) {
   try {
     const query = `INSERT INTO TRIP (route_id, user_id, category, completed, timestamp) VALUES (?, ?, ?, ?, ?)`;
@@ -77,9 +107,9 @@ async function createTrip(routeId, userId, category, completed, timestamp) {
 
     return result;
   } catch (error) {
-    console.error("Error inserting Trip:", error);
+    console.error("Error inserting :", error);
     throw error;
-  }
+  }Trip
 }
 
 async function createMessage(requestId, senderUserId, text) {
@@ -493,4 +523,5 @@ module.exports = {
   getTripAndRouteIdByStopId,
   createMessage,
   getMessagesByRequestId,
+  addPFP,
 };

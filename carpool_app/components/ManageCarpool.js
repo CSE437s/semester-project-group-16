@@ -37,6 +37,7 @@ const ManageCarpool = ({ userRides, onClose }) => {
       return rideDate === selectedDate;
     });
   };
+  
   const formattedSelectedDate = (selectedDate) => {
     const date = new Date(selectedDate);
     date.setDate(date.getDate() + 1); // Add one day to fix calendar one-off error

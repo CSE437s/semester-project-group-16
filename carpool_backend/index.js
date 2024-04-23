@@ -5,6 +5,7 @@ const pool = require("./database");
 const cors = require("cors");
 const { authenticate } = require("./middleware");
 const { FIREBASE_ADMIN } = require("./firebase");
+const path = require('path');
 const {
   createRoute,
   createStop,
@@ -27,9 +28,18 @@ const {
   getTripAndRouteIdByStopId,
   createMessage,
   getMessagesByRequestId,
+  addPFP,
 } = require("./databaseFunctions");
 const { getRoutes, getCoordinatesOfAddress } = require("./utils");
+const multer = require('multer');
+const fs = require('fs');
+
+
 const app = express();
+
+const imagesFolder = path.join(__dirname, 'images');
+const defaultDirectory = __dirname;
+const upload = multer({ dest: imagesFolder });
 
 const PORT = 3000;
 
@@ -38,14 +48,14 @@ app.use(express.json());
 app.use(cors());
 
 // Check database connection on server startup
-pool
-  .query("SELECT 1")
-  .then(() => {
-    console.log("Connected to the database!");
-  })
-  .catch((err) => {
-    console.error("Failed to connect to the database:", err);
-  });
+// pool
+//   .query("SELECT 1")
+//   .then(() => {
+//     console.log("Connected to the database!");
+//   })
+//   .catch((err) => {
+//     console.error("Failed to connect to the database:", err);
+//   });
 
 //Tests connection to db with query to 'test' table
 //Expected res: [{"name":"Alice"},{"name":"Bob"}]
@@ -96,6 +106,41 @@ app.post("/users", authenticate, async (req, res) => {
   }
 });
 
+app.post('/uploadPFPImage', upload.none(), authenticate, async (req, res) => {
+  try {
+
+    console.log(imagesFolder);
+    const userId = req.body.userId;
+    const email = req.body.email;
+    const imgData = req.body.base64Img;
+
+    const imageName = `${userId}-${Date.now()}.jpg`;
+    const imagePath = path.join(imagesFolder, imageName);
+
+    const imgBuffer = Buffer.from(imgData, 'base64');
+    fs.writeFileSync(imagePath, imgBuffer);
+    const imageUrl = `/images/${imageName}`;
+
+    const result = await addPFP(userId, imageUrl);
+    console.log(result.previousPfpPath);
+
+    // prev
+    const previousPfpPath = result.previousPfpPath;
+    if (previousPfpPath && previousPfpPath !== "") {
+      const previousImagePath = path.join(defaultDirectory, previousPfpPath);
+      fs.unlinkSync(previousImagePath);
+      console.log(`Previous profile picture ${previousPfpPath} deleted successfully.`);
+    }
+
+    res.status(200).send({ message: 'Image uploaded successfully', imageUrl });
+  } catch (error) {
+    console.error('Error processing data:', error);
+    res.status(500).send('Internal server error');
+  }
+});
+
+app.use('/images', express.static(imagesFolder));
+
 app.post("/users/info", authenticate, async (req, res) => {
   console.log(`Got users/info data ${JSON.stringify(req.body)}`);
   await updateUserDetails(
@@ -118,7 +163,7 @@ app.get("/users/:userId", authenticate, async (req, res) => {
   const userId = req.params.userId;
 
   try {
-    const [rows, fields] = await pool.query(
+    const [rows, fields] = await pool.execute(
       "SELECT * FROM USER WHERE user_id = ?",
       [userId]
     );

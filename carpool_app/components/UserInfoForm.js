@@ -16,6 +16,8 @@ import CustomButton from "./CustomButton";
 import { checkUserExists, getUserWithUserId } from "../Utils";
 import { REACT_APP_REMOTE_SERVER } from "@env";
 import CustomAlert from "./CustomAlert";
+import UploadPFP from '../components/UploadPFP';
+
 
 const NewUserForm = ({ onClose, bottomHeight }) => {
   const [fullName, setFullName] = useState("");
@@ -30,6 +32,7 @@ const NewUserForm = ({ onClose, bottomHeight }) => {
   const [seatCapacity, setSeatCapacity] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+
 
   const [vehicleInfoVisible, setVehicleInfoVisible] = useState(false);
   const [alertVisible, setAlertVisible] = useState(false);
@@ -50,6 +53,7 @@ const NewUserForm = ({ onClose, bottomHeight }) => {
       setLicensePlate(userObj.license_plate || "");
       setSeatCapacity(userObj.seat_capacity || "");
       setHomeAddress(userObj.home_address || "");
+
       if (userObj.vehicleMake != "") {
         setVehicleInfoVisible(true);
       }
@@ -98,6 +102,7 @@ const NewUserForm = ({ onClose, bottomHeight }) => {
   return (
     <View style={styles.container}>
       <ScrollView style={{ paddingBottom: 500, marginBottom: 0 }}>
+      <UploadPFP/>
         <TextInput
           placeholder="Full Name"
           value={fullName}
