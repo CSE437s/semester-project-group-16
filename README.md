@@ -21,6 +21,7 @@ The scheduling page shows your past and upcoming ride schedule, where you can vi
 <p align="left">
     <img src="./images/image14.png" alt="Image 4" width="200">
   <img src="./images/image15.png" alt="Image 5" width="200">
+  <img src="./images/image3.png" alt="Image 3" width="200">
   <img src="./images/image2.png" alt="Image 11" width="200">
 </p>
 
@@ -36,7 +37,7 @@ Pressing on a post in the post page shows you details of the trip, and lets you 
 <p align="left">
   <img src="./images/image9.png" alt="Image 8" width="200">
   <img src="./images/image8.png" alt="Image 9" width="200">
-  <img src="./images/image3.png" alt="Image 12" width="200">
+  <img src="./images/image10.png" alt="Image 12" width="200">
 </p>
 
 These requests go to your message inbox in the Home page, where users can message and accept/deny/cancel the request
