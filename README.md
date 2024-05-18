@@ -42,3 +42,9 @@ Pressing on a post in the post page shows you details of the trip, and lets you 
 </p>
 
 These requests go to your message inbox in the Home page, where users can message and accept/deny/cancel the request
+
+<p align="left">
+  <img src="./images/image17.png" alt="Image 17" width="200">
+</p>
+
+The "start ride" button for the driver opens the route in apple maps
