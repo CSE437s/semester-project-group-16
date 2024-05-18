@@ -20,25 +20,25 @@ Opening the app, if you were not signed in previously you are greeted with a log
 The scheduling page shows your past and upcoming ride schedule, where you can view and cancel your trips.
 
 <p align="left">
-    <img src="./images/image14.png" alt="Image 4" width="200">
-  <img src="./images/image15.png" alt="Image 5" width="200">
+    <img src="./images/image15.png" alt="Image 15" width="200">
+  <img src="./images/image14.png" alt="Image 14" width="200">
   <img src="./images/image3.png" alt="Image 3" width="200">
-  <img src="./images/image2.png" alt="Image 11" width="200">
+  <img src="./images/image2.png" alt="Image 2" width="200">
 </p>
 
 The posts page shows upcoming trips made by other drivers. You can select filters by distance from location, date, and trip category. You can make a new post with location suggestions.
 
 <p align="left">
-  <img src="./images/image1.png" alt="Image 6" width="200">
+  <img src="./images/image1.png" alt="Image 1" width="200">
   <img src="./images/image7.png" alt="Image 7" width="200">
 </p>
 
 Pressing on a post in the post page shows you details of the trip, and lets you apply for a stop on that trip by placing a marker or entering an address.
 
 <p align="left">
-  <img src="./images/image9.png" alt="Image 8" width="200">
-  <img src="./images/image8.png" alt="Image 9" width="200">
-  <img src="./images/image6.png" alt="Image 12" width="200">
+  <img src="./images/image9.png" alt="Image 9" width="200">
+  <img src="./images/image8.png" alt="Image 8" width="200">
+  <img src="./images/image6.png" alt="Image 6" width="200">
 </p>
 
 These requests go to your message inbox in the Home page, where users can message and accept/deny/cancel the request
