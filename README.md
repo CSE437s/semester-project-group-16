@@ -1,4 +1,4 @@
-# Semester-Project
+# Ride Along Semester Project
 
 Jan 2024 - April 2024
 
