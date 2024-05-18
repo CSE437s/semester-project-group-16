@@ -6,6 +6,7 @@ Ride Along is a carpooling app designed to make ridesharing more affordable for 
 
 Technologies Used: React Native & Expo, jest, Node.js, Mysql, AWS EC2.
 
+APIS: Firebase, Google Cloud, Mapbox
 
 ## Demo Images
 
