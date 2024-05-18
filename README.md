@@ -13,12 +13,12 @@ Opening the app, if you were not signed in previously you are greeted with a log
 <p align="left">
   <img src="./images/image3.png" alt="Image 3" width="200">
   <img src="./images/image4.png" alt="Image 4" width="200">
-  <img src="./images/image5.png" alt="Image 5" width="200">
+  <img src="./images/image1.png" alt="Image 5" width="200">
   <img src="./images/image6.png" alt="Image 6" width="200">
   <img src="./images/image7.png" alt="Image 7" width="200">
   <img src="./images/image8.png" alt="Image 8" width="200">
   <img src="./images/image9.png" alt="Image 9" width="200">
-  <img src="./images/image11.png" alt="Image 11" width="200">
+  <img src="./images/image2.png" alt="Image 11" width="200">
   <img src="./images/image12.png" alt="Image 12" width="200">
   <img src="./images/image13.png" alt="Image 13" width="200">
 </p>
