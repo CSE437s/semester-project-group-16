@@ -21,6 +21,8 @@ Technologies Used: React Native & Expo, jest, Node.js, Mysql, AWS EC2.
   <img src="./images/image12.png" alt="Image 3" width="200">
   <img src="./images/image13.png" alt="Image 4" width="200">
 </p>
+<br>
+<br>
 
 ### The scheduling page shows your past and upcoming ride schedule, where you can view and cancel your trips.
 
