@@ -35,7 +35,7 @@ Technologies Used: React Native & Expo, jest, Node.js, Mysql, AWS EC2.
   <img src="./images/image2.png" alt="Image 2" width="200">
 </p>
 
-### The posts page shows upcoming trips made by other drivers. You can filter posts by distance from a location, date, and trip category. You can make a new post with location suggestions.
+### The posts page shows upcoming trips made by other drivers. You can filter posts by distance from a location, date, and trip category. You can make a new post with MapBox API location suggestions.
 
 <br>
 <br>
