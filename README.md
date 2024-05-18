@@ -1,11 +1,7 @@
 # Semester-Project
 
-url: http://ec2-54-204-161-173.compute-1.amazonaws.com:8081/
+Ride Along is a carpooling app designed to make ridesharing more affordable for college students.
 
+## Demo Images
 
-## Team Name: <Insert Here>
-## Group #: <Insert Here>
-## Contributors: <Insert Here>
-## TA: <Insert Here>
-
-## Instructions/Link to access: <insert here>
+!(./demo_images/Simulator Screenshot - iPhone 15 Pro - 2024-05-18 at 15.57.34.png)
