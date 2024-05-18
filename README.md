@@ -21,16 +21,16 @@ The scheduling page shows your past and upcoming ride schedule, where you can vi
 <p align="left">
     <img src="./images/image14.png" alt="Image 4" width="200">
   <img src="./images/image15.png" alt="Image 5" width="200">
+  <img src="./images/image2.png" alt="Image 11" width="200">
 </p>
 
-The posts page shows upcoming trips made by other drivers. You can select filters by distance from location, date, and trip category.
+The posts page shows upcoming trips made by other drivers. You can select filters by distance from location, date, and trip category. You can make a new post with location suggestions.
 
 <p align="left">
   <img src="./images/image6.png" alt="Image 6" width="200">
   <img src="./images/image7.png" alt="Image 7" width="200">
   <img src="./images/image8.png" alt="Image 8" width="200">
   <img src="./images/image9.png" alt="Image 9" width="200">
-  <img src="./images/image2.png" alt="Image 11" width="200">
   <img src="./images/image12.png" alt="Image 12" width="200">
   <img src="./images/image13.png" alt="Image 13" width="200">
     <img src="./images/image1.png" alt="Image 1" width="200">
