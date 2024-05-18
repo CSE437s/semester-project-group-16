@@ -4,4 +4,4 @@ Ride Along is a carpooling app designed to make ridesharing more affordable for 
 
 ## Demo Images
 
-![](./demo_images/image1.png)
+![Image 1](./demo_images/image1.png)
