@@ -13,11 +13,17 @@ Opening the app, if you were not signed in previously you are greeted with a log
 
 <p align="left">
   <img src="./images/image12.png" alt="Image 3" width="200">
-  <img src="./images/image14.png" alt="Image 4" width="200">
-  <img src="./images/image15.png" alt="Image 5" width="200">
+  <img src="./images/image13.png" alt="Image 4" width="200">
 </p>
 
 The scheduling page shows your past and upcoming ride schedule, where you can view and cancel your trips.
+
+<p align="left">
+    <img src="./images/image14.png" alt="Image 4" width="200">
+  <img src="./images/image15.png" alt="Image 5" width="200">
+</p>
+
+The posts page shows upcoming trips made by other drivers. You can select filters by distance from location, date, and trip category.
 
 <p align="left">
   <img src="./images/image6.png" alt="Image 6" width="200">
