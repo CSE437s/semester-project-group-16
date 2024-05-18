@@ -64,3 +64,12 @@ APIS: Firebase, Google Cloud, Mapbox
 </p>
 
 ### The "start ride" button for the driver opens the route in apple maps
+
+
+<br>
+<br>
+<p align="left">
+  <img src="./images/image4.png" alt="Image 4" width="200">
+</p>
+
+### The profile page displays your profile photo and personal/vehicle information
