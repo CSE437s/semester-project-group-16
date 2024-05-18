@@ -27,8 +27,13 @@ The scheduling page shows your past and upcoming ride schedule, where you can vi
 The posts page shows upcoming trips made by other drivers. You can select filters by distance from location, date, and trip category. You can make a new post with location suggestions.
 
 <p align="left">
-  <img src="./images/image6.png" alt="Image 6" width="200">
+  <img src="./images/image1.png" alt="Image 6" width="200">
   <img src="./images/image7.png" alt="Image 7" width="200">
+</p>
+
+Pressing on a post in the post page shows you details of the trip, and lets you apply for a stop on that trip by placing a marker or entering an address.
+
+<p align="left">
   <img src="./images/image8.png" alt="Image 8" width="200">
   <img src="./images/image9.png" alt="Image 9" width="200">
   <img src="./images/image12.png" alt="Image 12" width="200">
