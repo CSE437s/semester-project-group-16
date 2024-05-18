@@ -60,7 +60,6 @@ APIS: Firebase, Google Cloud, Mapbox
 <br>
 <br>
 <p align="left">
-  <img src="./images/image11.png" alt="Image 11" width="200">
   <img src="./images/image17.png" alt="Image 17" width="200">
 </p>
 
