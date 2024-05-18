@@ -34,10 +34,9 @@ The posts page shows upcoming trips made by other drivers. You can select filter
 Pressing on a post in the post page shows you details of the trip, and lets you apply for a stop on that trip by placing a marker or entering an address.
 
 <p align="left">
-  <img src="./images/image8.png" alt="Image 8" width="200">
-  <img src="./images/image9.png" alt="Image 9" width="200">
-  <img src="./images/image12.png" alt="Image 12" width="200">
-  <img src="./images/image13.png" alt="Image 13" width="200">
-    <img src="./images/image1.png" alt="Image 1" width="200">
-  <img src="./images/image5.png" alt="Image 5" width="200">
+  <img src="./images/image9.png" alt="Image 8" width="200">
+  <img src="./images/image8.png" alt="Image 9" width="200">
+  <img src="./images/image3.png" alt="Image 12" width="200">
 </p>
+
+These requests go to your message inbox in the Home page, where users can message and accept/deny/cancel the request
