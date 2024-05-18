@@ -37,7 +37,7 @@ Pressing on a post in the post page shows you details of the trip, and lets you 
 <p align="left">
   <img src="./images/image9.png" alt="Image 8" width="200">
   <img src="./images/image8.png" alt="Image 9" width="200">
-  <img src="./images/image10.png" alt="Image 12" width="200">
+  <img src="./images/image6.png" alt="Image 12" width="200">
 </p>
 
 These requests go to your message inbox in the Home page, where users can message and accept/deny/cancel the request
