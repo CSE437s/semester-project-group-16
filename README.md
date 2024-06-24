@@ -2,7 +2,7 @@
 
 Jan 2024 - April 2024
 
-Ride Along is a carpooling app designed to make ridesharing more affordable for college students.
+Ride Along is a carpooling app designed to be a ride sharing alternative to Uber/Lyft/etc.
 
 Technologies Used: React Native & Expo, jest, Node.js, Mysql, AWS EC2.
 
